@@ -1,4 +1,5 @@
-<!DOCTYPE html> <!DOCTYPE html>
+<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -7,8 +8,8 @@
     <meta description="Lab 1 akclifto (akclifto@asu.edu)">
     <title>Lab 1 HTML5 New Inputs</title>
 </head>
-<body>
 
+<body>
     <div id="Lab1--Part1">
         <div class="part1--container"></div>
         <h1>Lab 1 HTML5 New Inputs</h1>
@@ -16,69 +17,81 @@
         <form>
             <!-- Color -->
             <label>Color: </label>
-            <input type="color" value="#1b881b" name="akclifto_color" id="color"> <br/>
+            <input type="color" value="#1b881b" name="akclifto_color" id="color"> <br />
             <!-- Date -->
             <label>Date: </label>
-            <input type="date" min="2010-01-01" max="2017-09-01" name="akclifto_date"id="date"> <br/>
+            <input type="date" min="2010-01-01" max="2017-09-01" name="akclifto_date" id="date"> <br />
             <!-- Datetime-local -->
             <label>Datetime-local: </label>
-            <input type="datetime-local" name="akclifto_datetime-local" id="datetime"> <br/>
+            <input type="datetime-local" name="akclifto_datetime-local" id="datetime"> <br />
             <!-- Email -->
             <label>Email: </label>
-            <input type="email" name="akclifto_email" placeholder="input email here" id="email"> <br/>
+            <input type="email" name="akclifto_email" placeholder="input email here" id="email"> <br />
             <!-- Month -->
             <label>Month: </label>
-            <input type="month" name="akclifto_month" id="month"> <br/>
+            <input type="month" name="akclifto_month" id="month"> <br />
             <!-- Number -->
             <label>Number: </label>
-            <input type="number"  value="100" name="akclifto_number" id="number"> <br/>
+            <input type="number" value="100" name="akclifto_number" id="number"> <br />
             <!-- Range -->
             <label>Range: </label>
             <input 
                 type="range" 
                 value="1" 
-                min="-10" 
+                min="-10"
                 max="10" 
-                step="1.0" 
                 onChange=updateRangeText(this.value) 
-                name="akclifto_range" 
+                name="akclifto_range"
                 id="range"
             >
-            <input type="number" id="rangeVal" value=""> 
-            <br/>
+            <input type="text" id="rangeVal" value="">
+            <br />
             <!-- Search -->
             <label>Search: </label>
-            <input type="search" placeholder="search for something here" name="akclifto_search" id="search"> <br/>
+            <input type="search" placeholder="search for something here" name="akclifto_search" id="search"> <br />
             <!-- Tel -->
             <label>Tel: </label>
-            <input type="tel" name="akclifto_tel" placeholder="123-456-7890" id="tel"> <br/>
+            <input type="Tel" name="akclifto_tel" placeholder="123-456-7890" id="tel"> <br />
             <!-- Time -->
             <label>Time: </label>
-            <input type="time" name="akclifto_time" id="time"> <br/>
+            <input type="time" name="akclifto_time" id="time"> <br />
             <!-- Url -->
             <style>
-                input[type="url"]:invalid { outline: 2px solid red };
-                input[type="url"]:valid { outline: 2px solid green };
+                input[type="url"]:invalid {
+                    outline: 1px solid red
+                }
+                input[type="url"]:valid {
+                    outline: 1px solid green
+                }
             </style>
             <label>Url: </label>
-            <input type="url" placeholder="input a valid url" name="akclifto_url" id="url"><br/>
+            <input type="url" placeholder="input a valid url" name="akclifto_url" id="url"><br />
             <!-- Week -->
             <label>Week: </label>
-            <input type="week" name="akclifto_week" id="week"> <br/>
+            <input type="week" name="akclifto_week" id="week"> <br />
             <!-- Part C: Pattern Validations -->
             <style>
-                input[type="text"]:invalid { outline: 2px solid red };
-                input[type="text"]:valid { outline: 2px solid green };
-                input[id="rtn"]{ width: 425px;}
+                input[id="rtn"]:invalid {
+                    outline: 1px solid red
+                }
+
+                input[id="rtn"]:valid {
+                    outline: 1px solid green
+                }
+
+                input[id="rtn"] {
+                    width: 425px;
+                }
             </style>
             <label>Routing Number: </label>
             <input 
                 type="text" 
                 pattern="([0-9]{9})\s([0-9]{12})\s([0-9]{4})"
-                placeholder="9-digit checking number  12-digit routing number 4-digit check number"
-                name="akclifto_RTN" 
+                placeholder="9-digit checking number  12-digit routing number 4-digit check number" 
+                name="akclifto_RTN"
                 id="rtn"
-            > <br/><br/>
+            > 
+            <br /><br />
 
             <!-- Submit Form -->
             <input type="submit" value="Submit" onClick="submitForm()">
@@ -87,7 +100,7 @@
 
     <!-- Script for lab Part B to submit form and tell user if they missed a field -->
     <script>
-        function submitForm(){
+        function submitForm() {
             let ids = [];
             ids.push(document.getElementById("color").value);
             ids.push(document.getElementById("date").value);
@@ -102,19 +115,19 @@
             ids.push(document.getElementById("url").value);
             ids.push(document.getElementById("week").value);
             ids.push(document.getElementById("rtn").value);
-            
+
             let flag = checkIds(ids);
 
-            if(!flag) {
+            if (!flag) {
                 throwAlert();
             } else {
-                alert("Form submitted");
+                alert("Success! Form submitted");
             }
         };
 
         function checkIds(idArr) {
-            for(let i = 0; i < idArr.length; i++) {
-                if (idArr[i] === "" || idArr[i] === null){
+            for (let i = 0; i < idArr.length; i++) {
+                if (idArr[i] === "" || idArr[i] === null) {
                     // console.log("false");
                     return false;
                 }
@@ -126,9 +139,9 @@
             alert("Please fill in all the form fields before submitting.");
         };
 
-        //update range text value for the slider
+        // update the value from the range slider
         function updateRangeText(val) {
-          document.getElementById("rangeVal").value=val; 
+            document.getElementById("rangeVal").value = val;
         }
     </script>
 
