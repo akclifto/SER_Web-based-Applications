@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta description="Lab 1 akclifto (akclifto@asu.edu)">
+    <title>Lab 1 HTML5 New Inputs</title>
+</head>
+
+<body>
+    <div id="Lab1--Part1">
+        <div class="part1--container"></div>
+        <h1>Lab 1 Part 1: HTML5 New Inputs (akclifto) </h1>
+        <h3>Please fill out all form fields before submission</h3>
+        <form>
+            <!-- Color -->
+            <label>Color: </label>
+            <input type="color" value="#1b881b" name="akclifto_color" id="color"> <br />
+            <!-- Date -->
+            <label>Date: </label>
+            <input type="date" min="2010-01-01" max="2017-09-01" name="akclifto_date" id="date"> <br />
+            <!-- Datetime-local -->
+            <label>Datetime-local: </label>
+            <input type="datetime-local" name="akclifto_datetime-local" id="datetime"> <br />
+            <!-- Email -->
+            <label>Email: </label>
+            <input type="email" name="akclifto_email" placeholder="input email here" id="email"> <br />
+            <!-- Month -->
+            <label>Month: </label>
+            <input type="month" name="akclifto_month" id="month"> <br />
+            <!-- Number -->
+            <label>Number: </label>
+            <input type="number" value="100" name="akclifto_number" id="number"> <br />
+            <!-- Range -->
+            <label>Range: </label>
+            <input 
+                type="range" 
+                value="1" 
+                min="-10"
+                max="10" 
+                onChange=updateRangeText(this.value) 
+                name="akclifto_range"
+                id="range"
+            >
+            <input type="text" id="rangeVal" value="">
+            <br />
+            <!-- Search -->
+            <label>Search: </label>
+            <input type="search" placeholder="search for something here" name="akclifto_search" id="search"> <br />
+            <!-- Tel -->
+            <label>Tel: </label>
+            <input type="Tel" name="akclifto_tel" placeholder="123-456-7890" id="tel"> <br />
+            <!-- Time -->
+            <label>Time: </label>
+            <input type="time" name="akclifto_time" id="time"> <br />
+            <!-- Url -->
+            <style>
+                input[type="url"]:invalid {
+                    outline: 1px solid red
+                }
+                input[type="url"]:valid {
+                    outline: 1px solid green
+                }
+            </style>
+            <label>Url: </label>
+            <input type="url" placeholder="input a valid url" name="akclifto_url" id="url"><br />
+            <!-- Week -->
+            <label>Week: </label>
+            <input type="week" name="akclifto_week" id="week"> <br />
+            <!-- Part C: Pattern Validations -->
+            <style>
+                input[id="rtn"]:invalid {
+                    outline: 1px solid red
+                }
+
+                input[id="rtn"]:valid {
+                    outline: 1px solid green
+                }
+
+                input[id="rtn"] {
+                    width: 425px;
+                }
+            </style>
+            <label>Routing Number: </label>
+            <input 
+                type="text" 
+                pattern="([0-9]{9})\s([0-9]{12})\s([0-9]{4})"
+                placeholder="9-digit checking number 12-digit routing number 4-digit check number" 
+                name="akclifto_RTN"
+                id="rtn"
+            > 
+            <br /><br />
+
+            <!-- Submit Form -->
+            <input type="submit" value="Submit" onClick="submitForm()">
+        </form>
+    </div>
+
+    <!-- Script for lab Part B to submit form and tell user if they missed a field -->
+    <script>
+        function submitForm() {
+            let ids = [];
+            ids.push(document.getElementById("color").value);
+            ids.push(document.getElementById("date").value);
+            ids.push(document.getElementById("datetime").value);
+            ids.push(document.getElementById("email").value);
+            ids.push(document.getElementById("month").value);
+            ids.push(document.getElementById("number").value);
+            ids.push(document.getElementById("range").value);
+            ids.push(document.getElementById("search").value);
+            ids.push(document.getElementById("tel").value);
+            ids.push(document.getElementById("time").value);
+            ids.push(document.getElementById("url").value);
+            ids.push(document.getElementById("week").value);
+            ids.push(document.getElementById("rtn").value);
+
+            let flag = checkIds(ids);
+
+            if (!flag) {
+                throwAlert();
+            } else {
+                alert("Success! Form submitted");
+            }
+        };
+
+        function checkIds(idArr) {
+            for (let i = 0; i < idArr.length; i++) {
+                if (idArr[i] === "" || idArr[i] === null) {
+                    // console.log("false");
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        function throwAlert() {
+            alert("Please fill in all the form fields before submitting.");
+        };
+
+        // update the value from the range slider on change
+        function updateRangeText(val) {
+            document.getElementById("rangeVal").value = val;
+        }
+    </script>
+
+</body>
+
+</html>
