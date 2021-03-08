@@ -8,10 +8,11 @@
     <title>Lab 1 HTML5 New Inputs</title>
 </head>
 <body>
+
     <div id="Lab1--Part1">
         <div class="part1--container"></div>
         <h1>Lab 1 HTML5 New Inputs</h1>
-        <h3>Please fill out all form field before submission</h3>
+        <h3>Please fill out all form fields before submission</h3>
         <form>
             <!-- Color -->
             <label>Color: </label>
@@ -33,30 +34,58 @@
             <input type="number"  value="100" name="akclifto_number" id="number"> <br/>
             <!-- Range -->
             <label>Range: </label>
-            <input type="number" value="1" min="-10" max="10" step="1.0" name="akclifto_range" id="range"> <br/>
+            <input 
+                type="range" 
+                value="1" 
+                min="-10" 
+                max="10" 
+                step="1.0" 
+                onChange=updateRangeText(this.value) 
+                name="akclifto_range" 
+                id="range"
+            >
+            <input type="number" id="rangeVal" value=""> 
+            <br/>
             <!-- Search -->
             <label>Search: </label>
-            <input type="search" name="akclifto_search" id="search"> <br/>
+            <input type="search" placeholder="search for something here" name="akclifto_search" id="search"> <br/>
             <!-- Tel -->
             <label>Tel: </label>
-            <input type="Tel" name="akclifto_tel" placeholder="123-456-7890" id="tel"> <br/>
+            <input type="tel" name="akclifto_tel" placeholder="123-456-7890" id="tel"> <br/>
             <!-- Time -->
             <label>Time: </label>
             <input type="time" name="akclifto_time" id="time"> <br/>
             <!-- Url -->
             <style>
-                input[type="url"]:invalid{outline: 1px solid red}
-                input[type="url"]:valid{outline: 1px solid green}
+                input[type="url"]:invalid { outline: 2px solid red };
+                input[type="url"]:valid { outline: 2px solid green };
             </style>
             <label>Url: </label>
-            <input type="url" name="akclifto_url" id="url"><br/>
+            <input type="url" placeholder="input a valid url" name="akclifto_url" id="url"><br/>
             <!-- Week -->
             <label>Week: </label>
-            <input type="week" name="akclifto_week" id="week"> <br/><br/>
+            <input type="week" name="akclifto_week" id="week"> <br/>
+            <!-- Part C: Pattern Validations -->
+            <style>
+                input[type="text"]:invalid { outline: 2px solid red };
+                input[type="text"]:valid { outline: 2px solid green };
+                input[id="rtn"]{ width: 425px;}
+            </style>
+            <label>Routing Number: </label>
+            <input 
+                type="text" 
+                pattern="([0-9]{9})\s([0-9]{12})\s([0-9]{4})"
+                placeholder="9-digit checking number  12-digit routing number 4-digit check number"
+                name="akclifto_RTN" 
+                id="rtn"
+            > <br/><br/>
+
+            <!-- Submit Form -->
             <input type="submit" value="Submit" onClick="submitForm()">
         </form>
     </div>
 
+    <!-- Script for lab Part B to submit form and tell user if they missed a field -->
     <script>
         function submitForm(){
             let ids = [];
@@ -72,6 +101,7 @@
             ids.push(document.getElementById("time").value);
             ids.push(document.getElementById("url").value);
             ids.push(document.getElementById("week").value);
+            ids.push(document.getElementById("rtn").value);
             
             let flag = checkIds(ids);
 
@@ -83,19 +113,25 @@
         };
 
         function checkIds(idArr) {
-            idArr.every(id => {
-                if (id === "" || id === null){
-                    console.log("false");
+            for(let i = 0; i < idArr.length; i++) {
+                if (idArr[i] === "" || idArr[i] === null){
+                    // console.log("false");
                     return false;
                 }
-            });
+            }
             return true;
         };
 
         function throwAlert() {
             alert("Please fill in all the form fields before submitting.");
         };
+
+        //update range text value for the slider
+        function updateRangeText(val) {
+          document.getElementById("rangeVal").value=val; 
+        }
     </script>
+
 </body>
 
 </html>
