@@ -1,6 +1,6 @@
 /**
- * SER 421 Lab 1 Part A
- * Acitivity 2: JS Programming 
+ * SER 421 Lab 1
+ * Acitivity 2: JS Programming Part A
  * @author Adam Clifton
  * @email akclifto@asu.edu 
  * @date 2021.03.09
