@@ -1,8 +1,8 @@
 {
   "name": "lab1",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "Lab 1 SER421",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "https://github.com/akclifto/SER-421.git",
   "author": "akclifto <akclifto@asu.edu>",
   "license": "MIT",
@@ -10,5 +10,8 @@
     "node": "14.15.4",
     "npm": "6.14.11",
     "yarn": "1.22.5"
+  },
+  "scripts": {
+    "start": "node lab1/src/index.js"
   }
 }
