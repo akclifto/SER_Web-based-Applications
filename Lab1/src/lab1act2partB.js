@@ -47,7 +47,7 @@ function calc(String) {
                 getErrorMessage();
             }
         }
-    // else do single expression
+        // else do single expression
     } else {
         result = doMaths(calc);
     }

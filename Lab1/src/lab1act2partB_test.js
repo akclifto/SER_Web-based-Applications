@@ -26,16 +26,16 @@ console.log("TESTING Part B exec() ---------------------------\n");
 
 // test mix of nested and single expressions
 let expA = [
-    { "exp": { "op": "add", "expr" : {"op" : "add", "expr" : {"op" : "subtract", "number" : 3}}}, "expected": -12},
-    { "exp": {"op": "subtract", "expr" : {"op" : "add", "number" : 15}}, "expected": 0},
+    { "exp": { "op": "add", "expr": { "op": "add", "expr": { "op": "subtract", "number": 3 } } }, "expected": -12 },
+    { "exp": { "op": "subtract", "expr": { "op": "add", "number": 15 } }, "expected": 0 },
     { "exp": { "op": "add", "number": 0 }, "expected": 0 },
     { "exp": { "op": "add", "number": -1 }, "expected": -1 },
     { "exp": { "op": "subtract", "number": -1 }, "expected": 0 },
     { "exp": { "op": "add", "number": 5 }, "expected": 5 },
     { "exp": { "op": "subtract", "number": 10 }, "expected": -5 },
     { "exp": { "op": "add", "number": 15 }, "expected": 10 },
-    { "exp": { "op": "add", "expr" : {"op" : "add", "expr" : {"op" : "subtract", "number" : 3}}}, "expected": 28},
-    { "exp": {"op": "subtract", "expr" : {"op" : "add", "number" : 15}}, "expected": 0},
+    { "exp": { "op": "add", "expr": { "op": "add", "expr": { "op": "subtract", "number": 3 } } }, "expected": 28 },
+    { "exp": { "op": "subtract", "expr": { "op": "add", "number": 15 } }, "expected": 0 },
 ]
 
 exec(expA);
