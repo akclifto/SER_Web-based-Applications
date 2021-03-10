@@ -6,7 +6,6 @@
  * @date 2021.03.10
  * 
  */
-
 let result = 0;
 
 function calc(String) {
@@ -55,6 +54,7 @@ function calc(String) {
 
 };
 
+// part A calc() function
 function doMaths(maths) {
 
     if (maths.op === "add") {
@@ -69,6 +69,7 @@ function doMaths(maths) {
     return result;
 };
 
+// Unchanged exec() from part A
 function exec(array) {
 
     // JSON.stringify() for object array
@@ -81,11 +82,13 @@ function exec(array) {
     return "exec() complete."
 };
 
+// unchanged cleanup() from part A
 function cleanup() {
     result = 0;
     return "result reset to: " + result;
 };
 
+// get Message if problem with JSON format or operation calls.
 function getErrorMessage() {
     return "Check JSON string. Only add and subtract are supported.";
 }

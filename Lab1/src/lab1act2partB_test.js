@@ -16,11 +16,15 @@ console.log(calc('{"op" : "add", "number" : 19}'));         // 22
 // nested expressions
 console.log(calc('{"op": "subtract", "expr" : {"op" : "add", "number" : 15}}'));    // 0
 console.log(calc('{"op": "add", "expr" : {"op" : "add", "expr" : {"op" : "subtract", "number" : 3}}}')); // -12
+console.log(calc('{"op": "add", "expr" : {"op" : "add", "expr" : {"op" : "add", "number" : 6}}}')); // -24
+console.log(calc('{"op": "add", "expr" : {"op" : "subtract", "expr" : {"op" : "add", "expr" : {"op" : "subtract", "number" : 1}}}}')); // 0
+
 console.log(cleanup());
 console.log("\n");
 
-console.log("TESTING Part A exec() ---------------------------\n");
+console.log("TESTING Part B exec() ---------------------------\n");
 
+// test mix of nested and single expressions
 let expA = [
     { "exp": { "op": "add", "expr" : {"op" : "add", "expr" : {"op" : "subtract", "number" : 3}}}, "expected": -12},
     { "exp": {"op": "subtract", "expr" : {"op" : "add", "number" : 15}}, "expected": 0},
