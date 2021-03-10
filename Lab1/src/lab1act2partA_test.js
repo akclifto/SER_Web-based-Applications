@@ -9,7 +9,7 @@
 // import { calc, exec, cleanup } from "./lab1act2partA.js";
 
 // Testing file.
-console.log("TESTING calc() ---------------------------\n");
+console.log("TESTING Part A calc() ---------------------------\n");
 
 console.log(calc('{"op" : "add", "number" : 0}'));          // 0
 console.log(calc('{"op" : "add", "number" : -1}'));         // -1
@@ -23,7 +23,7 @@ console.log(cleanup());
 
 console.log("\n");
 
-console.log("TESTING exec() ---------------------------\n");
+console.log("TESTING Part A exec() ---------------------------\n");
 
 let expA = [
     { "exp": { "op": "add", "number": 0 }, "expected": 0 },

@@ -10,23 +10,41 @@
 let result = 0;
 
 // console.log(calc('{"op": "subtract", "expr" : {"op" : "add", "number" : 15}}'));
+// console.log(calc('{"op": "add", "expr" : {"op" : "add", "expr" : {"op" : "subtract", "number" : 3}}}'));
 function calc(String) {
     let calc = JSON.parse(String);
 
-    //if nested expressions
+    //if nested expressions, get nested array op
+    if(calc.expr) {
+        let op = []
+        op.push(calc.op);
 
-    //else single expression
-    if (calc.op === "add") {
-        result += calc.number;
-    }
-    else if (calc.op === "subtract") {
-        result -= calc.number;
-
+        while(calc.expr) {
+            console.log(calc.expr);
+        }
     } else {
-        console.log("Check JSON string input. Only add and subtract are supported.");
+        result = doMaths(calc);
     }
     return result;
-}
+
+};
+
+function doMaths(calcString) {
+    let maths = calcString;
+    // console.log(calcString);
+
+    if (maths.op === "add") {
+        result += maths.number;
+    }
+    else if (maths.op === "subtract") {
+        result -= maths.number;
+
+    } else {
+        console.log("Check JSON string. Only add and subtract are supported.");
+    }
+    return result;
+};
+
 
 function exec(array) {
 
