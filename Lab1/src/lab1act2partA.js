@@ -6,9 +6,6 @@
  * @date 2021.03.09
  * 
  */
-
-// "use strict";
-
 let result = 0;
 
 function calc(String) {
