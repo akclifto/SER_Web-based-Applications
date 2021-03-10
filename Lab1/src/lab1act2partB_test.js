@@ -13,4 +13,6 @@ console.log("TESTING Part B calc() ---------------------------\n");
 console.log(calc('{"op" : "add", "number" : 5}'));          // 5
 console.log(calc('{"op" : "subtract", "number" : 2}'));     // 3
 console.log(calc('{"op" : "add", "number" : 19}'));         // 22
-// console.log(calc('{"op": "subtract", "expr" : {"op" : "add", "number" : 15}}'));
+//nested expressions
+console.log(calc('{"op": "subtract", "expr" : {"op" : "add", "number" : 15}}'));    // 0
+console.log(calc('{"op": "add", "expr" : {"op" : "add", "expr" : {"op" : "subtract", "number" : 3}}}')); // -12

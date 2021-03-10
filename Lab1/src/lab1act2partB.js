@@ -3,24 +3,50 @@
  * Acitivity 2: JS Programming Part B
  * @author Adam Clifton
  * @email akclifto@asu.edu 
- * @date 2021.03.09
+ * @date 2021.03.10
  * 
  */
 
 let result = 0;
 
-// console.log(calc('{"op": "subtract", "expr" : {"op" : "add", "number" : 15}}'));
-// console.log(calc('{"op": "add", "expr" : {"op" : "add", "expr" : {"op" : "subtract", "number" : 3}}}'));
 function calc(String) {
     let calc = JSON.parse(String);
 
-    //if nested expressions, get nested array op
-    if(calc.expr) {
-        let op = []
-        op.push(calc.op);
+    // if nested expressions, get nested array op and put in array
+    if (calc.expr) {
 
-        while(calc.expr) {
-            console.log(calc.expr);
+        let op = []
+        let lastExpression = calc;
+        let nextExpression = calc.expr;
+        console.log("last expression", lastExpression);
+        console.log("next expression", nextExpression);
+
+        op.unshift(calc.op);
+
+        while (nextExpression) {
+            lastExpression = nextExpression;
+            op.unshift(lastExpression.op); // move the nested expression to front of array.
+            nextExpression = nextExpression.expr
+        }
+        console.log(op);
+        for (let i in op) {
+            console.log("last expression number: ", lastExpression.number);
+
+            if (op[i] === "add") {
+                console.log("add " + lastExpression.number + " to " + result);
+                result += lastExpression.number;
+                console.log("add result: ", result);
+                lastExpression.number = result;
+            }
+            else if (op[i] === "subtract") {
+                console.log("subtract " + lastExpression.number + " to " + result);
+                result -= lastExpression.number;
+                console.log("subtract result: ", result);
+                lastExpression.number = result;
+            }
+            else {
+                getErrorMessage();
+            }
         }
     } else {
         result = doMaths(calc);
@@ -29,9 +55,8 @@ function calc(String) {
 
 };
 
-function doMaths(calcString) {
-    let maths = calcString;
-    // console.log(calcString);
+function doMaths(maths) {
+    // console.log(maths);
 
     if (maths.op === "add") {
         result += maths.number;
@@ -40,11 +65,10 @@ function doMaths(calcString) {
         result -= maths.number;
 
     } else {
-        console.log("Check JSON string. Only add and subtract are supported.");
+        getErrorMessage();
     }
     return result;
 };
-
 
 function exec(array) {
 
@@ -63,5 +87,8 @@ function cleanup() {
     return "result reset to: " + result;
 };
 
+function getErrorMessage() {
+    return "Check JSON string. Only add and subtract are supported.";
+}
 
 export { calc, exec, cleanup };
