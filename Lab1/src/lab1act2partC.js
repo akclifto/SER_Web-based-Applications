@@ -32,13 +32,16 @@ PreCalc.prototype.calc = function (String) {
             op.unshift(lastExpression.op);
             nextExpression = nextExpression.expr
         }
-        
         for (let i in op) {
+
             // console.log(this.print());
+            // check last expression to valid number, set to calcStack[0] if not.
+            if(lastExpression.number === undefined || lastExpression.number === NaN) {
+                lastExpression.number = this.calcStack[0];
+            }
+            
             if (op[i] === "add") {
-                console.log("hit add");
-                console.log("calcStack[0]", this.calcStack[0]);
-                res += this.calcStack[0];
+                res += lastExpression.number;
                 lastExpression.number = res;
             }
             else if (op[i] === "subtract") {
@@ -46,22 +49,16 @@ PreCalc.prototype.calc = function (String) {
                 lastExpression.number = res;
             }
             else if (op[i] === "push") {
-                // console.log("hit push");
                 this.push(res);
-                console.log(this.print());
             }
             else if (op[i] === "pop") {
-
-                // console.log("hit pop");
                 res = this.pop();
-                console.log("pop res ", res);
                 if (res === undefined || res === NaN) {
                     return this.getEmptyStackMessage();
                 }
-                console.log(this.print());
+                res = this.calcStack[0];
             }
             else if (op[i] === "print") {
-                console.log("hit print");
                 return this.print();
             }
             else {
@@ -131,6 +128,8 @@ PreCalc.prototype.exec = function (array) {
 
 PreCalc.prototype.cleanup = function () {
     this.result = 0;
+    this.calcStack.length = 0;
+    this.calcStack[0] = 0;
     return "result reset to: " + this.result;
 };
 
