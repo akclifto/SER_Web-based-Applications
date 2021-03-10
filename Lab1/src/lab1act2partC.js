@@ -30,11 +30,13 @@ PreCalc.prototype.calc = function (String) {
 
         while (nextExpression) {
             lastExpression = nextExpression;
-            op.unshift(lastExpression.op); 
-            nextExpression = nextExpression.expr 
+            op.unshift(lastExpression.op);
+            nextExpression = nextExpression.expr
         }
-
+        // console.log(pc.calc('{"op" : "push", "expr" : {"op" : "add", "expr": {"op" : "pop"}}}'));
+        console.log(op);
         for (let i in op) {
+            // console.log(this.print());
             if (op[i] === "add") {
                 result += lastExpression.number;
                 lastExpression.number = result;
@@ -43,14 +45,26 @@ PreCalc.prototype.calc = function (String) {
                 result -= lastExpression.number;
                 lastExpression.number = result;
             }
-            else if(op[i] === "push"){
+            else if (op[i] === "push") {
+                console.log("hit push");
+                // console.log("push " + lastExpression.number + " to " + stack);
+                console.log("lastExpression number pre push: ", lastExpression.number);
+                this.push(lastExpression.number);
+                lastExpression.number = result;
+                console.log("lastExpression number: ", lastExpression.number);
+            }
+            else if (op[i] === "pop") {
+                console.log("hit pop");
+                result = this.pop();
+                console.log("Item popped: ", result);
+                if (result === undefined || result === NaN) {
+                    return this.getEmptyStackMessage();
+                }
 
             }
-            else if(op[i] === "pop"){
-
-            }
-            else if(op[i] === "print") {
-                
+            else if (op[i] === "print") {
+                console.log("hit print");
+                this.print();
             }
             else {
                 console.log(this.getErrorMessage());
@@ -77,7 +91,7 @@ PreCalc.prototype.pop = function () {
 };
 
 PreCalc.prototype.print = function () {
-    return "[ " + this.calcStack.toString() + " ]";
+    return "[" + this.calcStack.toString() + "]";
 };
 
 PreCalc.prototype.doMaths = function (maths) {
@@ -88,15 +102,18 @@ PreCalc.prototype.doMaths = function (maths) {
     else if (maths.op === "subtract") {
         this.result -= maths.number;
     }
-    else if(maths.op === "push") {
+    else if (maths.op === "push") {
         this.push(maths.number);
         return maths.number;
-    } 
-    else if(maths.op === "pop") {
+    }
+    else if (maths.op === "pop") {
         res = this.pop();
+        if (res === undefined || res === NaN) {
+            return this.getEmptyStackMessage();
+        }
         return res;
     }
-    else if(maths.op === "print") {
+    else if (maths.op === "print") {
         return this.print();
     }
     else {
@@ -122,5 +139,9 @@ PreCalc.prototype.cleanup = function () {
 PreCalc.prototype.getErrorMessage = function () {
     return "Check JSON string. Only add and subtract are supported.";
 };
+
+PreCalc.prototype.getEmptyStackMessage = function () {
+    return "The Stack is now empty. No items left.\n";
+}
 
 export default PreCalc;
