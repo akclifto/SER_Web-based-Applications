@@ -26,11 +26,16 @@ function calc(String) {
 };
 
 function exec(array) {
-    console.log("exec(array) called.");
+    console.log("exec(array) called. Array length: " + array.length);
 };
 
-console.log(calc('{"op" : "add", "number" : 5}')); //5
-console.log(calc('{"op" : "subtract", "number" : 2}')); // 3
-console.log(calc('{"op" : "add", "number" : 19}')); // 22
+function cleanup() {
+    result = 0;
+}
+
+// test calc()
+// console.log(calc('{"op" : "add", "number" : 5}')); //5
+// console.log(calc('{"op" : "subtract", "number" : 2}')); // 3
+// console.log(calc('{"op" : "add", "number" : 19}')); // 22
 
 export { calc, exec };

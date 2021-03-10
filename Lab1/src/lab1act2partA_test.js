@@ -11,5 +11,9 @@ import { calc, exec } from "./lab1act2partA.js";
 // Testing file.
 console.log("test file ------------------ ");
 
-calc('{"op" : "add", "number" : 5}');
-exec("something");
+console.log(calc('{"op" : "add", "number" : 5}')); //5
+console.log(calc('{"op" : "subtract", "number" : 2}')); // 3
+console.log(calc('{"op" : "add", "number" : 19}')); // 22
+
+let array = new Array(10);
+exec(array);
