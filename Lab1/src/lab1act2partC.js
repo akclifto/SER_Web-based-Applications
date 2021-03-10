@@ -61,8 +61,8 @@ PreCalc.prototype.push = function (result) {
 
 PreCalc.prototype.pop = function () {
     // remove value in front
-    const holder = this.calcStack.shift();
-    return holder;
+    const popped = this.calcStack.shift();
+    return popped;
 };
 
 PreCalc.prototype.print = function () {
@@ -70,8 +70,6 @@ PreCalc.prototype.print = function () {
 };
 
 PreCalc.prototype.doMaths = function (maths) {
-    console.log("domaths");
-    console.log(maths);
 
     if (maths.op === "add") {
         this.result += maths.number;
@@ -87,7 +85,7 @@ PreCalc.prototype.doMaths = function (maths) {
 PreCalc.prototype.exec = function (array) {
     for (let i in array) {
         let op = JSON.stringify(array[i].exp);
-        this.result = calc(op);
+        this.result = this.calc(op);
         console.log(this.result + " = " + array[i].expected);
     }
     return "exec() complete."
