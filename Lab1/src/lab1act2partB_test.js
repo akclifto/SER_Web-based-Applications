@@ -6,7 +6,7 @@
  * @date 2021.03.10
  * 
  */
-import { calc, exec, cleanup } from "./lab1act2partB.js";
+// import { calc, exec, cleanup } from "./lab1act2partB.js";
 
 console.log("TESTING Part B calc() ---------------------------\n");
 

@@ -30,7 +30,6 @@ function calc(String) {
         // console.log(op);
         for (let i in op) {
             // console.log("last expression number: ", lastExpression.number);
-
             if (op[i] === "add") {
                 // console.log("add " + lastExpression.number + " to " + result);
                 result += lastExpression.number;
@@ -93,4 +92,4 @@ function getErrorMessage() {
     return "Check JSON string. Only add and subtract are supported.";
 }
 
-export { calc, exec, cleanup };
+// export { calc, exec, cleanup };
