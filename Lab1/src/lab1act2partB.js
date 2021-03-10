@@ -28,6 +28,7 @@ function calc(String) {
             nextExpression = nextExpression.expr //shift to next nested expression.
         }
         // console.log(op);
+        // op array pushed nested expressions to front or aray, so regular for-loop to handle operations.
         for (let i in op) {
             // console.log("last expression number: ", lastExpression.number);
             if (op[i] === "add") {
@@ -46,6 +47,7 @@ function calc(String) {
                 getErrorMessage();
             }
         }
+    // else do single expression
     } else {
         result = doMaths(calc);
     }
@@ -53,7 +55,7 @@ function calc(String) {
 
 };
 
-// part A calc() function
+// Part A calc() function
 function doMaths(maths) {
 
     if (maths.op === "add") {
