@@ -16,7 +16,7 @@ class PreCalc {
 
 PreCalc.prototype.calc = function (String) {
 
-    let calcStack = this.calcStack;
+    // let calcStack = this.calcStack;
     let result = this.calcStack[0];
 
     let calc = JSON.parse(String);
@@ -33,6 +33,7 @@ PreCalc.prototype.calc = function (String) {
             op.unshift(lastExpression.op); 
             nextExpression = nextExpression.expr 
         }
+
         for (let i in op) {
             if (op[i] === "add") {
                 result += lastExpression.number;
@@ -42,10 +43,20 @@ PreCalc.prototype.calc = function (String) {
                 result -= lastExpression.number;
                 lastExpression.number = result;
             }
+            else if(op[i] === "push"){
+
+            }
+            else if(op[i] === "pop"){
+
+            }
+            else if(op[i] === "print") {
+                
+            }
             else {
-                getErrorMessage();
+                console.log(this.getErrorMessage());
             }
         }
+
     } else {
         result = this.doMaths(calc);
     }
@@ -70,14 +81,26 @@ PreCalc.prototype.print = function () {
 };
 
 PreCalc.prototype.doMaths = function (maths) {
-
+    let res;
     if (maths.op === "add") {
         this.result += maths.number;
     }
     else if (maths.op === "subtract") {
         this.result -= maths.number;
-    } else {
-        getErrorMessage();
+    }
+    else if(maths.op === "push") {
+        this.push(maths.number);
+        return maths.number;
+    } 
+    else if(maths.op === "pop") {
+        res = this.pop();
+        return res;
+    }
+    else if(maths.op === "print") {
+        return this.print();
+    }
+    else {
+        console.log(this.getErrorMessage());
     }
     return this.result;
 };
@@ -94,6 +117,10 @@ PreCalc.prototype.exec = function (array) {
 PreCalc.prototype.cleanup = function () {
     this.result = 0;
     return "result reset to: " + this.result;
+};
+
+PreCalc.prototype.getErrorMessage = function () {
+    return "Check JSON string. Only add and subtract are supported.";
 };
 
 export default PreCalc;
