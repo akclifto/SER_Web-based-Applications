@@ -21,6 +21,11 @@ console.log(pc.calc('{"op" : "print"}')); //prints [17 -2 0]
 console.log(pc.calc('{"op" : "pop"}')); // returns 17, stack [-2 0]
 console.log(pc.calc('{"op" : "print"}')); //prints [-2 0]
 console.log(pc.calc('{"op" : "push", "expr" : {"op" : "add", "expr": {"op" : "pop"}}}')); // returns -2 stack [-2 0]
+console.log(pc.calc('{"op" : "print"}')); //prints [-2 0]
+console.log(pc.calc('{"op" : "pop"}')); // returns -2 stack [0]
+console.log(pc.calc('{"op" : "pop"}')); // returns 0 stack []
+console.log(pc.calc('{"op" : "pop"}')); // returns (what? You have an empty stack now)
+
 
 console.log(pc.cleanup());
 

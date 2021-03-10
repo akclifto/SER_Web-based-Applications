@@ -16,8 +16,7 @@ class PreCalc {
 
 PreCalc.prototype.calc = function (String) {
 
-    // let calcStack = this.calcStack;
-    let result = this.calcStack[0];
+    let res = this.calcStack[0];
 
     let calc = JSON.parse(String);
     if (calc.expr) {
@@ -33,38 +32,37 @@ PreCalc.prototype.calc = function (String) {
             op.unshift(lastExpression.op);
             nextExpression = nextExpression.expr
         }
-        // console.log(pc.calc('{"op" : "push", "expr" : {"op" : "add", "expr": {"op" : "pop"}}}'));
-        console.log(op);
+        
         for (let i in op) {
             // console.log(this.print());
             if (op[i] === "add") {
-                result += lastExpression.number;
-                lastExpression.number = result;
+                console.log("hit add");
+                console.log("calcStack[0]", this.calcStack[0]);
+                res += this.calcStack[0];
+                lastExpression.number = res;
             }
             else if (op[i] === "subtract") {
-                result -= lastExpression.number;
-                lastExpression.number = result;
+                res -= lastExpression.number;
+                lastExpression.number = res;
             }
             else if (op[i] === "push") {
-                console.log("hit push");
-                // console.log("push " + lastExpression.number + " to " + stack);
-                console.log("lastExpression number pre push: ", lastExpression.number);
-                this.push(lastExpression.number);
-                lastExpression.number = result;
-                console.log("lastExpression number: ", lastExpression.number);
+                // console.log("hit push");
+                this.push(res);
+                console.log(this.print());
             }
             else if (op[i] === "pop") {
-                console.log("hit pop");
-                result = this.pop();
-                console.log("Item popped: ", result);
-                if (result === undefined || result === NaN) {
+
+                // console.log("hit pop");
+                res = this.pop();
+                console.log("pop res ", res);
+                if (res === undefined || res === NaN) {
                     return this.getEmptyStackMessage();
                 }
-
+                console.log(this.print());
             }
             else if (op[i] === "print") {
                 console.log("hit print");
-                this.print();
+                return this.print();
             }
             else {
                 console.log(this.getErrorMessage());
@@ -72,10 +70,10 @@ PreCalc.prototype.calc = function (String) {
         }
 
     } else {
-        result = this.doMaths(calc);
+        res = this.doMaths(calc);
     }
 
-    return result;
+    return res;
 
 };
 
@@ -141,7 +139,7 @@ PreCalc.prototype.getErrorMessage = function () {
 };
 
 PreCalc.prototype.getEmptyStackMessage = function () {
-    return "The Stack is now empty. No items left.\n";
+    return "What? You have an empty stack now.\n";
 }
 
 export default PreCalc;
