@@ -2,7 +2,7 @@
   "name": "lab1",
   "version": "1.0.0",
   "description": "Lab 1 SER421",
-  "main": "src/index.js",
+  "main": "lab1/src/lab1act1partA.js",
   "repository": "https://github.com/akclifto/SER-421.git",
   "author": "akclifto <akclifto@asu.edu>",
   "license": "MIT",
@@ -12,6 +12,7 @@
     "yarn": "1.22.5"
   },
   "scripts": {
-    "start": "node lab1/src/index.js"
+    "laba": "node Lab1/src/lab1act2partA.js",
+    "labat": "node Lab1/src/lab1act2partA_test.js"
   }
 }
