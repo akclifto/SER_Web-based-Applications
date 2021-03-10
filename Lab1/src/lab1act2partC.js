@@ -37,10 +37,10 @@ PreCalc.prototype.calc = function (String) {
 
             // console.log(this.print());
             // check last expression to valid number, set to calcStack[0] if not.
-            if(lastExpression.number === undefined || lastExpression.number === NaN) {
+            if (lastExpression.number === undefined || lastExpression.number === NaN) {
                 lastExpression.number = this.calcStack[0];
             }
-            
+
             if (op[i] === "add") {
                 res += lastExpression.number;
                 lastExpression.number = res;

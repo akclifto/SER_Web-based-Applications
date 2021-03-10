@@ -5,6 +5,7 @@ SER421
 ## Lab 1
 
 - HTML Overview: HTML5 review, regex patterns and restrictions, and some JS for submission form checking.
+  - The javascript used in the .html DOES NOT pertain to Part C (that specifies no JS). It is used to the submission handler and range indicator.
 - Javascript Programming:
   - Part A calculator and comparison.  Script: (not using node_module export/import as specified in the lab)
 
