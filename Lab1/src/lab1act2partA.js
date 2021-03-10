@@ -9,31 +9,25 @@
 
 // "use strict";
 
-let person = '{"firstName":"Butch", "lastName":"Cassidy", \
-"bestFriend":{"firstName":"Sundance","lastName":"Kid"}, \
-"age":30}';
+let result = 0;
 
-let personObj = { 'firstName': 'Butch', 'lastName': 'Cassidy',
-		  'bestFriend': {'firstName':'Sundance', 'lastName': 'Kid'},
-		  'greeting': function() { console.log("Hello " + this.firstName); }
-};
+function calc(String) {
+    let  calc = JSON.parse(String);
 
-console.log(person.firstName);     // makes no sense, json string
-console.log(personObj.firstName);  // makes perfect sense, object
-console.log(personObj.greeting()); // you can have a function on it
+    if(calc.op === "add" ) {
+        // console.log("add");
+        result += calc.number;
+    } 
+    else if (calc.op === "subtract") {
+        // console.log("subtract");
+        result -= calc.number;
 
-let personObj2 = JSON.parse(person);
-console.log(personObj2.firstName);
-
-let f = function(key, val) {
-    if (key == "firstName") {
-	   return (val+"ee");
+    } else {
+        console.log("some default");
     }
-    // Thanks Chris H. for pointing out the 
-    // missing return of val - love Javascript!
-    return val;
+    return result;
 };
 
-
-let personObj3 = JSON.parse(person, f);
-console.log(personObj3.firstName);
+console.log(calc('{"op" : "add", "number" : 5}')); //5
+console.log(calc('{"op" : "subtract", "number" : 2}')); // 3
+console.log(calc('{"op" : "add", "number" : 19}')); // 22
