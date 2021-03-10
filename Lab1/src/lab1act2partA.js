@@ -31,11 +31,8 @@ function exec(array) {
 
 function cleanup() {
     result = 0;
+    return "Calc() results reset to: " +  result;
 }
 
-// test calc()
-// console.log(calc('{"op" : "add", "number" : 5}')); //5
-// console.log(calc('{"op" : "subtract", "number" : 2}')); // 3
-// console.log(calc('{"op" : "add", "number" : 19}')); // 22
 
 // export { calc, exec };

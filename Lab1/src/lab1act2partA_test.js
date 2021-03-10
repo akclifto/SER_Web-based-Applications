@@ -19,6 +19,7 @@ console.log(calc('{"op" : "subtract", "number" : 2}'));     // 3
 console.log(calc('{"op" : "add", "number" : 19}'));         // 22
 console.log(calc('{"op" : "subtract", "number" : 25}'));    // -3
 console.log(calc('{"op" : "add", "number" : 10}'));         // 7
+console.log(cleanup());
 
 console.log("\n");
 
