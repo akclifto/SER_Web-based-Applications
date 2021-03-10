@@ -38,4 +38,4 @@ function cleanup() {
 // console.log(calc('{"op" : "subtract", "number" : 2}')); // 3
 // console.log(calc('{"op" : "add", "number" : 19}')); // 22
 
-export { calc, exec };
+// export { calc, exec };
