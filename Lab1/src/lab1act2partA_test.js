@@ -6,7 +6,7 @@
  * @date 2021.03.09
  * 
  */
-// import { calc, exec } from "./lab1act2partA.js";
+import { calc, exec, cleanup } from "./lab1act2partA.js";
 
 // Testing file.
 console.log("TESTING calc() ---------------------------\n");
@@ -25,12 +25,13 @@ console.log("\n");
 
 console.log("TESTING exec() ---------------------------\n");
 let expA = [
-    {"exp":	{"op":"add",	"number":	0},	"expected":	0},
-    {"exp":	{"op":"add",	"number":	-1},	"expected":	-1},
-    {"exp":	{"op":"subtract",	"number":	-1},	"expected":	0},
-    {"exp":	{"op":"add",	"number":	5},	"expected":	5},
-    {"exp":	{"op":"subtract",	"number":	10},	"expected":	-5},
-    {"exp":	{"op":"add",	"number":	15},	"expected":	10}
+    { "exp": { "op": "add", "number": 0 }, "expected": 0 },
+    { "exp": { "op": "add", "number": -1 }, "expected": -1 },
+    { "exp": { "op": "subtract", "number": -1 }, "expected": 0 },
+    { "exp": { "op": "add", "number": 5 }, "expected": 5 },
+    { "exp": { "op": "subtract", "number": 10 }, "expected": -5 },
+    { "exp": { "op": "add", "number": 15 }, "expected": 10 }
 ]
 
-let val = exec(expA);
+exec(expA);
+

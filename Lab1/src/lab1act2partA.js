@@ -9,12 +9,12 @@
 let result = 0;
 
 function calc(String) {
-    let  calc = JSON.parse(String);
+    let calc = JSON.parse(String);
 
-    if(calc.op === "add" ) {
+    if (calc.op === "add") {
         // console.log("add");
         result += calc.number;
-    } 
+    }
     else if (calc.op === "subtract") {
         // console.log("subtract");
         result -= calc.number;
@@ -27,12 +27,22 @@ function calc(String) {
 
 function exec(array) {
     console.log("exec(array) called. Array length: " + array.length);
+
+    // JSON.stringify() for object array
+    for (let i in array) {
+
+        let op = JSON.stringify(array[i].exp);
+        result = calc(op);
+        console.log(result + " = " + array[i].expected);
+    }
+    return 0;
+
 };
 
 function cleanup() {
     result = 0;
-    return "Calc() results reset to: " +  result;
-}
+    return "Calc() results reset to: " + result;
+};
 
 
-// export { calc, exec };
+export { calc, exec, cleanup };
