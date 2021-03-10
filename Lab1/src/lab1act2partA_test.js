@@ -6,7 +6,7 @@
  * @date 2021.03.09
  * 
  */
-import { calc, exec, cleanup } from "./lab1act2partA.js";
+// import { calc, exec, cleanup } from "./lab1act2partA.js";
 
 // Testing file.
 console.log("TESTING calc() ---------------------------\n");
@@ -34,4 +34,3 @@ let expA = [
 ]
 
 exec(expA);
-

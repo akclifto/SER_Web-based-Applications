@@ -26,7 +26,6 @@ function calc(String) {
 };
 
 function exec(array) {
-    console.log("exec(array) called. Array length: " + array.length);
 
     // JSON.stringify() for object array
     for (let i in array) {
@@ -35,14 +34,13 @@ function exec(array) {
         result = calc(op);
         console.log(result + " = " + array[i].expected);
     }
-    return 0;
-
+    return "exec() complete."
 };
 
 function cleanup() {
     result = 0;
-    return "Calc() results reset to: " + result;
+    return "result reset to: " + result;
 };
 
 
-export { calc, exec, cleanup };
+// export { calc, exec, cleanup };
