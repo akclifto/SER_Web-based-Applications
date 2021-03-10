@@ -24,6 +24,7 @@ console.log(cleanup());
 console.log("\n");
 
 console.log("TESTING exec() ---------------------------\n");
+
 let expA = [
     { "exp": { "op": "add", "number": 0 }, "expected": 0 },
     { "exp": { "op": "add", "number": -1 }, "expected": -1 },
@@ -34,3 +35,4 @@ let expA = [
 ]
 
 exec(expA);
+console.log(cleanup());

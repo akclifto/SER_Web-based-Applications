@@ -12,15 +12,13 @@ function calc(String) {
     let calc = JSON.parse(String);
 
     if (calc.op === "add") {
-        // console.log("add");
         result += calc.number;
     }
     else if (calc.op === "subtract") {
-        // console.log("subtract");
         result -= calc.number;
 
     } else {
-        console.log("some default");
+        console.log("Check JSON string input.");
     }
     return result;
 };
@@ -41,6 +39,5 @@ function cleanup() {
     result = 0;
     return "result reset to: " + result;
 };
-
 
 // export { calc, exec, cleanup };
