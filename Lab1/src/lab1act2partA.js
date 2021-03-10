@@ -18,7 +18,7 @@ function calc(String) {
         result -= calc.number;
 
     } else {
-        console.log("Check JSON string input.");
+        console.log("Check JSON string input. Only add and subtract are supported.");
     }
     return result;
 };

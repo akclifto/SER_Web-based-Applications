@@ -13,3 +13,11 @@ SER421
     .load lab1act2partA.js
     .load lab1act2partA_test.js  
     ```
+
+  - Part B calculator with nested JSON expressions. Script:
+
+    ```javascript
+    node
+    .load lab1act2partB.js
+    .load lab1act2partB_test.js  
+    ```

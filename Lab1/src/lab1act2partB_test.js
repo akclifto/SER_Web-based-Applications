@@ -6,3 +6,11 @@
  * @date 2021.03.09
  * 
  */
+import { calc, exec, cleanup } from "./lab1act2partB.js";
+
+console.log("TESTING calc() ---------------------------\n");
+
+console.log(calc('{"op" : "add", "number" : 5}'));          // 5
+console.log(calc('{"op" : "subtract", "number" : 2}'));     // 3
+console.log(calc('{"op" : "add", "number" : 19}'));         // 22
+console.log(calc('{"op": "subtract", "expr" : {"op" : "add", "number" : 15}}'));
