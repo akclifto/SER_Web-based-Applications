@@ -11,6 +11,7 @@ class PreCalc {
     constructor(number) {
         this.calcStack = [number];
         this.result = 0;
+        this.initialize = number;
     };
 };
 
@@ -129,8 +130,8 @@ PreCalc.prototype.exec = function (array) {
 PreCalc.prototype.cleanup = function () {
     this.result = 0;
     this.calcStack.length = 0;
-    this.calcStack[0] = 0;
-    return "result reset to: " + this.result;
+    this.calcStack[0] = this.initialize;
+    return "PreCalc object reset!";
 };
 
 PreCalc.prototype.getErrorMessage = function () {
