@@ -6,5 +6,10 @@
  * @date 2021.03.09
  * 
  */
+import { calc, exec } from "./lab1act2partA.js";
 
 // Testing file.
+console.log("test file ------------------ ");
+
+calc('{"op" : "add", "number" : 5}');
+exec("something");
