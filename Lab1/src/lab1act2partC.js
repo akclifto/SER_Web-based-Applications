@@ -142,4 +142,4 @@ PreCalc.prototype.getEmptyStackMessage = function () {
     return "What? You have an empty stack now.\n";
 }
 
-export default PreCalc;
+// export default PreCalc;

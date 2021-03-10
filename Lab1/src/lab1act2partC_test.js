@@ -6,11 +6,11 @@
  * @date 2021.03.10
  * 
  */
- import PreCalc from "./lab1act2partC.js";
+//  import PreCalc from "./lab1act2partC.js";
 
  let pc = new PreCalc(0);
  
- console.log("TESTING Part C trace Example() ---------------------------\n");
+ console.log("TESTING Part C trace Example() -----------------\n");
  
  console.log(pc.calc('{"op" : "add", "number" : 5}'));  // returns 5, stack [0]
  console.log(pc.calc('{"op" : "push", "number" : 5}')); // returns 5, stack [5 0]
