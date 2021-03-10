@@ -7,7 +7,7 @@ SER421
 - HTML Overview: HTML5 review, regex patterns and restrictions, and some JS for submission form checking.
 - Javascript Programming:
   - Part A calculator and comparison
-    - script:
+    - script: (not using node_module export/import as specified in the lab)
 
     ```javascript
     node
