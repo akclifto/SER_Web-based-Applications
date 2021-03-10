@@ -18,30 +18,30 @@ function calc(String) {
         let op = []
         let lastExpression = calc;
         let nextExpression = calc.expr;
-        console.log("last expression", lastExpression);
-        console.log("next expression", nextExpression);
+        // console.log("last expression", lastExpression);
+        // console.log("next expression", nextExpression);
 
         op.unshift(calc.op);
 
         while (nextExpression) {
             lastExpression = nextExpression;
             op.unshift(lastExpression.op); // move the nested expression to front of array.
-            nextExpression = nextExpression.expr
+            nextExpression = nextExpression.expr //shift to next nested expression.
         }
-        console.log(op);
+        // console.log(op);
         for (let i in op) {
-            console.log("last expression number: ", lastExpression.number);
+            // console.log("last expression number: ", lastExpression.number);
 
             if (op[i] === "add") {
-                console.log("add " + lastExpression.number + " to " + result);
+                // console.log("add " + lastExpression.number + " to " + result);
                 result += lastExpression.number;
-                console.log("add result: ", result);
+                // console.log("add result: ", result);
                 lastExpression.number = result;
             }
             else if (op[i] === "subtract") {
-                console.log("subtract " + lastExpression.number + " to " + result);
+                // console.log("subtract " + lastExpression.number + " to " + result);
                 result -= lastExpression.number;
-                console.log("subtract result: ", result);
+                // console.log("subtract result: ", result);
                 lastExpression.number = result;
             }
             else {
@@ -56,7 +56,6 @@ function calc(String) {
 };
 
 function doMaths(maths) {
-    // console.log(maths);
 
     if (maths.op === "add") {
         result += maths.number;
