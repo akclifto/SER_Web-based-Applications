@@ -1,11 +1,11 @@
-# SER-421
+# SER-421 Web-based Applications
 
 SER421: Web-based Applications Assignment Overview
 
 ## Contents
 
-- [Lab 1](#Lab-1))
-- [Lab 2](#Lab-2))
+- [Lab 1](#Lab-1)
+- [Lab 2](#Lab-2)
 
 ## Lab 1
 
