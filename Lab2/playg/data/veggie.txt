@@ -1,2 +1,1 @@
-olives celery carrots
-peas
+olives celery carrots 
