@@ -16,7 +16,7 @@
 
 ### HTTP Methods
 
-`GET`: Makes request to resourse.  Meant to be a query; shouldn't change state.
+`GET`: Makes request to resourse.  Meant to be a query; shouldn't change state.  
 `POST`: Used to pass input to server.
 
 - GET encodes url, POST puts it in the body of the message.
@@ -41,4 +41,3 @@ Types:
 - Persistent: time period specific
 - Secure: only transmitted over HTTPS by indicating `secure flag`, helps against snooping or cookie stealing
 - HttpOnly: Prevents reading cookie values in JS by using `HttpOnly flag`, avoid malicious JS that compromise cookie info.
-
