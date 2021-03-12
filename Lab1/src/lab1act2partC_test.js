@@ -6,7 +6,7 @@
  * @date 2021.03.10
  * 
  */
-//  import PreCalc from "./lab1act2partC.js";
+ import PreCalc from "./lab1act2partC.js";
 
 let pc = new PreCalc(0);
 

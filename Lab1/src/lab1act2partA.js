@@ -21,7 +21,7 @@ function calc(String) {
         console.log("Check JSON string. Only add and subtract are supported.");
     }
     return result;
-};
+}
 
 function exec(array) {
 
@@ -33,11 +33,11 @@ function exec(array) {
         console.log(result + " = " + array[i].expected);
     }
     return "exec() complete."
-};
+}
 
 function cleanup() {
     result = 0;
     return "result reset to: " + result;
-};
+}
 
-// export { calc, exec, cleanup };
+export { calc, exec, cleanup };

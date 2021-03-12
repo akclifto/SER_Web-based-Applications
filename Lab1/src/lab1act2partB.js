@@ -53,7 +53,7 @@ function calc(String) {
     }
     return result;
 
-};
+}
 
 // Part A calc() function
 function doMaths(maths) {
@@ -68,7 +68,7 @@ function doMaths(maths) {
         getErrorMessage();
     }
     return result;
-};
+}
 
 // Unchanged exec() from part A
 function exec(array) {
@@ -81,17 +81,17 @@ function exec(array) {
         console.log(result + " = " + array[i].expected);
     }
     return "exec() complete."
-};
+}
 
 // unchanged cleanup() from part A
 function cleanup() {
     result = 0;
     return "result reset to: " + result;
-};
+}
 
 // get Message if problem with JSON format or operation calls.
 function getErrorMessage() {
     return "Check JSON string. Only add and subtract are supported.";
 }
 
-// export { calc, exec, cleanup };
+export { calc, exec, cleanup };

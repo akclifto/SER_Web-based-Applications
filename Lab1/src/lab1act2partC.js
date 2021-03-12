@@ -1,3 +1,4 @@
+/* eslint-disable use-isnan */
 /**
  * SER 421 Lab 1
  * Acitivity 2: JS Programming Part C
@@ -12,8 +13,8 @@ class PreCalc {
         this.calcStack = [number];
         this.result = 0;
         this.initialize = number;
-    };
-};
+    }
+}
 
 PreCalc.prototype.calc = function (String) {
 
@@ -142,4 +143,4 @@ PreCalc.prototype.getEmptyStackMessage = function () {
     return "What? You have an empty stack now.\n";
 }
 
-// export default PreCalc;
+export default PreCalc;
