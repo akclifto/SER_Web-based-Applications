@@ -1,6 +1,11 @@
 # SER-421
 
-SER421
+SER421: Web-based Applications Assignment Overview
+
+## Contents
+
+- [Lab 1](#Lab-1))
+- [Lab 2](#Lab-2))
 
 ## Lab 1
 
@@ -46,3 +51,9 @@ And uncomment the import statement in the test file. Example:
 ```
 
 Using Node version 14.15.4 for this lab.  Please let me know if you have any questions.  Thank you.
+
+[Back to Top](#Contents)
+
+## Lab 2
+
+[Back to Top](#Contents)

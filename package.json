@@ -13,12 +13,12 @@
     "yarn": "1.22.5"
   },
   "scripts": {
-    "laba": "node Lab1/src/lab1act2partA.js",
-    "labat": "node Lab1/src/lab1act2partA_test.js",
-    "labb": "node Lab1/src/lab1act2partB.js",
-    "labbt": "node Lab1/src/lab1act2partB_test.js",
-    "labc": "node Lab1/src/lab1act2partC.js",
-    "labct": "node Lab1/src/lab1act2partC_test.js"
+    "lab1a": "node Lab1/src/lab1act2partA.js",
+    "lab1at": "node Lab1/src/lab1act2partA_test.js",
+    "lab1b": "node Lab1/src/lab1act2partB.js",
+    "lab1bt": "node Lab1/src/lab1act2partB_test.js",
+    "lab1c": "node Lab1/src/lab1act2partC.js",
+    "lab1ct": "node Lab1/src/lab1act2partC_test.js"
   },
   "devDependencies": {
     "eslint": "^7.21.0"
