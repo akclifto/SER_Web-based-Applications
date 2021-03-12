@@ -4,6 +4,8 @@
 import { read, close, open } from 'fs';
 
 // async version, note read() has the nested function callback
+// async is preferred because node is single threaded.  Blocking others for sync is considered 'not well-behaved'
+// done use async and sync at the same time.  Causes too many problems, pick one.
 
 function readFruit(fd, fruits) {
     var buf = new Buffer.alloc(5);
