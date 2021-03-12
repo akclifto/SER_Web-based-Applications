@@ -19,6 +19,8 @@
     "labbt": "node Lab1/src/lab1act2partB_test.js",
     "labc": "node Lab1/src/lab1act2partC.js",
     "labct": "node Lab1/src/lab1act2partC_test.js"
-
+  },
+  "devDependencies": {
+    "eslint": "^7.21.0"
   }
 }
