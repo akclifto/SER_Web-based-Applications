@@ -1,8 +1,8 @@
 {
   "name": "lab1",
   "version": "1.0.0",
-  "description": "Lab 1 SER421",
-  "main": "lab1/src/lab1act1partA.js",
+  "description": "Lab 2 SER421",
+  "main": "lab2/FAQ00.js",
   "repository": "https://github.com/akclifto/SER-421.git",
   "author": "akclifto <akclifto@asu.edu>",
   "license": "MIT",
@@ -13,12 +13,7 @@
     "yarn": "1.22.5"
   },
   "scripts": {
-    "lab1a": "node Lab1/src/lab1act2partA.js",
-    "lab1at": "node Lab1/src/lab1act2partA_test.js",
-    "lab1b": "node Lab1/src/lab1act2partB.js",
-    "lab1bt": "node Lab1/src/lab1act2partB_test.js",
-    "lab1c": "node Lab1/src/lab1act2partC.js",
-    "lab1ct": "node Lab1/src/lab1act2partC_test.js"
+
   },
   "devDependencies": {
     "eslint": "^7.21.0"
