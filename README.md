@@ -28,7 +28,7 @@ SER421: Web-based Applications Assignment Overview
     .load lab1act2partB_test.js  
     ```
 
-  - Part B calculator with Prototype functions and nested JSON expressions push, pop and print. Script:
+  - Part C calculator with Prototype functions and nested JSON expressions push, pop and print. Script:
 
     ```javascript
     node
