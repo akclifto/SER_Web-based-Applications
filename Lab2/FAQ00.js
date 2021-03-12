@@ -6,22 +6,43 @@
  * @date 2021.03.13
  * 
  */
+import { readFile } from 'fs';
+import QA_file from "./QA.json";
+
 
 class FAQ {
 
-    constructor(id, question, answer, author, date, tags) {
-        this.id = id;
-        this.question = question;
-        this.answer = answer;
-        this.author = author;
-        this.date = date;
-        this.tags = tags;
+    constructor(jsonFile) {
+
+        this.storeQA(jsonFile);
+
+        this.id;
+        this.question;
+        this.answer;
+        this.author;
+        this.date;
+        this.tags;
     }
 
     storeQA(jsonFile) {
+        var options = { encoding: 'utf8', flag: 'r' };
+        readFile(jsonFile, options, function (err, jsonData) {
+            if (err) {
+                console.log("Failed to load JSON File");
+                console.log("Error", err);
+            } else {
+                var qas = JSON.parse(jsonData);
+                for(let i = 0; i < qas.length; i++) {
+                    console.log(qas[i]);
+                }
+            }
+        });
+    }
+
+
+    writeQA(jsonFile) {
         //TODO: 
         // R1. The ability to write a Q&A to the persistent store (sample JSON of the Q&A is provided)
-        this.qa = JSON.parse(jsonFile);
     }
 
     updateQA(id, answer) {
@@ -49,5 +70,8 @@ class FAQ {
         */
     }
 }
+
+const faq = new FAQ(QA_file);
+console.log(faq);
 
 
