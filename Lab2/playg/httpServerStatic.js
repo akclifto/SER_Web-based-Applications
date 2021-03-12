@@ -22,7 +22,7 @@ createServer(function (req, res) {
     }
     res.writeHead(200, {
 	'Content-Type': 'text/html',
-        'Set-Cookie': 'foo=bar'
+        'Set-Cookie': 'foo=bar' // setting a cookie name: value (foo:bar)
     });
     res.end(data);
   });
