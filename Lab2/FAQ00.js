@@ -6,8 +6,9 @@
  * @date 2021.03.13
  * 
  */
+import path from "path";
 import { readFile } from 'fs';
-import QA_file from "./QA.json";
+const __dirname = path.resolve();
 
 
 class FAQ {
@@ -26,16 +27,20 @@ class FAQ {
 
     storeQA(jsonFile) {
         var options = { encoding: 'utf8', flag: 'r' };
+        
+        //async callback here
         readFile(jsonFile, options, function (err, jsonData) {
+
             if (err) {
                 console.log("Failed to load JSON File");
                 console.log("Error", err);
             } else {
-                var qas = JSON.parse(jsonData);
-                for(let i = 0; i < qas.length; i++) {
-                    console.log(qas[i]);
+                this.qas = JSON.parse(jsonData);
+                for(let i = 0; i < this.qas.length; i++) {
+                    console.log(this.qas[i]);
                 }
             }
+            console.log("\n\n\n ending shit");
         });
     }
 
@@ -71,7 +76,7 @@ class FAQ {
     }
 }
 
-const faq = new FAQ(QA_file);
+const faq = new FAQ(__dirname + "/QA.json");
 console.log(faq);
 
 
