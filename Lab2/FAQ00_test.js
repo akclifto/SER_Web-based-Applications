@@ -82,16 +82,18 @@ filters = {
 }
 console.log("Testing empty returned from valid filters: ", faq.filter(filters)) // returns no results produced.
 
-// Final Test: Write to JSON file
+// Final Test: Write and Backup Restore to JSON file
 console.log("\nTesting Write to JSON file------------------------------------\n");
 // write something new to store.
 console.log(faq.writeQA("quest", "ans", "aTag", "auth", "datess"));
 // write new store to file.
 console.log(faq.storeToFile(faq.dataStore));
 // reload faq
-const faq2 = new FAQ(__dirname + "/Lab2/QA.json");
+const faq2 = new FAQ(__dirname + "/Lab2/QA.json"); // make vew FAQ object to check
 // check to make sure new write was added to file.
-console.log(faq2.dataStore.length);
+console.log("Store size: ", faq2.dataStore.length);
+
+console.log("\nTesting Backup Restore of JSON file---------------------------\n");
 faq.restoreBackupFile();
-console.log(faq.dataStore.length);
+console.log("Store size: ", faq.dataStore.length);
 
