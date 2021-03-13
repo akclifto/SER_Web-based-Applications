@@ -4,18 +4,16 @@
  * @email akclifto@asu.edu 
  * 
  */
-
+----------------------------------------------------------------------------------
  Please let me know if you have any questions.
 
 This Lab will use the same structure for the json file as provided in QA.json.
 All scripts will be provided in the package.json file along with any dependencies.
 
-
+----------------------------------------------------------------------------------
 ACTIVITY ONE:--------------------------------------------------------------------- 
 
-
-
-Has no 3rd party dependencies other than one for dev purposes.
+This has no 3rd party dependencies other than one for dev purposes.
 To run the test file that covers requirements R1 - R5, run the following in terminal:
 
 npm run act1
@@ -75,6 +73,6 @@ Class Object Overview:
         - See `Testing Backup Restore of JSON file:` in FAQ00_test.js for usage.
 
 ----------------------------------------------------------------------------------
-    
+ACTIVITY TWO:--------------------------------------------------------------------- 
     
     
