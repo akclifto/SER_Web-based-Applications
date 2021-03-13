@@ -8,7 +8,7 @@
  Please let me know if you have any questions.
 
 This Lab will use the same structure for the json file as provided in QA.json.
-All scripts will be provided in the package.json file along with any dependencies.
+All scripts will be provided in the `package.json` file along with any dependencies.
 
 ----------------------------------------------------------------------------------
 ACTIVITY ONE:--------------------------------------------------------------------- 
