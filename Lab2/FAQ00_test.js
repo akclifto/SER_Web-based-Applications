@@ -23,6 +23,7 @@ console.log(faq.dataStore);
 console.log("\nTesting R1: Write QA to store---------------------------------\n");
 // passing write
 console.log(faq.writeQA("quest", "ans", "aTag", "auth", "datess"));
+console.log(faq.dataStore[faq.dataStore.length - 1]);
 // failing write
 console.log(faq.writeQA("quest", "auth", "datess")); //returns write not stored.
 
@@ -53,5 +54,8 @@ console.log(faq.deleteQA(faq.dataStore[6].id));
 console.log("Check Number of items in store after deleteQA:", faq.dataStore.length);
 console.log("Should return undefined: ", faq.dataStore[6]);  //should return undefined
 // failing delete
-console.log(faq.deleteQA(23452342.234234));
+console.log(faq.deleteQA(23452342.234234)); // returns Id not found in persistent store.
+
+// Test R4
+console.log("\nTesting R5: Delete QA from store------------------------------\n");
 
