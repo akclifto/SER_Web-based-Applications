@@ -7,19 +7,16 @@
  * 
  */
 import path from "path";
-import { readFileSync, readFile } from 'fs';
+import { readFileSync } from 'fs';
 import QA from "./QA.js";
 
 const __dirname = path.resolve();
-
 
 class FAQ {
 
     constructor(jsonFile) {
         this.dataStore = this.loadQA(jsonFile);
     }
-
-
 
     /**
      * LoadQA loads data from json file.
@@ -38,26 +35,65 @@ class FAQ {
     }
     
     /**
+     * Method to manually write in a QA.
+     * // R1. The ability to write a Q&A to the persistent store 
+     *    (sample JSON of the Q&A is provided)
+     * @param {*} question 
+     * @param {*} answer 
+     * @param {*} author 
+     * @param {*} date 
+     * @param {*} tags 
+     */
+    writeQA (question, answer, tags, author, date) {
+
+        //check valid input
+        let writes = [question, answer, tags, author, date];
+        for(let i in writes) {
+            if(writes[i] === "" || writes[i] === undefined){
+                console.log("writeQA: ", "Write not stored. Empty or undefined parameters.");
+                return false;
+            }
+        }
+        
+        try {
+            let id = this.getId();
+            let qa = new QA(question, answer,tags, author, date, id);
+    
+            // annoying conversions to clear the bad json format
+            const toStore = JSON.stringify(qa);
+            let toParse = JSON.parse(toStore);
+            toParse.id = id
+            this.dataStore.push(JSON.parse(toStore));
+            return true;
+        } catch (err) {
+            console.log("Error in writeQA: ", err);
+            return false;
+        }
+    }
+
+    /**
      * Method to generate random id for new QAs
      * @returns random float id
      */
     getId() {
-        let left = Math.floor(Math.random() * 1000000).toString();
-        let right = Math.floor(Math.random() * 10000).toString();
+        let left = Math.floor(Math.random() * 1000000000).toString();
+        let right = Math.floor(Math.random() * 100000).toString();
         let genID = left.concat(".").concat(right);
-        // console.log(parseFloat(str).toFixed(4));
+        // console.log(parseFloat(genID).toFixed(4));
+        genID = parseFloat(genID).toFixed(4);
+
+        for(let i in this.dataStore){
+
+            if(genID === this.dataStore[i].id) {
+                console.log("Getting unique id...");
+                this.getId();
+            }
+        }
         return genID;
     }
 }
 
 
-FAQ.prototype.writeQA = function (question, answer, author, date, tags) {
-
-    //TODO: 
-    // R1. The ability to write a Q&A to the persistent store (sample JSON of the Q&A is provided)
-    let qa = new QA(question, answer, author, date, tags);
-
-}
 FAQ.prototype.updateQA = function (id, answer) {
     //TODO:
     // R2. The ability to update the content (answer text) of an existing Q&A from the existing persistent store
@@ -84,6 +120,9 @@ FAQ.prototype.filter = function (options) {
 
 const faq = new FAQ(__dirname + "/QA.json");
 // console.log(faq.dataStore);
+console.log(faq.writeQA("quest", "ans"));
+// console.log(faq.dataStore);
+
 
 
     // /**
