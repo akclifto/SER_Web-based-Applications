@@ -56,4 +56,13 @@ Using Node version 14.15.4 for this lab.  Please let me know if you have any que
 
 ## Lab 2
 
+- Activity 1: File i/O
+
+To run test file for activity 1:
+
+`npm run act1`
+
+- Activity 2: Implement a Simple FAQ Service
+- Activity 3: Put it all together
+
 [Back to Top](#Contents)
