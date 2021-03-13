@@ -92,6 +92,43 @@ class FAQ {
     }
 
     /**
+     * Method to update tags for QA in persistent store. Found by id.
+     * // R3. The ability to update the tags for a Q&A from the existing
+     *    persistent store.
+     * @param {*} id : id to update
+     * @param {*} tags : tags to replace id.answer
+     * @returns string context of pass/fail execution
+     */
+    updateTags (id, tags) {
+        let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
+        if(qaIndex === -1) {
+            // console.log("Id not found in persistent store.");
+            return "Id not found in persistent store.";
+        } else {
+            this.dataStore[qaIndex].tags = tags;
+            return "Tags updated to: "+ this.dataStore[qaIndex].tags;
+        }
+    
+    }
+
+    /**
+     * Method to delete a QA from persistent store. Found by Id.
+     * // R4. The ability to delete a Q&A from an existing persistent store.
+     * @param {*} id : id to remove
+     * @returns string context of pass/fail execution
+     */
+    deleteQA(id) {
+        let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
+            if(qaIndex === -1) {
+                // console.log("Id not found in persistent store.");
+                return "Id not found in persistent store.";
+            } else {
+                this.dataStore.splice(qaIndex, 1);
+                return "QA with id " + id + " removed from store.";
+            }
+    }
+
+    /**
      * Method to generate random id for new QAs
      * @returns random float id
      */
@@ -114,23 +151,7 @@ class FAQ {
 }
 
 
-FAQ.prototype.updateTags = function (id, tags) {
-    //TODO:
-    // R3. The ability to update the tags for a Q&A from the existing persistent store.
-    let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
-    if(qaIndex === -1) {
-        // console.log("Id not found in persistent store.");
-        return "Id not found in persistent store.";
-    } else {
-        this.dataStore[qaIndex].tags = tags;
-        return "Tags updated to: "+ this.dataStore[qaIndex].tags;
-    }
 
-}
-FAQ.prototype.deleteQA = function (id) {
-    //TODO:
-    // R4. The ability to delete a Q&A from an existing persistent store.
-}
 FAQ.prototype.filter = function (options) {
     //TODO
     /* R5. The ability to return a collection of Q&As based on a filter, where the filter checks for one or
