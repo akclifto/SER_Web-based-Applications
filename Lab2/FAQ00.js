@@ -6,7 +6,7 @@
  * @date 2021.03.13
  * 
  */
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 // import QA from "./QA.js";
 
 // Class to hold QA objects
@@ -210,6 +210,12 @@ class FAQ {
      */
     getId(id) {
         return this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
+    }
+
+    StoreToFile(dataStore) {
+        let qas = JSON.stringify(dataStore);
+        // console.log(qas);
+        writeFileSync("QA.json", qas);
     }
 }
 
