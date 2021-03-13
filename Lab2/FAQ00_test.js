@@ -73,7 +73,7 @@ filters = {
     // dateRange: "2019-07",
     // tags: "xyz",
 }
-console.log("Partial filters test(partial author): ",  faq.filter(filters));
+console.log("Partial filters test(partial author): ", faq.filter(filters));
 // bad param test
 console.log("Bad Parameter filter test (no valid filters): \n", faq.filter("invalidFilter"));
 // empty return from valid filter test

@@ -26,6 +26,7 @@ See test FAQ00_test.js to see general call structure.
 Class Object Overview:
 
   QA:  Class to hold QA objects.  Not directly accessed in test file.
+  
     constructor:  question, answer, tags, author, date, id  (in that order)
 
   FAQ: Class that handles all functionality of Activity 1 

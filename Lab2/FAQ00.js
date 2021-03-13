@@ -126,7 +126,6 @@ class FAQ {
             this.storeToFile(this.dataStore);
             return "Tags updated to: " + this.dataStore[qaIndex].tags;
         }
-
     }
 
     /**
@@ -165,9 +164,9 @@ class FAQ {
         console.log("Filter tags:", filterParams.tags);
 
         // check valid options per constraints 
-        if(!filterParams.author && !filterParams.dateRange && !filterParams.tags) {
-            return "\nNo valid filters used. Valid filters: author, dateRange, tags.  Format:\n " + 
-                "{ author: <authorName>, dateRange: <dateRange>, tags: <tags> }\n " + 
+        if (!filterParams.author && !filterParams.dateRange && !filterParams.tags) {
+            return "\nNo valid filters used. Valid filters: author, dateRange, tags.  Format:\n " +
+                "{ author: <authorName>, dateRange: <dateRange>, tags: <tags> }\n " +
                 "Partial filtering of name, dateRange, tags optional. Ex: { author: \"Dr.\" }\n";
         }
         if (filterParams.author) {
@@ -179,15 +178,13 @@ class FAQ {
         if (filterParams.tags) {
             filteredQA = filteredQA.filter(qa => qa.tags.toLowerCase().includes(filterParams.tags.toLowerCase()));
         }
-        
+
         // check if anything returned after filtering
         if (filteredQA.length === 0) {
             return "No Results produces from specified filters.";
         } else {
             return filteredQA;
         }
-        
-
     }
 
     /**
@@ -226,13 +223,13 @@ class FAQ {
      * @param {*} dataStore : store to write to file
      * @returns string context of pass/fail execution
      */
-    storeToFile(dataStore) {    
+    storeToFile(dataStore) {
         try {
             let qas = JSON.stringify(dataStore);
             // console.log(qas);
             writeFileSync("./Lab2/QA.json", qas);
             return "Store written to file";
-        } catch (err){
+        } catch (err) {
             console.log("storetoFile Error: " + err);
             return "Store not written to file.";
         }
@@ -243,7 +240,7 @@ class FAQ {
      * to example file.
      * @returns true if successful, false otherwise. 
      */
-    restoreBackupFile(){
+    restoreBackupFile() {
         const options = { encoding: 'utf8', flag: 'r' };
         try {
             let qas = readFileSync(__dirname + "/Lab2/QA_backup.json", options);
