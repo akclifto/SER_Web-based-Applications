@@ -90,6 +90,6 @@ console.log(faq.writeQA("quest", "ans", "aTag", "auth", "datess"));
 // write new store to file.
 console.log(faq.StoreToFile(faq.dataStore));
 // reload faq
-const faq2 = new FAQ(__dirname + "/Lab2/QA.json");
+const faq2 = new FAQ(__dirname + "/Lab2/something.json");
 // check to make sure new write was added to file.
 console.log(faq2.dataStore.length);

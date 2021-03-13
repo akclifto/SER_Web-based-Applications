@@ -215,7 +215,7 @@ class FAQ {
     StoreToFile(dataStore) {
         let qas = JSON.stringify(dataStore);
         // console.log(qas);
-        writeFileSync("QA.json", qas);
+        writeFileSync("something.json", qas);
     }
 }
 
