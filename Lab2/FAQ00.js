@@ -19,7 +19,7 @@ class FAQ {
     }
 
     /**
-     * LoadQA loads data from json file.
+     * Method to load data from json file synchronously per constraints C1.
      * @param {string} json : json file to load
      * @returns parsed json data for local storage
      */
@@ -126,7 +126,7 @@ console.log(faq.writeQA("quest", "ans"));
 
 
     // /**
-    //  * Async Attempt to read file async.
+    //  * Async Attempt to read file.
     //  * @param {*} jsonFile 
     //  * @returns nothing, doesn't work
     //  */
