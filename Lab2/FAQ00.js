@@ -73,13 +73,14 @@ class FAQ {
 
     /**
      * Method to update answer in persistent store. Found by id.
+     * // R2. The ability to update the content (answer text) of an 
+     *    existing Q&A from the existing persistent store
      * @param {*} id : id to update
      * @param {*} answer : answer to replace id.answer
      * @returns string context of pass/fail execution
      */
     updateAnswer(id, answer) {
     
-        // R2. The ability to update the content (answer text) of an existing Q&A from the existing persistent store
         let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
         if(qaIndex === -1) {
             // console.log("Id not found in persistent store.");
@@ -116,6 +117,15 @@ class FAQ {
 FAQ.prototype.updateTags = function (id, tags) {
     //TODO:
     // R3. The ability to update the tags for a Q&A from the existing persistent store.
+    let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
+    if(qaIndex === -1) {
+        // console.log("Id not found in persistent store.");
+        return "Id not found in persistent store.";
+    } else {
+        this.dataStore[qaIndex].tags = tags;
+        return "Tags updated to: "+ this.dataStore[qaIndex].tags;
+    }
+
 }
 FAQ.prototype.deleteQA = function (id) {
     //TODO:
