@@ -7,9 +7,22 @@
  * 
  */
 import { readFileSync } from 'fs';
-import QA from "./QA.js";
+// import QA from "./QA.js";
 
+// Class to hold QA objects
+class QA {
 
+    constructor(question, answer, tags, author, date, id) {
+        this.question = question;
+        this.answer = answer;
+        this.tags = tags;
+        this.author = author;
+        this.date = date;
+        this.id = id;
+    }
+}
+
+// Class to handle all functionality.
 class FAQ {
 
     constructor(jsonFile) {
@@ -31,7 +44,7 @@ class FAQ {
             console.log("Error in loadQA: ", err);
         }
     }
-    
+
     /**
      * Method to manually write in a QA.
      * // R1. The ability to write a Q&A to the persistent store 
@@ -43,28 +56,28 @@ class FAQ {
      * @param {*} tags : associated tags
      * @returns string context of pass/fail execution
      */
-    writeQA (question, answer, tags, author, date) {
+    writeQA(question, answer, tags, author, date) {
 
         //check valid input
         let writes = [question, answer, tags, author, date];
-        for(let i in writes) {
-            if(writes[i] === "" || writes[i] === undefined){
+        for (let i in writes) {
+            if (writes[i] === "" || writes[i] === undefined) {
                 console.log("writeQA: ", "Write not stored. Empty or undefined parameters.");
                 return "Write not stored. Some fields were missing or empty/undefined parameters.";
             }
         }
-        
+
         try {
             let id = this.genId();
-            let qa = new QA(question, answer,tags, author, date, id);
-    
+            let qa = new QA(question, answer, tags, author, date, id);
+
             // annoying conversions to clear the bad json format
             const toStore = JSON.stringify(qa);
             let toParse = JSON.parse(toStore);
             toParse.id = id
             this.dataStore.push(JSON.parse(toStore));
             return "Write complete.  New QA stored.";
-            
+
         } catch (err) {
             console.log("Error in writeQA: ", err);
             return "Write not stored. Check Error Log.";
@@ -80,14 +93,14 @@ class FAQ {
      * @returns string context of pass/fail execution
      */
     updateAnswer(id, answer) {
-    
+
         let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
-        if(qaIndex === -1) {
+        if (qaIndex === -1) {
             // console.log("Id not found in persistent store.");
             return "Id not found in persistent store.";
         } else {
             this.dataStore[qaIndex].answer = answer;
-            return "Answer updated to: "+ this.dataStore[qaIndex].answer;
+            return "Answer updated to: " + this.dataStore[qaIndex].answer;
         }
     }
 
@@ -99,16 +112,16 @@ class FAQ {
      * @param {*} tags : tags to replace id.answer
      * @returns string context of pass/fail execution
      */
-    updateTags (id, tags) {
+    updateTags(id, tags) {
         let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
-        if(qaIndex === -1) {
+        if (qaIndex === -1) {
             // console.log("Id not found in persistent store.");
             return "Id not found in persistent store.";
         } else {
             this.dataStore[qaIndex].tags = tags;
-            return "Tags updated to: "+ this.dataStore[qaIndex].tags;
+            return "Tags updated to: " + this.dataStore[qaIndex].tags;
         }
-    
+
     }
 
     /**
@@ -119,13 +132,27 @@ class FAQ {
      */
     deleteQA(id) {
         let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
-            if(qaIndex === -1) {
-                // console.log("Id not found in persistent store.");
-                return "Id not found in persistent store.";
-            } else {
-                this.dataStore.splice(qaIndex, 1);
-                return "QA with id " + id + " removed from store.";
-            }
+        if (qaIndex === -1) {
+            // console.log("Id not found in persistent store.");
+            return "Id not found in persistent store.";
+        } else {
+            this.dataStore.splice(qaIndex, 1);
+            return "QA with id " + id + " removed from store.";
+        }
+    }
+
+    /**
+     * Method to filter user specified options, then returns collections to user.
+     *   R5. The ability to return a collection of Q&As based on a filter, where the filter checks for one or
+     *   more of the criteria such as:
+     *       a. Author
+     *       b. Date Range (start, end)
+     *       c. Tags
+     * @param {*} options : options for filtering
+     * 
+     */
+    filter(options) {
+        
     }
 
     /**
@@ -139,27 +166,15 @@ class FAQ {
         // console.log(parseFloat(genID).toFixed(4));
         genID = parseFloat(genID).toFixed(4);
 
-        for(let i in this.dataStore){
+        for (let i in this.dataStore) {
 
-            if(genID === this.dataStore[i].id) {
+            if (genID === this.dataStore[i].id) {
                 console.log("Getting unique id...");
                 this.genId();
             }
         }
         return genID;
     }
-}
-
-
-
-FAQ.prototype.filter = function (options) {
-    //TODO
-    /* R5. The ability to return a collection of Q&As based on a filter, where the filter checks for one or
-        more of the criteria such as:
-        a. Author
-        b. Date Range (start, end)
-        c. Tags
-    */
 }
 
 export default FAQ;

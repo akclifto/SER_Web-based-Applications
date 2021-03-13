@@ -56,6 +56,6 @@ console.log("Should return undefined: ", faq.dataStore[6]);  //should return und
 // failing delete
 console.log(faq.deleteQA(23452342.234234)); // returns Id not found in persistent store.
 
-// Test R4
-console.log("\nTesting R5: Delete QA from store------------------------------\n");
+// Test R5
+console.log("\nTesting R5: Filter Options store------------------------------\n");
 
