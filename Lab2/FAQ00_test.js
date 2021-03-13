@@ -47,8 +47,11 @@ console.log(faq.updateTags(654654.1, tags)); // returns Id not found in persiste
 
 // Test R4
 console.log("\nTesting R4: Delete QA from store------------------------------\n");
+// passing delete
 console.log("Number of items in store before deleteQA:", faq.dataStore.length);
 console.log(faq.deleteQA(faq.dataStore[6].id));
 console.log("Check Number of items in store after deleteQA:", faq.dataStore.length);
 console.log("Should return undefined: ", faq.dataStore[6]);  //should return undefined
+// failing delete
+console.log(faq.deleteQA(23452342.234234));
 
