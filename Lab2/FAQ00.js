@@ -6,11 +6,9 @@
  * @date 2021.03.13
  * 
  */
-import path from "path";
 import { readFileSync } from 'fs';
 import QA from "./QA.js";
 
-const __dirname = path.resolve();
 
 class FAQ {
 
@@ -38,11 +36,12 @@ class FAQ {
      * Method to manually write in a QA.
      * // R1. The ability to write a Q&A to the persistent store 
      *    (sample JSON of the Q&A is provided)
-     * @param {*} question 
-     * @param {*} answer 
-     * @param {*} author 
-     * @param {*} date 
-     * @param {*} tags 
+     * @param {*} question : new question
+     * @param {*} answer : new answer
+     * @param {*} author : author of QA
+     * @param {*} date : date of entry
+     * @param {*} tags : associated tags
+     * @returns string context of pass/fail execution
      */
     writeQA (question, answer, tags, author, date) {
 
@@ -51,12 +50,12 @@ class FAQ {
         for(let i in writes) {
             if(writes[i] === "" || writes[i] === undefined){
                 console.log("writeQA: ", "Write not stored. Empty or undefined parameters.");
-                return false;
+                return "Write not stored. Some fields were missing or empty/undefined parameters.";
             }
         }
         
         try {
-            let id = this.getId();
+            let id = this.genId();
             let qa = new QA(question, answer,tags, author, date, id);
     
             // annoying conversions to clear the bad json format
@@ -64,10 +63,30 @@ class FAQ {
             let toParse = JSON.parse(toStore);
             toParse.id = id
             this.dataStore.push(JSON.parse(toStore));
-            return true;
+            return "Write complete.  New QA stored.";
+            
         } catch (err) {
             console.log("Error in writeQA: ", err);
-            return false;
+            return "Write not stored. Check Error Log.";
+        }
+    }
+
+    /**
+     * Method to update answer in persistent store. Found by id.
+     * @param {*} id : id to update
+     * @param {*} answer : answer to replace id.answer
+     * @returns string context of pass/fail execution
+     */
+    updateAnswer(id, answer) {
+    
+        // R2. The ability to update the content (answer text) of an existing Q&A from the existing persistent store
+        let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
+        if(qaIndex === -1) {
+            // console.log("Id not found in persistent store.");
+            return "Id not found in persistent store.";
+        } else {
+            this.dataStore[qaIndex].answer = answer;
+            return "Answer updated to: "+ this.dataStore[qaIndex].answer;
         }
     }
 
@@ -75,7 +94,7 @@ class FAQ {
      * Method to generate random id for new QAs
      * @returns random float id
      */
-    getId() {
+    genId() {
         let left = Math.floor(Math.random() * 1000000000).toString();
         let right = Math.floor(Math.random() * 100000).toString();
         let genID = left.concat(".").concat(right);
@@ -86,7 +105,7 @@ class FAQ {
 
             if(genID === this.dataStore[i].id) {
                 console.log("Getting unique id...");
-                this.getId();
+                this.genId();
             }
         }
         return genID;
@@ -94,10 +113,6 @@ class FAQ {
 }
 
 
-FAQ.prototype.updateQA = function (id, answer) {
-    //TODO:
-    // R2. The ability to update the content (answer text) of an existing Q&A from the existing persistent store
-}
 FAQ.prototype.updateTags = function (id, tags) {
     //TODO:
     // R3. The ability to update the tags for a Q&A from the existing persistent store.
@@ -116,14 +131,7 @@ FAQ.prototype.filter = function (options) {
     */
 }
 
-
-
-const faq = new FAQ(__dirname + "/QA.json");
-// console.log(faq.dataStore);
-console.log(faq.writeQA("quest", "ans"));
-// console.log(faq.dataStore);
-
-
+export default FAQ;
 
     // /**
     //  * Async Attempt to read file.

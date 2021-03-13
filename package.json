@@ -13,7 +13,7 @@
     "yarn": "1.22.5"
   },
   "scripts": {
-
+    "act1" : "node Lab2/FAQ00_test.js"
   },
   "devDependencies": {
     "eslint": "^7.21.0"
