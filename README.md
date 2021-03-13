@@ -58,7 +58,7 @@ Using Node version 14.15.4 for this lab.  Please let me know if you have any que
 
 - Activity 1: File I/O
 
-This lab builds on concepts from Lab1. To run test file for activity 1:  
+This lab builds on concepts from Lab1. Scripts will be used from this point forward for these labs.  Check the `package.json` file for scripts. To run the test file for activity 1:  
 
 `npm run act1`
 
