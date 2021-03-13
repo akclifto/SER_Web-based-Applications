@@ -23,7 +23,7 @@ PreCalc.prototype.calc = function (String) {
     let calc = JSON.parse(String);
     if (calc.expr) {
 
-        let op = []
+        let op = [];
         let lastExpression = calc;
         let nextExpression = calc.expr;
 

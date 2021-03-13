@@ -8,3 +8,14 @@
  * QA class is the object used to store each QA from the FAQ.  
  */
 
+export default class QA {
+
+    constructor(question, answer, tags, author, date, id) {
+        this.question = question;
+        this.answer = answer;
+        this.tags = tags;
+        this.author = author;
+        this.date = date;
+        this.id = id;
+    }
+}
