@@ -5,9 +5,13 @@
  * @email akclifto@asu.edu 
  * @date 2021.03.13
  * 
+ * See Lab2_ReadMe.txt for information.
+ * 
  */
 import { readFileSync, writeFileSync } from 'fs';
-// import QA from "./QA.js";
+import path from "path";
+
+const __dirname = path.resolve();
 
 // Class to hold QA objects
 class QA {
@@ -74,6 +78,7 @@ class FAQ {
             // annoying conversions to clear the bad json format
             const toStore = JSON.stringify(qa);
             this.dataStore.push(JSON.parse(toStore));
+            this.storeToFile(this.dataStore);
             return "Write complete.  New QA stored.";
 
         } catch (err) {
@@ -98,6 +103,7 @@ class FAQ {
             return "Id not found in persistent store.";
         } else {
             this.dataStore[qaIndex].answer = answer;
+            this.storeToFile(this.dataStore);
             return "Answer updated to: " + this.dataStore[qaIndex].answer;
         }
     }
@@ -117,6 +123,7 @@ class FAQ {
             return "Id not found in persistent store.";
         } else {
             this.dataStore[qaIndex].tags = tags;
+            this.storeToFile(this.dataStore);
             return "Tags updated to: " + this.dataStore[qaIndex].tags;
         }
 
@@ -135,6 +142,7 @@ class FAQ {
             return "Id not found in persistent store.";
         } else {
             this.dataStore.splice(qaIndex, 1);
+            this.storeToFile(this.dataStore);
             return "QA with id " + id + " removed from store.";
         }
     }
@@ -212,10 +220,40 @@ class FAQ {
         return this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
     }
 
-    StoreToFile(dataStore) {
-        let qas = JSON.stringify(dataStore);
-        // console.log(qas);
-        writeFileSync("something.json", qas);
+    /**
+     * Method to write JSON file to storage
+     * @param {*} dataStore : store to write to file
+     * @returns string context of pass/fail execution
+     */
+    storeToFile(dataStore) {    
+        try {
+            let qas = JSON.stringify(dataStore);
+            // console.log(qas);
+            writeFileSync("./Lab2/QA.json", qas);
+            return "Store written to file";
+        } catch (err){
+            console.log("storetoFile Error: " + err);
+            return "Store not written to file.";
+        }
+    }
+
+    /**
+     * Method to restore JSON file from backup if something goes wrong, or just to reset 
+     * to example file.
+     * @returns true if successful, false otherwise. 
+     */
+    restoreBackupFile(){
+        const options = { encoding: 'utf8', flag: 'r' };
+        try {
+            let qas = readFileSync(__dirname + "/Lab2/QA_backup.json", options);
+            this.dataStore = JSON.parse(qas);
+            this.storeToFile(this.dataStore);
+            console.log("File restored from backup.");
+            return true;
+        } catch (err) {
+            console.log("Error in loadQA: ", err);
+            return false;
+        }
     }
 }
 

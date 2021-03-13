@@ -8,7 +8,6 @@
  */
 import FAQ from './FAQ00.js';
 import path from "path";
-
 const __dirname = path.resolve();
 
 
@@ -88,8 +87,11 @@ console.log("\nTesting Write to JSON file------------------------------------\n"
 // write something new to store.
 console.log(faq.writeQA("quest", "ans", "aTag", "auth", "datess"));
 // write new store to file.
-console.log(faq.StoreToFile(faq.dataStore));
+console.log(faq.storeToFile(faq.dataStore));
 // reload faq
-const faq2 = new FAQ(__dirname + "/Lab2/something.json");
+const faq2 = new FAQ(__dirname + "/Lab2/QA.json");
 // check to make sure new write was added to file.
 console.log(faq2.dataStore.length);
+faq.restoreBackupFile();
+console.log(faq.dataStore.length);
+
