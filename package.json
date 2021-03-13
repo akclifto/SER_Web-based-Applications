@@ -1,8 +1,8 @@
 {
-  "name": "lab1",
+  "name": "akclifto_lab2",
   "version": "1.0.0",
   "description": "Lab 2 SER421",
-  "main": "lab2/FAQ00.js",
+  "main": "Lab2/FAQ00_test.js",
   "repository": "https://github.com/akclifto/SER-421.git",
   "author": "akclifto <akclifto@asu.edu>",
   "license": "MIT",

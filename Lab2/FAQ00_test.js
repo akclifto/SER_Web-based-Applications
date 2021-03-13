@@ -13,7 +13,7 @@ const __dirname = path.resolve();
 
 console.log("Actvity 1 Testing-----------------------------------------------\n");
 // test read file and storage
-console.log("\nTesting Read and File storage---------------------------------\n");
+console.log("\nTesting Read and File Storage---------------------------------\n");
 
 const faq = new FAQ(__dirname + "/Lab2/QA.json");
 console.log(faq.dataStore);
@@ -60,9 +60,9 @@ console.log("\nTesting R5: Filter Options store------------------------------\n"
 
 //deep filter test
 let filters = {
-    author: "Dr.",
+    author: "dr.", // testing lowercase variation
     dateRange: "2019-07",
-    tags: "xyz",
+    tags: "XYZ", // testing uppercase variation
 }
 
 console.log("Deep filter test(all filters): \n\n", faq.filter(filters));

@@ -171,13 +171,13 @@ class FAQ {
                 "Partial filtering of name, dateRange, tags optional. Ex: { author: \"Dr.\" }\n";
         }
         if (filterParams.author) {
-            filteredQA = filteredQA.filter(qa => qa.author.includes(filterParams.author));
+            filteredQA = filteredQA.filter(qa => qa.author.toLowerCase().includes(filterParams.author.toLowerCase()));
         }
         if (filterParams.dateRange) {
             filteredQA = filteredQA.filter(qa => qa.date.includes(filterParams.dateRange));
         }
         if (filterParams.tags) {
-            filteredQA = filteredQA.filter(qa => qa.tags.includes(filterParams.tags));
+            filteredQA = filteredQA.filter(qa => qa.tags.toLowerCase().includes(filterParams.tags.toLowerCase()));
         }
         
         // check if anything returned after filtering
@@ -212,7 +212,8 @@ class FAQ {
     }
 
     /**
-     * Helper method to find id index in dataStore.  Use this bit of code a lot, so making own method.
+     * Helper method to find id index in dataStore.  
+     * Use this bit of code a lot, so making own method.
      * @param {*} id : id to find
      * @returns id if found, -1 otherwise.
      */
