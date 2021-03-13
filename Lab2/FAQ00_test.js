@@ -17,45 +17,63 @@ console.log("Actvity 1 Testing-----------------------------------------------\n"
 console.log("\nTesting Read and File storage---------------------------------\n");
 
 const faq = new FAQ(__dirname + "/Lab2/QA.json");
-console.log(faq.dataStore);
+// console.log(faq.dataStore);
 
-//Test R1
-console.log("\nTesting R1: Write QA to store---------------------------------\n");
-// passing write
-console.log(faq.writeQA("quest", "ans", "aTag", "auth", "datess"));
-console.log(faq.dataStore[faq.dataStore.length - 1]);
-// failing write
-console.log(faq.writeQA("quest", "auth", "datess")); //returns write not stored.
+// //Test R1
+// console.log("\nTesting R1: Write QA to store---------------------------------\n");
+// // passing write
+// console.log(faq.writeQA("quest", "ans", "aTag", "auth", "datess"));
+// console.log(faq.dataStore[faq.dataStore.length - 1]);
+// // failing write
+// console.log(faq.writeQA("quest", "auth", "datess")); //returns write not stored.
 
-// Test R2
-console.log("\nTesting R2: Update QA answer from store-----------------------\n");
-// passing update
-console.log("Check answer before update: \n", faq.dataStore[6]);
-console.log(faq.updateAnswer(faq.dataStore[6].id, "someAnswer"));
-console.log("Check updated answer: \n", faq.dataStore[6]);
-// failing update
-console.log(faq.updateAnswer(234.234, "otherAnswer")); // returns Id not found in persistent store.
+// // Test R2
+// console.log("\nTesting R2: Update QA answer from store-----------------------\n");
+// // passing update
+// console.log("Check answer before update: \n", faq.dataStore[6]);
+// console.log(faq.updateAnswer(faq.dataStore[6].id, "someAnswer"));
+// console.log("Check updated answer: \n", faq.dataStore[6]);
+// // failing update
+// console.log(faq.updateAnswer(234.234, "otherAnswer")); // returns Id not found in persistent store.
 
-// Test R3
-console.log("\nTesting R3: Update QA tags from store-------------------------\n");
-// passing update
-console.log("Check tags before update: \n", faq.dataStore[5]);
-let tags = "client, assign 4, node";
-console.log(faq.updateTags(faq.dataStore[5].id, tags));
-console.log("Check updated tags: \n", faq.dataStore[5]);
-// failing update
-console.log(faq.updateTags(654654.1, tags)); // returns Id not found in persistent store.
+// // Test R3
+// console.log("\nTesting R3: Update QA tags from store-------------------------\n");
+// // passing update
+// console.log("Check tags before update: \n", faq.dataStore[5]);
+// let tags = "client, assign 4, node";
+// console.log(faq.updateTags(faq.dataStore[5].id, tags));
+// console.log("Check updated tags: \n", faq.dataStore[5]);
+// // failing update
+// console.log(faq.updateTags(654654.1, tags)); // returns Id not found in persistent store.
 
-// Test R4
-console.log("\nTesting R4: Delete QA from store------------------------------\n");
-// passing delete
-console.log("Number of items in store before deleteQA:", faq.dataStore.length);
-console.log(faq.deleteQA(faq.dataStore[6].id));
-console.log("Check Number of items in store after deleteQA:", faq.dataStore.length);
-console.log("Should return undefined: ", faq.dataStore[6]);  //should return undefined
-// failing delete
-console.log(faq.deleteQA(23452342.234234)); // returns Id not found in persistent store.
+// // Test R4
+// console.log("\nTesting R4: Delete QA from store------------------------------\n");
+// // passing delete
+// console.log("Number of items in store before deleteQA:", faq.dataStore.length);
+// console.log(faq.deleteQA(faq.dataStore[6].id));
+// console.log("Check Number of items in store after deleteQA:", faq.dataStore.length);
+// console.log("Should return undefined: ", faq.dataStore[6]);  //should return undefined
+// // failing delete
+// console.log(faq.deleteQA(23452342.234234)); // returns Id not found in persistent store.
 
 // Test R5
 console.log("\nTesting R5: Filter Options store------------------------------\n");
 
+//deep filter test
+let filters1 = {
+    author: "Dr.",
+    dateRange: "2019-07",
+    tags: "xyz",
+}
+
+console.log("Deep filter test(all filters): \n\n", faq.filter(filters1));
+
+// partial filter test
+let filters2 = {
+    author: "Dr.",
+    // dateRange: "2019-07",
+    // tags: "xyz",
+}
+console.log("Partial filters test(partial author): ",  faq.filter(filters2));
+
+console.log("Bad Parameter filter test (no valid filters): \n", faq.filter("invalidFilter"));

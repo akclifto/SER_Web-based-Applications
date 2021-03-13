@@ -73,8 +73,6 @@ class FAQ {
 
             // annoying conversions to clear the bad json format
             const toStore = JSON.stringify(qa);
-            let toParse = JSON.parse(toStore);
-            toParse.id = id
             this.dataStore.push(JSON.parse(toStore));
             return "Write complete.  New QA stored.";
 
@@ -94,7 +92,7 @@ class FAQ {
      */
     updateAnswer(id, answer) {
 
-        let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
+        let qaIndex = this.getId(id);
         if (qaIndex === -1) {
             // console.log("Id not found in persistent store.");
             return "Id not found in persistent store.";
@@ -113,7 +111,7 @@ class FAQ {
      * @returns string context of pass/fail execution
      */
     updateTags(id, tags) {
-        let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
+        let qaIndex = this.getId(id);
         if (qaIndex === -1) {
             // console.log("Id not found in persistent store.");
             return "Id not found in persistent store.";
@@ -131,7 +129,7 @@ class FAQ {
      * @returns string context of pass/fail execution
      */
     deleteQA(id) {
-        let qaIndex = this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
+        let qaIndex = this.getId(id);
         if (qaIndex === -1) {
             // console.log("Id not found in persistent store.");
             return "Id not found in persistent store.";
@@ -148,15 +146,44 @@ class FAQ {
      *       a. Author
      *       b. Date Range (start, end)
      *       c. Tags
-     * @param {*} options : options for filtering
+     * @param {*} filterParams : parameters for filtering contrained to a-c in comment above
      * 
      */
-    filter(options) {
+    filter(filterParams) {
+
+        let filteredQA = this.dataStore;
+        console.log("Filter author:", filterParams.author);
+        console.log("Filter dateRange:", filterParams.dateRange);
+        console.log("Filter tags:", filterParams.tags);
+
+        // check valid options per constraints 
+        if(!filterParams.author && !filterParams.dateRange && !filterParams.tags) {
+            return "\nNo valid filters used. Valid filters: author, dateRange, tags.  Format:\n " + 
+                "{ author: <authorName>, dateRange: <dateRange>, tags: <tags> }\n " + 
+                "Partial filtering of name, dateRange, tags optional. Ex: { author: \"Dr.\" }\n";
+        }
+        if (filterParams.author) {
+            filteredQA = filteredQA.filter(qa => qa.author.includes(filterParams.author));
+        }
+        if (filterParams.dateRange) {
+            filteredQA = filteredQA.filter(qa => qa.date.includes(filterParams.dateRange));
+        }
+        if (filterParams.tags) {
+            filteredQA = filteredQA.filter(qa => qa.tags.includes(filterParams.tags));
+        }
         
+        // check if anything returned after filtering
+        if (filteredQA.length === 0) {
+            return "No Results produces from specified filters.";
+        } else {
+            return filteredQA;
+        }
+        
+
     }
 
     /**
-     * Method to generate random id for new QAs
+     * Helper method to generate random id for new QAs
      * @returns random float id
      */
     genId() {
@@ -174,6 +201,15 @@ class FAQ {
             }
         }
         return genID;
+    }
+
+    /**
+     * Helper method to find id index in dataStore.  Use this bit of code a lot, so making own method.
+     * @param {*} id : id to find
+     * @returns id if found, -1 otherwise.
+     */
+    getId(id) {
+        return this.dataStore.findIndex((qaBlock) => qaBlock.id == id);
     }
 }
 
