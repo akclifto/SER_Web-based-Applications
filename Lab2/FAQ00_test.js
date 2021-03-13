@@ -12,7 +12,7 @@ import path from "path";
 const __dirname = path.resolve();
 
 
-console.log("Actvity 1 Testing-----------------------------------\n");
+console.log("Actvity 1 Testing-------------------------------------\n");
 // test read file and storage
 console.log("\nTesting Read and File storage-----------------------\n");
 
@@ -36,6 +36,8 @@ console.log("Check updated answer: \n", faq.dataStore[6]);
 console.log(faq.updateAnswer(234.234, "otherAnswer")); // returns Id not found in persistent store.
 
 // Test R3
-console.log("\nTesting R3: Update QA tags from store-------------\n");
-
+console.log("\nTesting R3: Update QA tags from store---------------\n");
+console.log("Check tags before update: \n", faq.dataStore[5]);
+// console.log(faq.updateAnswer(faq.dataStore[5].id, "someAnswer"));
+// console.log("Check updated answer: \n", faq.dataStore[5]);
 
