@@ -56,9 +56,9 @@ Using Node version 14.15.4 for this lab.  Please let me know if you have any que
 
 ## Lab 2
 
-- Activity 1: File i/O
+- Activity 1: File I/O
 
-To run test file for activity 1:
+This lab builds on concepts from Lab1. To run test file for activity 1:  
 
 `npm run act1`
 
