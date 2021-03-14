@@ -8,3 +8,15 @@
  * See Lab2_ReadMe.txt for information.
  * 
  */
+import { createServer } from 'http';
+const port = process.env.PORT || 3000;
+
+//create server
+createServer( function (req, res) {
+    
+    res.writeHead(200, {"content-type": "application/json"});
+    res.end("Static server is up.");
+
+}).listen(port, () => {
+    console.log("Server started. Listening on port: " + port);
+});
