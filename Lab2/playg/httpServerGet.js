@@ -10,15 +10,15 @@ createServer(function (req, res) {
     let resMsg = '';
     // This way of parsing a query string is deprecated but I still find it much easier
     // than trying to use the new WhatWG URL object and trying to parse the searchParams
-    let urlObj = parse(req.url, true, false); //deprecated
+    let urlObj = parse(req.url, true, false); //deprecated --> returns url string
     // const baseURL = "http://" + req.headers.host + "/";
     // let urlObj = new URL(req.url, baseURL);
-    let qstr = urlObj.query;
+    let qstr = urlObj.query; // this is the ? in url query
     console.log(qstr);
     if (!qstr.msg) {
         resMsg = '<h2>No msg parameter</h2>\n';
     } else {
-        resMsg = '<h1>'+messages[qstr.msg]+'</h2>';
+        resMsg = '<h1>'+messages[qstr.msg]+'</h2>'; // here specifies the msg in url ...?msg=0, 1, 2
     }
     resBody = resBody + '<html><head><title>Simple HTTP Server</title></head>';
     resBody = resBody + '<body>' + resMsg;

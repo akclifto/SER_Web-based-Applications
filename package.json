@@ -14,7 +14,7 @@
   },
   "scripts": {
     "act1" : "node Lab2/FAQ00_test.js",
-    "start": "node Lab2/FAQService.js"
+    "start": "node Lab2/FAQService00.js"
   },
   "devDependencies": {
     "eslint": "^7.21.0"
