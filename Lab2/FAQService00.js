@@ -38,6 +38,7 @@ function clientGETRequest(path, res) {
     if (path === "/") {
 
         console.log("loading default url is a get request");
+        // setPage("/", res);
         res.writeHead(200, { "content-type": "application/json" });
         res.end("Static server is up.  Will be the LOGIN page.");
 
@@ -55,6 +56,21 @@ function clientGETRequest(path, res) {
 
     }
 }
+
+// function setPage(page, res){
+    
+//     try {
+//         res.writeHead(400, { "contentType": "application/json"});
+
+
+//     } catch (err) {
+//         console.log("Error setPage: ", err);
+//         let error = JSON.stringify(err);
+//         res.writeHead(400, { "contentType": "application/json"});
+//         res.end(error);
+//     }
+
+// }
 
 function clientPOSTRequest(path, res, contentType) {
     //TODO post request response here.
