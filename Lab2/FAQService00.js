@@ -32,21 +32,27 @@ createServer((req, res) => {
     console.log("Server started. Listening on port: " + port);
 });
 
-function clientGETRequest(path, res) {
-    // todo get request response here.
-    console.log("loading default url is a get request");
 
+function clientGETRequest(path, res) {
+    
     if (path === "/") {
+
+        console.log("loading default url is a get request");
         res.writeHead(200, { "content-type": "application/json" });
-        res.end("Static server is up.");
+        res.end("Static server is up.  Will be the LOGIN page.");
+
     } else if (path === "/home") {
-        console.log("/something was accessed");
+
+        console.log("/home accessed, this will be the main page");
         res.writeHead(200, { "content-type": "application/json" });
-        res.end("something page");
+        res.end("HOME page: will be the View Q&A Page, dynamic based on user login for functionality.");
+
     } else {
+
         console.log("Hit the 404 page")
         res.writeHead(404, { "content-type": "application/json" });
-        res.end("404! Page not found");
+        res.end("404! Page not found: Do something to link back to home page.");
+
     }
 }
 
