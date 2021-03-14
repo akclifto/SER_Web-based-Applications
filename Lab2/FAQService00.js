@@ -8,8 +8,12 @@
  * See Lab2_ReadMe.txt for information.
  * 
  */
+import { readFile } from 'fs';
 import { createServer } from 'http';
 import { parse } from 'url';
+import path from 'path';
+
+const __dirname = path.resolve();
 
 const port = process.env.PORT || 3000;
 
@@ -20,7 +24,7 @@ createServer((req, res) => {
     if (req.method === "GET") {
         let urlObj = parse(req.url, true, false);
         let path = urlObj.path;
-        clientGETRequest(path, res);
+        routePath(path, res);
     } else if (req.method === "POST") {
 
         let contentType = req.headers["content-type"];
@@ -33,22 +37,26 @@ createServer((req, res) => {
 });
 
 
-function clientGETRequest(path, res) {
-    
+function routePath(path, res) {
+
     if (path === "/") {
-
-        console.log("loading default url is a get request");
-        // setPage("/", res);
-        res.writeHead(200, { "content-type": "application/json" });
-        res.end("Static server is up.  Will be the LOGIN page.");
-
-    } else if (path === "/home") {
+        console.log("loading default url => get request");
+        console.log("\"/\" page.  redirect to login page.")
+        path = "/login";
+        res.writeHead(300);
+        routePath(path, res);
+    }
+    else if (path === "/login") {
+        setPage(path, res);
+    }
+    else if (path === "/home") {
 
         console.log("/home accessed, this will be the main page");
         res.writeHead(200, { "content-type": "application/json" });
         res.end("HOME page: will be the View Q&A Page, dynamic based on user login for functionality.");
 
-    } else {
+    }
+    else {
 
         console.log("Hit the 404 page")
         res.writeHead(404, { "content-type": "application/json" });
@@ -57,20 +65,24 @@ function clientGETRequest(path, res) {
     }
 }
 
-// function setPage(page, res){
-    
-//     try {
-//         res.writeHead(400, { "contentType": "application/json"});
+function setPage(page, res) {
 
+    try {
+        console.log("set page...")
+        readFile(__dirname + "/Lab2/html" + page + ".html", function (err, content) {
+            if (err) {
+                res.writeHead(404, { "content-type": "application/json" });
+                res.end(err);
+            } else {
+                res.writeHead(200, { "content-type": "text/html" });
+                res.end(content);
+            }
+        });
+    } catch (err) {
+        console.log("Error setPage: ", err);
+    }
 
-//     } catch (err) {
-//         console.log("Error setPage: ", err);
-//         let error = JSON.stringify(err);
-//         res.writeHead(400, { "contentType": "application/json"});
-//         res.end(error);
-//     }
-
-// }
+}
 
 function clientPOSTRequest(path, res, contentType) {
     //TODO post request response here.
