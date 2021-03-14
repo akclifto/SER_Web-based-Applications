@@ -20,7 +20,7 @@ createServer(function (req, res) {
 
 /* You can comment out the below or use a client like ARC to send the POST 
 */
-import http from 'http';
+// import http from 'http';
 var options = {
   host: '127.0.0.1',
   path: '/',
