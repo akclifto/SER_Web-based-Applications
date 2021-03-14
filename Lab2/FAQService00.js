@@ -17,7 +17,11 @@ const __dirname = path.resolve();
 
 const port = process.env.PORT || 3000;
 
-//create server
+/**
+ * Method to create server.
+ * @param {*} req : incoming request
+ * @param {*} res : server response
+ */
 createServer((req, res) => {
 
     //check simplewebproxy.js in webproxy folder
@@ -36,7 +40,11 @@ createServer((req, res) => {
     console.log("Server started. Listening on port: " + port);
 });
 
-
+/**
+ * Method to route url paths.
+ * @param {*} path : path to route
+ * @param {*} res : server response
+ */
 function routePath(path, res) {
 
     if (path === "/") {
@@ -65,6 +73,11 @@ function routePath(path, res) {
     }
 }
 
+/**
+ * Method to set html pages.
+ * @param {*} page : page to set
+ * @param {*} res : server response.
+ */
 function setPage(page, res) {
 
     try {
