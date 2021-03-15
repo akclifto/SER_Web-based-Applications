@@ -48,7 +48,7 @@ createServer((req, res) => {
 function routePath(path, res) {
 
     if (path === "/") {
-        console.log("loading default url => get request");
+        // console.log("loading default url => get request");
         console.log("\"/\" page.  redirect to login page.")
         path = "/login";
         res.writeHead(300);
@@ -58,17 +58,13 @@ function routePath(path, res) {
         setPage(path, res);
     }
     else if (path === "/home") {
-
         console.log("/home accessed, this will be the main page");
-        res.writeHead(200, { "content-type": "application/json" });
-        res.end("HOME page: will be the View Q&A Page, dynamic based on user login for functionality.");
-
+        setPage(path, res);
     }
     else {
-
         console.log("Hit the 404 page")
-        res.writeHead(404, { "content-type": "application/json" });
-        res.end("404! Page not found: Do something to link back to home page.");
+        path = "/pageNotFound";
+        setPage(path, res);
 
     }
 }
@@ -81,12 +77,20 @@ function routePath(path, res) {
 function setPage(page, res) {
 
     try {
-        console.log("set page...")
+        console.log("set page: " + page);
         readFile(__dirname + "/Lab2/html" + page + ".html", function (err, content) {
+            //check error
             if (err) {
-                res.writeHead(404, { "content-type": "application/json" });
+                res.writeHead(400, { "content-type": "application/json" });
                 res.end(err);
-            } else {
+            }
+            //check 404
+            else if (page === "/pageNotFound") {
+                res.writeHead(404, { "content-type": "text/html" });
+                res.end(content);
+            }
+            //set page
+            else {
                 res.writeHead(200, { "content-type": "text/html" });
                 res.end(content);
             }
