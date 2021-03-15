@@ -25,12 +25,12 @@ class fakeDataBase {
         this.db = [
             {
                 "username": "inst",
-                "password": "1234",
+                "password": "admin",
                 "role": "instructor",
             },
             {
                 "username": "stu",
-                "password": "asdf",
+                "password": "dent",
                 "role": "student",
             }];
     }
@@ -54,32 +54,31 @@ createServer((req, res) => {
         routePath(req, res);
     }
     else if (req.method === "POST") {
-
-        // get user form data
-        processFormData(req, res, function (formData) {
-            // console.log(formData);
-            let check = checkLogin(formData);
-            if (check === 401) {
-                unAuthorizedAccess(res);
-            }
-            if(check === 403) {
-                loginInvalid(res);
-            } 
-            // login is valid, get userRole, set appropriate login
-            let userRole = formData.role;
-            console.log("Role: ", userRole);
-            if (userRole === "instructor") {
-                instructorHome(req, res, formData, userRole);
-            }
-            else if (userRole === "student") {
-                studentHome(req, res, formData, userRole);
-            } else {
-                loginInvalid(res);
-            }
-
-
-
-        });
+        if(req.url === "/home") {
+            // get user form data for login
+            processFormData(req, res, function (formData) {
+                // console.log(formData);
+                let check = checkLogin(formData);
+                // should never get flagged here, but if does, will catch
+                if (check === 401) {
+                    unAuthorizedAccess(res);
+                }
+                else if(check === 403) {
+                    loginInvalid(res);
+                } 
+                // login is valid, get userRole, set appropriate login
+                let userRole = formData.role;
+                console.log("Role: ", userRole);
+                if (userRole === "instructor") {
+                    instructorHome(req, res, formData, userRole);
+                }
+                else if (userRole === "student") {
+                    studentHome(req, res, formData, userRole);
+                } else {
+                    loginInvalid(res);
+                }
+            });
+        }
         // console.log(result);
         // req.on('end', function () {
         //name values from form input types are getting passed in postParams
@@ -180,7 +179,7 @@ function routePath(req, res) {
     }
     else if(req.url === "/home") {
         //home has been moved to instructor and student pages.
-        // should flag correct unAuth access page.     
+        // should flag correct unAuth access page here.     
         processFormData(req, res, function (formData) {
             // console.log(formData);
             let check = checkLogin(formData);
@@ -192,39 +191,6 @@ function routePath(req, res) {
     else {
         pageNotFound(res);
     }
-
-    // let check = checkLogin(postData);
-    // console.log("check val: ", check);
-    // if (check === 401) {
-    //     let page =
-    //         "<html><head><title></title></head>" +
-    //         "<body>" +
-    //         "<p>You must login first.</p> " +
-    //         "<a href=\"/\"> Return to Login </a>" +
-    //         "</body></html>"
-    //     res.writeHead(401, { "content-type": "text/html" });
-    //     res.end(page);
-    // }
-    // else if (check === 200) {
-    //     //TODO: need to set some cookies for login persistence
-    //     setPage(path, res);
-    // } else {
-    //     let page =
-    //         "<html><head><title></title></head>" +
-    //         "<body>" +
-    //         "<p>Invalid username/password combination.</p> " +
-    //         "<a href=\"/\"> Return to Login </a>" +
-    //         "</body></html>"
-    //     res.writeHead(403, { "content-type": "text/html" });
-    //     res.end(page);
-    // }
-    // }
-    // else {
-    //     console.log("Hit the 404 page.")
-    //     path = "/pageNotFound";
-    //     setPage(path, res);
-
-    // }
 }
 
 /**
@@ -252,8 +218,26 @@ function loginPage(req, res) {
  */
 function instructorHome(req, res, formData, userRole) {
     console.log("setting instructor home page");
-    //TODO
-
+    let user = "username=" + formData.username;
+    let role = "role=" + userRole.toString();
+    // console.log(role);    
+    let cookie = [ user, role];
+    res.writeHead(200, { 
+        "content-type": "text/html",
+        "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
+    });
+    readFile("./Lab2/html/home.html", function(err, content) {
+        if(err){
+            console.log("instructorHome error: ", err);
+        }
+        console.log("cookie: ", cookie);
+        // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
+        content = content.toString().replace('{username1}', formData.username);
+        content = content.toString().replace('{username2}', formData.username);
+        content = content.toString().replace('{role}', formData.role);
+        res.write(content);
+        res.end();
+    });
 }
 
 /**
@@ -263,7 +247,26 @@ function instructorHome(req, res, formData, userRole) {
  */
 function studentHome(req, res, formData, userRole) {
     console.log("setting student home page");
-    //TODO
+    let user = "username=" + formData.username;
+    let role = "role=" + userRole.toString();
+    // console.log(role);    
+    let cookie = [ user, role];
+    res.writeHead(200, { 
+        "content-type": "text/html",
+        "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
+    });
+    readFile("./Lab2/html/home.html", function(err, content) {
+        if(err){
+            console.log("studentHome error: ", err);
+        }
+        console.log("cookie: ", cookie);
+        // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
+        content = content.toString().replace('{username1}', formData.username);
+        content = content.toString().replace('{username2}', formData.username);
+        content = content.toString().replace('{role}', formData.role);
+        res.write(content);
+        res.end();
+    });
 }
 
 /**
@@ -319,21 +322,3 @@ function loginInvalid(res) {
         res.end();
     });
 }
-
-
-
-// function getResponse(path, postData, res) {
-//     //TODO post request response here.
-//     // console.log("hit the POST REQUEST.");
-//     console.log("postData:\n\n", postData);
-//     // console.log("path:  ", path);
-
-//     // login in checks
-//     if(checkLogin(postData)) {
-//         console.log("HERHEHERERE");
-//         routePath(path, postData, res);
-//     } else {
-//         res.writeHead(400, { "content-type": "text/html" });
-//         res.end("<html><head> MSG: </head><body>Invalid username/password combination</body></html>");
-//     }
-// }
