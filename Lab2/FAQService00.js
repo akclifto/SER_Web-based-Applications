@@ -10,11 +10,11 @@
  */
 import { readFile } from 'fs';
 import { createServer } from 'http';
-import { parse } from 'url';
+// import { parse } from 'url';
 import { parse as qstringParse } from 'querystring';
 import path from 'path';
 
-const __dirname = path.resolve();
+// const __dirname = path.resolve();
 const port = process.env.PORT || 3000;
 
 /**
@@ -36,6 +36,8 @@ class fakeDataBase {
     }
 }
 
+
+
 // load up the fake database.
 const fake = new fakeDataBase();
 // console.log(fake.db);
@@ -47,11 +49,9 @@ const fake = new fakeDataBase();
  */
 createServer((req, res) => {
 
-    let urlObj = parse(req.url, true, false);
-    let path = urlObj.path;
     //check simplewebproxy.js in webproxy folder for ref
     if (req.method === "GET") {
-        routePath(path, req, res);
+        routePath(req, res);
     }
     else if (req.method === "POST") {
         // httpserverExternal.js ref
@@ -62,8 +62,7 @@ createServer((req, res) => {
         req.on('end', function () {
             //name values from form input types are getting passed in postParams
             let postData = qstringParse(reqData);
-            // req.postData = postData;
-            routePath(path, postData, res);
+            routePath(path, postData, req, res);
             // getResponse(path, postData, res);
         });
     }
@@ -77,52 +76,77 @@ createServer((req, res) => {
  * @param {*} path : path to route
  * @param {*} res : server response
  */
-function routePath(path, req, res) {
+function routePath(req, res) {
 
-    if (path === "/") {
+    if (req.url === "/") {
         // console.log("loading default url => get request");
         console.log("\"/\" page.  Redirect to login page.")
-        path = "/login";
-        res.writeHead(300);
-        routePath(path, req, res);
+        req.url = "/login";
+        routePath(req, res);
     }
-    else if (path === "/login") {
-        setPage(path, res);
+    else if (req.url === "/login") {
+        login(req, res);
+        // setPage(req.url, res);
     }
-    else if (path === "/home") {
-
-        let check = checkLogin(req);
-        // console.log("check val: ", check);
-        if (check === 401) {
-            let page =
-                "<html><head><title></title></head>" +
-                "<body>" +
-                "<p>You must login first.</p> " +
-                "<a href=\"/\"> Return to Login </a>" +
-                "</body></html>"
-            res.writeHead(401, { "content-type": "text/html" });
-            res.end(page);
-        }
-        else if (check === 200) {
-            //TODO: need to set some cookies for login persistence
-            setPage(path, res);
-        } else {
-            let page =
-                "<html><head><title></title></head>" +
-                "<body>" +
-                "<p>Invalid username/password combination.</p> " +
-                "<a href=\"/\"> Return to Login </a>" +
-                "</body></html>"
-            res.writeHead(403, { "content-type": "text/html" });
-            res.end(page);
-        }
+    else if (req.url === "/instructor") {
+        //TODO
     }
+    else if(req.url === "/student") {
+        //TODO
+    } 
     else {
         console.log("Hit the 404 page.")
-        path = "/pageNotFound";
-        setPage(path, res);
-
+        req.url = "/pageNotFound";
+        // setPage(path, res); 
     }
+
+        // let check = checkLogin(postData);
+        // console.log("check val: ", check);
+        // if (check === 401) {
+        //     let page =
+        //         "<html><head><title></title></head>" +
+        //         "<body>" +
+        //         "<p>You must login first.</p> " +
+        //         "<a href=\"/\"> Return to Login </a>" +
+        //         "</body></html>"
+        //     res.writeHead(401, { "content-type": "text/html" });
+        //     res.end(page);
+        // }
+        // else if (check === 200) {
+        //     //TODO: need to set some cookies for login persistence
+        //     setPage(path, res);
+        // } else {
+        //     let page =
+        //         "<html><head><title></title></head>" +
+        //         "<body>" +
+        //         "<p>Invalid username/password combination.</p> " +
+        //         "<a href=\"/\"> Return to Login </a>" +
+        //         "</body></html>"
+        //     res.writeHead(403, { "content-type": "text/html" });
+        //     res.end(page);
+        // }
+    // }
+    // else {
+    //     console.log("Hit the 404 page.")
+    //     path = "/pageNotFound";
+    //     setPage(path, res);
+
+    // }
+}
+
+
+function login(req, res) {
+    // console.log("setting login page");
+    res.writeHead(200, { "content-type": "text/html" });
+    readFile('./Lab2/html/login.html', function(err, content) {
+        
+        if(err) {
+            console.log("login error: " + err);
+            throw(err);
+        }
+        res.write(content);
+        res.end();
+    });
 }
 
 /**
@@ -130,31 +154,31 @@ function routePath(path, req, res) {
  * @param {*} page : page to set
  * @param {*} res : server response.
  */
-function setPage(page, res) {
+// function setPage(page, res) {
 
-    try {
-        console.log("set page: " + page);
-        readFile(__dirname + "/Lab2/html" + page + ".html", function (err, content) {
-            //check error
-            if (err) {
-                res.writeHead(400, { "content-type": "application/json" });
-                res.end(err);
-            }
-            //check 404
-            else if (page === "/pageNotFound") {
-                res.writeHead(404, { "content-type": "text/html" });
-                res.end(content);
-            }
-            //set page
-            else {
-                res.writeHead(200, { "content-type": "text/html" });
-                res.end(content);
-            }
-        });
-    } catch (err) {
-        console.log("Error setPage: ", err);
-    }
-}
+//     try {
+//         console.log("set page: " + page);
+//         readFile("./html" + page + ".html", function (err, content) {
+//             //check error
+//             if (err) {
+//                 res.writeHead(400, { "content-type": "application/json" });
+//                 res.end(err);
+//             }
+//             //check 404
+//             else if (page === "/pageNotFound") {
+//                 res.writeHead(404, { "content-type": "text/html" });
+//                 res.end(content);
+//             }
+//             //set page
+//             else {
+//                 res.writeHead(200, { "content-type": "text/html" });
+//                 res.end(content);
+//             }
+//         });
+//     } catch (err) {
+//         console.log("Error setPage: ", err);
+//     }
+// }
 
 /**
  * Method to check user login.  Validates login credentials.
@@ -178,6 +202,7 @@ function checkLogin(postData) {
             postData.password == fake.db[i].password &&
             postData.role == fake.db[i].role) {
             // console.log("user and login match");
+            // setRole(req, res, )
             return 200;
         }
     }
