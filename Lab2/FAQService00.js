@@ -91,7 +91,7 @@ function routePath(path, req, res) {
     }
     else if (path === "/home") {
 
-        let check = checkLogin(req, res);
+        let check = checkLogin(req);
         // console.log("check val: ", check);
         if (check === 401) {
             let page =
@@ -103,7 +103,7 @@ function routePath(path, req, res) {
             res.writeHead(401, { "content-type": "text/html" });
             res.end(page);
         }
-        else if (check === true) {
+        else if (check === 200) {
             //TODO: need to set some cookies for login persistence
             setPage(path, res);
         } else {
@@ -113,7 +113,7 @@ function routePath(path, req, res) {
                 "<p>Invalid username/password combination.</p> " +
                 "<a href=\"/\"> Return to Login </a>" +
                 "</body></html>"
-            res.writeHead(400, { "content-type": "text/html" });
+            res.writeHead(403, { "content-type": "text/html" });
             res.end(page);
         }
     }
@@ -157,21 +157,19 @@ function setPage(page, res) {
 }
 
 /**
- * Method to check user login.  Validates login and catches unAuthorized page access.
+ * Method to check user login.  Validates login credentials.
  * @param {*} postParams : user post info
  * @param {*} res : server response
- * @returns 401 if unAuthorized access, true if login validates, false if not.
+ * @returns 200 if login validates, 402 otherwise.
  */
-function checkLogin(postParams, res) {
+function checkLogin(postParams) {
 
-    // console.log(postParams);
-    // check if the user tried to access a protected page
-    if (postParams.username === undefined ||
-        postParams.password === undefined ||
-        postParams.role === undefined) {
-        res.writeHead(401, { "content-type": "text/html" });
+    //check page access
+    const check = checkAuthorization(postParams);
+    if(check === 401) {
         return 401;
     }
+
     // check login validation
     for (let i in fake.db) {
         console.log(fake.db[i]);
@@ -180,11 +178,31 @@ function checkLogin(postParams, res) {
             postParams.password == fake.db[i].password &&
             postParams.role == fake.db[i].role) {
             // console.log("user and login match");
-            return true;
+            return 200;
         }
     }
     // console.log("login didn't match");
-    return false;
+    return 403;
+}
+
+/**
+ * Method to check authorization; catches unauthorized page access.
+ * @param {*} postParams : login parameters from user
+ * @returns 401 if invalid, 200 if valid.
+ */
+function checkAuthorization (postParams) {
+
+    // TODO: will need to precheck cookies here to skip subseq logins. 
+    // use diff status code to bypass rest of login check in checkLogin().
+
+    // console.log(postParams);
+    // check if the user tried to access a protected page
+    if (postParams.username === undefined ||
+        postParams.password === undefined ||
+        postParams.role === undefined) {
+        return 401;
+    } 
+    return 200;
 }
 
 // function getResponse(path, postData, res) {
