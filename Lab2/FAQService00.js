@@ -28,17 +28,21 @@ class fakeDataBase {
         {
             "username": "inst",
             "password": "1234",
+            "role": "instructor",
         },
         {
             "username": "stu",
             "password": "asdf",
+            "role": "student",
         }
         ];
     }
 }
 
-const database = new fakeDataBase();
-console.log(database);
+// load up the fake database.
+const fake = new fakeDataBase();
+// console.log(fake.db);
+
 /**
  * Method to create server.
  * @param {*} req : incoming request
@@ -60,8 +64,8 @@ createServer((req, res) => {
         });
         req.on('end', function () {
             //name values from form input types are getting passed in postParams
-            let postParams = qstringParse(reqData);
-            getResponse(path, postParams, res);
+            let postData = qstringParse(reqData);
+            getResponse(path, postData, res);
         });
     }
 
@@ -128,14 +132,33 @@ function setPage(page, res) {
     }
 }
 
-function getResponse(path, postParams, res) {
+function getResponse(path, postData, res) {
     //TODO post request response here.
-    console.log("hit the POST REQUEST.");
-    console.log("postParams:\n\n", postParams);
-    console.log("path:  ", path);
+    // console.log("hit the POST REQUEST.");
+    console.log("postData:\n\n", postData);
+    // console.log("path:  ", path);
+
     res.end();
 
     
 
 
+}
+
+function checkLogin(postParams) {
+
+    for(let i in fake.db) {
+        console.log(fake.db[i]);
+
+        if (postParams.username === fake.db[i].username &&
+            postParams.password == fake.db[i].password &&
+            postParams.role == fake.db[i].role) {
+                console.log("user and login match");
+                return true;
+        }
+        else {
+            console.log("login didn't match");
+            return false;
+        }
+    }
 }
