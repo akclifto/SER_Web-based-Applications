@@ -18,6 +18,28 @@ const __dirname = path.resolve();
 const port = process.env.PORT || 3000;
 
 /**
+ * Class to hold a fake database for username and password lookup on login.
+ */
+class fakeDataBase {
+
+    constructor() {
+
+        this.db = [
+        {
+            "username": "inst",
+            "password": "1234",
+        },
+        {
+            "username": "stu",
+            "password": "asdf",
+        }
+        ];
+    }
+}
+
+const database = new fakeDataBase();
+console.log(database);
+/**
  * Method to create server.
  * @param {*} req : incoming request
  * @param {*} res : server response
@@ -29,7 +51,8 @@ createServer((req, res) => {
     //check simplewebproxy.js in webproxy folder for ref
     if (req.method === "GET") {
         routePath(path, res);
-    } else if (req.method === "POST") {
+    } 
+    else if (req.method === "POST") {
         // httpserverExternal.js ref
         let reqData = "";
         req.on("data", function (chunk) {
@@ -55,7 +78,7 @@ function routePath(path, res) {
 
     if (path === "/") {
         // console.log("loading default url => get request");
-        console.log("\"/\" page.  redirect to login page.")
+        console.log("\"/\" page.  Redirect to login page.")
         path = "/login";
         res.writeHead(300);
         routePath(path, res);
@@ -64,7 +87,6 @@ function routePath(path, res) {
         setPage(path, res);
     }
     else if (path === "/home") {
-        // console.log("/home accessed, this will be the main page.");
         setPage(path, res);
     }
     else {
@@ -106,10 +128,10 @@ function setPage(page, res) {
     }
 }
 
-function getResponse(path, req, res) {
+function getResponse(path, postParams, res) {
     //TODO post request response here.
     console.log("hit the POST REQUEST.");
-    console.log("buf:\n\n", req);
+    console.log("postParams:\n\n", postParams);
     console.log("path:  ", path);
     res.end();
 

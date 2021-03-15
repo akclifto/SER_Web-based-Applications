@@ -63,6 +63,29 @@ This lab builds on concepts from Lab1. Scripts will be used from this point forw
 `npm run act1`
 
 - Activity 2: Implement a Simple FAQ Service
+
+To start server, run:
+
+`npm run start` or `npm start`
+
+Server is on port 3000, so go to <http://localhost:3000> to view.
+
+To login as a student, use the following username and password:
+
+```javascript
+"username": "stu",
+"password": "asdf",
+```
+
+To login as an instructor use the following username and password.
+
+```javascript
+"username": "inst",
+"password": "1234",
+```
+
+To test fail cases, don't use the above input when logging in.  
+
 - Activity 3: Put it all together
 
 [Back to Top](#Contents)
