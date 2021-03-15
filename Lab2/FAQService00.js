@@ -91,14 +91,10 @@ createServer((req, res) => {
                     loginInvalid(res);
                 }
                 // login is valid, get userRole, set appropriate login
-                let userRole = formData.role;
-                // console.log("Role: ", userRole);
-                if (userRole === "instructor") {
-                    instructorHome(req, res, formData);
+                else if (check == 200 && formData.role !== undefined) {
+                    homePage(req, res, formData);
                 }
-                else if (userRole === "student") {
-                    studentHome(req, res, formData);
-                } else {
+                else {
                     loginInvalid(res);
                 }
             });
@@ -108,6 +104,49 @@ createServer((req, res) => {
 }).listen(port, () => {
     console.log("Server started. Listening on port: " + port);
 });
+
+/**
+ * Method to set homePage based on user login. Sets up instructor and student.
+ * @param {*} req : user request
+ * @param {*} res : server response
+ * @param {*} formData : formData from login input
+ */
+function homePage(req, res, formData){
+
+    console.log("setting home page by rol");
+    let user = "username=" + formData.username;
+    let role = "role=" + formData.role;
+    let cookie = [user, role];
+
+    // console.log(role);    
+    if (role === "instructor") {
+        res.writeHead(200, {
+            "location": "/instructor",
+            "content-type": "text/html",
+            "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role 
+        });
+        console.log("homePage cookie: ", cookie);
+    } else {
+        res.writeHead(200, {
+            "location": "/student",
+            "content-type": "text/html",
+            "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
+        });
+        console.log("homePage cookie: ", cookie);
+    }
+    readFile("./Lab2/html/home.html", function (err, content) {
+        if (err) {
+            console.log("homePage error: ", err);
+        }
+        console.log("cookie: ", cookie);
+        // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
+        content = content.toString().replace('{username1}', formData.username);
+        content = content.toString().replace('{username2}', formData.username);
+        content = content.toString().replace('{role}', formData.role);
+        res.write(content);
+        res.end();
+    });
+}
 
 /**
  * Method to get form data input. Check http_server_external.js class example.
@@ -197,10 +236,27 @@ function routePath(req, res) {
         loginPage(req, res);
     }
     else if (req.url === "/instructor") {
-        instructorHome(req, res);
+        processFormData(req, res, function (formData) {
+            // console.log(formData);
+            let check = checkLogin(formData);
+            console.log(check);
+            if (check === 401) {
+                unAuthorizedAccess(res);
+            } else {
+                homePage(req, res);
+            }
+        });
     }
     else if (req.url === "/student") {
-        studentHome(req, res);
+        processFormData(req, res, function (formData) {
+            // console.log(formData);
+            let check = checkLogin(formData);
+            if (check === 401) {
+                unAuthorizedAccess(res);
+            } else {
+                homePage(req, res);
+            }
+        });
     }
     else if (req.url === "/home") {
         //home has been moved to instructor and student pages.
@@ -255,68 +311,6 @@ function logout(req, res, resultFunc) {
         }
         content = content.toString().replace('{login}', "You have been logged out.");
         resultFunc(content);
-    });
-}
-
-/**
- * Method to set instructor home page, replacing setPage() funct
- * @param {1} req : user request
- * @param {*} res : server response
- */
-function instructorHome(req, res, formData) {
-
-    console.log("setting instructor home page");
-    let user = "username=" + formData.username;
-    let role = "role=" + formData.role;
-    // console.log(role);    
-    let cookie = [user, role];
-    res.writeHead(200, {
-        "location": "/instructor",
-        "content-type": "text/html",
-        "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
-    });
-    readFile("./Lab2/html/home.html", function (err, content) {
-        if (err) {
-            console.log("instructorHome error: ", err);
-        }
-        console.log("cookie: ", cookie);
-        // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
-        content = content.toString().replace('{username1}', formData.username);
-        content = content.toString().replace('{username2}', formData.username);
-        content = content.toString().replace('{role}', formData.role);
-        res.write(content);
-        res.end();
-    });
-}
-
-/**
- * Method to set student home page, replacing setPage() funct
- * @param {1} req : user request
- * @param {*} res : server response
- */
-function studentHome(req, res, formData) {
-
-    console.log("setting student home page");
-    let user = "username=" + formData.username;
-    let role = "role=" + formData.role;
-    // console.log(role);    
-    let cookie = [user, role];
-    res.writeHead(200, {
-        "location": "/student",
-        "content-type": "text/html",
-        "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
-    });
-    readFile("./Lab2/html/home.html", function (err, content) {
-        if (err) {
-            console.log("studentHome error: ", err);
-        }
-        console.log("cookie: ", cookie);
-        // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
-        content = content.toString().replace('{username1}', formData.username);
-        content = content.toString().replace('{username2}', formData.username);
-        content = content.toString().replace('{role}', formData.role);
-        res.write(content);
-        res.end();
     });
 }
 
