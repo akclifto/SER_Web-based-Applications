@@ -53,10 +53,28 @@ createServer((req, res) => {
     }
 
     else if (req.method === "POST") {
+
+        if(req.url === "/") {
+            processFormData(req, res, function (formData) {
+                //check logout
+                console.log(formData.logout);
+                if (formData.logout) {
+                    logout(req, res, function (content) {
+                        res.write(content);
+                        res.end();
+                    });
+                }
+            });
+        } else {
+            routePath(req, res);
+        }
+
         if (req.url === "/home") {
             // get user form data for login
             processFormData(req, res, function (formData) {
+
                 //check logout
+                console.log(formData.logout);
                 if (formData.logout) {
                     logout(req, res, function (content) {
                         res.write(content);
@@ -91,6 +109,12 @@ createServer((req, res) => {
     console.log("Server started. Listening on port: " + port);
 });
 
+/**
+ * Method to get form data input. Check http_server_external.js class example.
+ * @param {*} req : user request
+ * @param {*} res : server response
+ * @param {*} resultFunc : result callback containing user post data input.
+ */
 function processFormData(req, res, resultFunc) {
 
     // httpserverExternal.js ref
@@ -155,19 +179,6 @@ function checkAuthorization(postData) {
     return 200;
 }
 
-function logout(req, res, resultFunc) {
-
-    let cookie = req.headers.cookie;
-    res.writeHead(200, { "content-type": "text/html" });
-    readFile("./Lab2/html/login.html", function (err, content) {
-        console.log("logout cookie: ", cookie);
-        if (err) {
-            console.log("logout error: ", err);
-            content = content.toString().replace('{login}', "You have been logged out.");
-            resultFunc(content);
-        }
-    });
-}
 
 /**
  * Method to route url paths.
@@ -224,6 +235,26 @@ function loginPage(req, res) {
         content = content.toString().replace('{login}', "Login");
         res.write(content);
         res.end();
+    });
+}
+
+/**
+ * Method to logout and redirect to login screen.
+ * @param {*} req : user request
+ * @param {*} res : server response
+ * @param {*} resultFunc : callback function result
+ */
+function logout(req, res, resultFunc) {
+    console.log("logging out...")
+    let cookie = req.headers.cookie;
+    res.writeHead(200, { "content-type": "text/html" });
+    readFile("./Lab2/html/login.html", function (err, content) {
+        console.log("logout cookie: ", cookie);
+        if (err) {
+            console.log("logout error: ", err);
+        }
+        content = content.toString().replace('{login}', "You have been logged out.");
+        resultFunc(content);
     });
 }
 
