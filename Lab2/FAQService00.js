@@ -35,12 +35,10 @@ class fakeDataBase {
             }];
     }
 }
-
-
-
 // load up the fake database.
 const fake = new fakeDataBase();
 // console.log(fake.db);
+
 
 /**
  * Method to create server.
@@ -53,39 +51,40 @@ createServer((req, res) => {
     if (req.method === "GET") {
         routePath(req, res);
     }
+
     else if (req.method === "POST") {
-        if(req.url === "/home") {
+        if (req.url === "/home") {
             // get user form data for login
             processFormData(req, res, function (formData) {
+                //check logout
+                if (formData.logout) {
+                    logout(req, res, function (content) {
+                        res.write(content);
+                        res.end();
+                    });
+                }
                 // console.log(formData);
                 let check = checkLogin(formData);
                 // should never get flagged here, but if does, will catch
                 if (check === 401) {
                     unAuthorizedAccess(res);
                 }
-                else if(check === 403) {
+                else if (check === 403) {
                     loginInvalid(res);
-                } 
+                }
                 // login is valid, get userRole, set appropriate login
                 let userRole = formData.role;
-                console.log("Role: ", userRole);
+                // console.log("Role: ", userRole);
                 if (userRole === "instructor") {
-                    instructorHome(req, res, formData, userRole);
+                    instructorHome(req, res, formData);
                 }
                 else if (userRole === "student") {
-                    studentHome(req, res, formData, userRole);
+                    studentHome(req, res, formData);
                 } else {
                     loginInvalid(res);
                 }
             });
         }
-        // console.log(result);
-        // req.on('end', function () {
-        //name values from form input types are getting passed in postParams
-        // let postData = qstringParse(reqData);
-        // routePath(path, postData, req, res);
-        // getResponse(path, postData, res);
-        // });
     }
 
 }).listen(port, () => {
@@ -104,6 +103,7 @@ function processFormData(req, res, resultFunc) {
         resultFunc(postData);
     });
 }
+
 
 /**
  * Method to check user login.  Validates login credentials.
@@ -155,6 +155,20 @@ function checkAuthorization(postData) {
     return 200;
 }
 
+function logout(req, res, resultFunc) {
+
+    let cookie = req.headers.cookie;
+    res.writeHead(200, { "content-type": "text/html" });
+    readFile("./Lab2/html/login.html", function (err, content) {
+        console.log("logout cookie: ", cookie);
+        if (err) {
+            console.log("logout error: ", err);
+            content = content.toString().replace('{login}', "You have been logged out.");
+            resultFunc(content);
+        }
+    });
+}
+
 /**
  * Method to route url paths.
  * @param {*} path : path to route
@@ -177,7 +191,7 @@ function routePath(req, res) {
     else if (req.url === "/student") {
         studentHome(req, res);
     }
-    else if(req.url === "/home") {
+    else if (req.url === "/home") {
         //home has been moved to instructor and student pages.
         // should flag correct unAuth access page here.     
         processFormData(req, res, function (formData) {
@@ -186,7 +200,7 @@ function routePath(req, res) {
             if (check === 401) {
                 unAuthorizedAccess(res);
             }
-        });       
+        });
     }
     else {
         pageNotFound(res);
@@ -199,6 +213,7 @@ function routePath(req, res) {
  * @param {*} res : server response
  */
 function loginPage(req, res) {
+
     // console.log("setting login page");
     res.writeHead(200, { "content-type": "text/html" });
     readFile('./Lab2/html/login.html', function (err, content) {
@@ -206,6 +221,7 @@ function loginPage(req, res) {
         if (err) {
             console.log("login error: " + err);
         }
+        content = content.toString().replace('{login}', "Login");
         res.write(content);
         res.end();
     });
@@ -216,18 +232,20 @@ function loginPage(req, res) {
  * @param {1} req : user request
  * @param {*} res : server response
  */
-function instructorHome(req, res, formData, userRole) {
+function instructorHome(req, res, formData) {
+
     console.log("setting instructor home page");
     let user = "username=" + formData.username;
-    let role = "role=" + userRole.toString();
+    let role = "role=" + formData.role;
     // console.log(role);    
-    let cookie = [ user, role];
-    res.writeHead(200, { 
+    let cookie = [user, role];
+    res.writeHead(200, {
+        "location": "/instructor",
         "content-type": "text/html",
         "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
     });
-    readFile("./Lab2/html/home.html", function(err, content) {
-        if(err){
+    readFile("./Lab2/html/home.html", function (err, content) {
+        if (err) {
             console.log("instructorHome error: ", err);
         }
         console.log("cookie: ", cookie);
@@ -245,18 +263,20 @@ function instructorHome(req, res, formData, userRole) {
  * @param {1} req : user request
  * @param {*} res : server response
  */
-function studentHome(req, res, formData, userRole) {
+function studentHome(req, res, formData) {
+
     console.log("setting student home page");
     let user = "username=" + formData.username;
-    let role = "role=" + userRole.toString();
+    let role = "role=" + formData.role;
     // console.log(role);    
-    let cookie = [ user, role];
-    res.writeHead(200, { 
+    let cookie = [user, role];
+    res.writeHead(200, {
+        "location": "/student",
         "content-type": "text/html",
         "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
     });
-    readFile("./Lab2/html/home.html", function(err, content) {
-        if(err){
+    readFile("./Lab2/html/home.html", function (err, content) {
+        if (err) {
             console.log("studentHome error: ", err);
         }
         console.log("cookie: ", cookie);
@@ -275,6 +295,7 @@ function studentHome(req, res, formData, userRole) {
  * @param {*} res : server response
  */
 function pageNotFound(res) {
+
     console.log("Hit the 404 page.")
     res.writeHead(404, { "content-type": "text/html" });
     readFile("./Lab2/html/pageNotFound.html", function (err, content) {
@@ -288,6 +309,7 @@ function pageNotFound(res) {
 }
 
 function unAuthorizedAccess(res) {
+
     // res.writeHead(200, { "content-type": "text/html" });
     readFile("./Lab2/html/login.html", function (err, content) {
         if (err) {
@@ -300,12 +322,12 @@ function unAuthorizedAccess(res) {
             "<a href=\"/\"> Return to Login </a>" +
             "</body></html>"
         content = page;
-        // res.write();
         res.end(content);
     });
 }
 
 function loginInvalid(res) {
+
     res.writeHead(200, { "content-type": "text/html" });
     readFile("./Lab2/html/login.html", function (err, content) {
         if (err) {
