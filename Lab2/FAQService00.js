@@ -158,25 +158,25 @@ function setPage(page, res) {
 
 /**
  * Method to check user login.  Validates login credentials.
- * @param {*} postParams : user post info
+ * @param {*} postData : user post info
  * @param {*} res : server response
  * @returns 200 if login validates, 402 otherwise.
  */
-function checkLogin(postParams) {
+function checkLogin(postData) {
 
     //check page access
-    const check = checkAuthorization(postParams);
+    const check = checkAuthorization(postData);
     if(check === 401) {
         return 401;
     }
 
     // check login validation
     for (let i in fake.db) {
-        console.log(fake.db[i]);
+        // console.log(fake.db[i]);
 
-        if (postParams.username === fake.db[i].username &&
-            postParams.password == fake.db[i].password &&
-            postParams.role == fake.db[i].role) {
+        if (postData.username === fake.db[i].username &&
+            postData.password == fake.db[i].password &&
+            postData.role == fake.db[i].role) {
             // console.log("user and login match");
             return 200;
         }
@@ -186,20 +186,20 @@ function checkLogin(postParams) {
 }
 
 /**
- * Method to check authorization; catches unauthorized page access.
+ * Method to check authorization; checks unauthorized page access.
  * @param {*} postParams : login parameters from user
  * @returns 401 if invalid, 200 if valid.
  */
-function checkAuthorization (postParams) {
+function checkAuthorization (postData) {
 
     // TODO: will need to precheck cookies here to skip subseq logins. 
     // use diff status code to bypass rest of login check in checkLogin().
 
-    // console.log(postParams);
+    console.log(postData);
     // check if the user tried to access a protected page
-    if (postParams.username === undefined ||
-        postParams.password === undefined ||
-        postParams.role === undefined) {
+    if (postData.username === undefined ||
+        postData.password === undefined ||
+        postData.role === undefined) {
         return 401;
     } 
     return 200;
