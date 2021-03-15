@@ -355,13 +355,7 @@ function loginInvalid(res) {
         if (err) {
             console.log("loginInvalid error: " + err);
         }
-        let page =
-            "<html><head><title></title></head>" +
-            "<body>" +
-            "<p>Invalid username/password combination.</p> " +
-            "<a href=\"/\"> Return to Login </a>" +
-            "</body></html>"
-        content = page;
+        content = content.toString().replace('{login}', "Invalid username/password combination. Please try again.");
         res.write(content);
         res.end();
     });
