@@ -11,10 +11,10 @@
 import { readFile } from 'fs';
 import { createServer } from 'http';
 import { parse } from 'url';
+import { parse as qstringParse } from 'querystring';
 import path from 'path';
 
 const __dirname = path.resolve();
-
 const port = process.env.PORT || 3000;
 
 /**
@@ -24,16 +24,22 @@ const port = process.env.PORT || 3000;
  */
 createServer((req, res) => {
 
-    //check simplewebproxy.js in webproxy folder
+    let urlObj = parse(req.url, true, false);
+    let path = urlObj.path;
+    //check simplewebproxy.js in webproxy folder for ref
     if (req.method === "GET") {
-        let urlObj = parse(req.url, true, false);
-        let path = urlObj.path;
         routePath(path, res);
     } else if (req.method === "POST") {
-
-        let contentType = req.headers["content-type"];
-        let path = parse(req.url, true, false).path;
-        clientPOSTRequest(path, res, contentType)
+        // httpserverExternal.js ref
+        let reqData = "";
+        req.on("data", function (chunk) {
+            reqData += chunk;
+        });
+        req.on('end', function () {
+            //name values from form input types are getting passed in postParams
+            let postParams = qstringParse(reqData);
+            getResponse(path, postParams, res);
+        });
     }
 
 }).listen(port, () => {
@@ -58,11 +64,11 @@ function routePath(path, res) {
         setPage(path, res);
     }
     else if (path === "/home") {
-        console.log("/home accessed, this will be the main page");
+        // console.log("/home accessed, this will be the main page.");
         setPage(path, res);
     }
     else {
-        console.log("Hit the 404 page")
+        console.log("Hit the 404 page.")
         path = "/pageNotFound";
         setPage(path, res);
 
@@ -98,9 +104,16 @@ function setPage(page, res) {
     } catch (err) {
         console.log("Error setPage: ", err);
     }
-
 }
 
-function clientPOSTRequest(path, res, contentType) {
+function getResponse(path, req, res) {
     //TODO post request response here.
+    console.log("hit the POST REQUEST.");
+    console.log("buf:\n\n", req);
+    console.log("path:  ", path);
+    res.end();
+
+    
+
+
 }
