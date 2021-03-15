@@ -106,6 +106,7 @@ function routePath(path, req, res) {
             res.end(page);
         }
         else if (check === true) {
+            //TODO: need to set some cookies for login persistence
             setPage(path, res);
         } else {
             let page =
@@ -160,25 +161,25 @@ function setPage(page, res) {
 function checkLogin(postParams, res) {
 
     // console.log(postParams);
-
+    // check if the user tried to access a protected page
     if (postParams.username === undefined ||
         postParams.password === undefined ||
         postParams.role === undefined) {
         res.writeHead(401, { "content-type": "text/html" });
         return 401;
     }
-
+    // check login validation
     for (let i in fake.db) {
         console.log(fake.db[i]);
 
         if (postParams.username === fake.db[i].username &&
             postParams.password == fake.db[i].password &&
             postParams.role == fake.db[i].role) {
-            console.log("user and login match");
+            // console.log("user and login match");
             return true;
         }
     }
-    console.log("login didn't match");
+    // console.log("login didn't match");
     return false;
 }
 
