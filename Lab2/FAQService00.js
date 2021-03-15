@@ -10,11 +10,8 @@
  */
 import { readFile } from 'fs';
 import { createServer } from 'http';
-// import { parse } from 'url';
 import { parse as qstringParse } from 'querystring';
-// import path from 'path';
 
-// const __dirname = path.resolve();
 const port = process.env.PORT || 3000;
 
 /**
@@ -51,13 +48,12 @@ createServer((req, res) => {
     if (req.method === "GET") {
         routePath(req, res);
     }
-
     else if (req.method === "POST") {
 
-        if(req.url === "/") {
+        if (req.url === "/") {
             processFormData(req, res, function (formData) {
                 //check logout
-                console.log(formData.logout);
+                // console.log(formData.logout);
                 if (formData.logout) {
                     logout(req, res, function (content) {
                         res.write(content);
@@ -65,7 +61,8 @@ createServer((req, res) => {
                     });
                 }
             });
-        } else {
+        }
+        else {
             routePath(req, res);
         }
 
@@ -73,14 +70,6 @@ createServer((req, res) => {
             // get user form data for login
             processFormData(req, res, function (formData) {
 
-                //check logout
-                console.log(formData.logout);
-                if (formData.logout) {
-                    logout(req, res, function (content) {
-                        res.write(content);
-                        res.end();
-                    });
-                }
                 // console.log(formData);
                 let check = checkLogin(formData);
                 // should never get flagged here, but if does, will catch
@@ -111,9 +100,9 @@ createServer((req, res) => {
  * @param {*} res : server response
  * @param {*} formData : formData from login input
  */
-function homePage(req, res, formData){
+function homePage(req, res, formData) {
 
-    console.log("setting home page by rol");
+    console.log("setting home page by role");
     let user = "username=" + formData.username;
     let role = "role=" + formData.role;
     let cookie = [user, role];
@@ -138,7 +127,7 @@ function homePage(req, res, formData){
         if (err) {
             console.log("homePage error: ", err);
         }
-        console.log("cookie: ", cookie);
+        // console.log("cookie: ", cookie);
         // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
         content = content.toString().replace('{username1}', formData.username);
         content = content.toString().replace('{username2}', formData.username);
@@ -194,7 +183,7 @@ function checkLogin(postData) {
             return 200;
         }
     }
-    console.log("login didn't match");
+    console.log("no login match match");
     return 403;
 }
 
@@ -208,7 +197,7 @@ function checkAuthorization(postData) {
     // TODO: will need to precheck cookies here to skip subseq logins. 
     // use diff status code to bypass rest of login check in checkLogin().
 
-    console.log(postData);
+    // console.log(postData);
     // check if the user tried to access a protected page
     if (postData.username === undefined ||
         postData.password === undefined ||
@@ -302,13 +291,13 @@ function loginPage(req, res) {
  */
 function logout(req, res, resultFunc) {
     console.log("logging out...")
-    let cookie = req.headers.cookie;
+    let cookie = req.headers.cookie; // holders user cookie
     res.writeHead(200, { "content-type": "text/html" });
     readFile("./Lab2/html/login.html", function (err, content) {
-        console.log("logout cookie: ", cookie);
         if (err) {
             console.log("logout error: ", err);
         }
+        console.log("logout cookie: ", cookie);
         content = content.toString().replace('{login}', "You have been logged out.");
         resultFunc(content);
     });
@@ -333,6 +322,10 @@ function pageNotFound(res) {
     });
 }
 
+/**
+ * Set page for unauthorized access.  Links back to login page.
+ * @param {*} res : server response
+ */
 function unAuthorizedAccess(res) {
 
     // res.writeHead(200, { "content-type": "text/html" });
@@ -351,6 +344,10 @@ function unAuthorizedAccess(res) {
     });
 }
 
+/**
+ * Method to set page for invalid login. Links back to login page.
+ * @param {*} res 
+ */
 function loginInvalid(res) {
 
     res.writeHead(200, { "content-type": "text/html" });

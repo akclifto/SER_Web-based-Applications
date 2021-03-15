@@ -84,12 +84,18 @@ Server is on port 3000, so go to http://localhost:3000 to view.
 
 To login as a student, use the following username and password:
 
+```javascript
 "username": "stu",
-"password": "asdf",
+"password": "dent",
+"role": "student",
+```
 
 To login as an instructor use the following username and password.
 
+```javascript
 "username": "inst",
-"password": "1234",
+"password": "admin",
+"role": "instructor"
+```
 
-To test fail cases, don't use the above input when logging in.  
+To test fail cases on login, don't use the above input when logging in.  
