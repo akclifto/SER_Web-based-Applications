@@ -25,17 +25,16 @@ class fakeDataBase {
     constructor() {
 
         this.db = [
-        {
-            "username": "inst",
-            "password": "1234",
-            "role": "instructor",
-        },
-        {
-            "username": "stu",
-            "password": "asdf",
-            "role": "student",
-        }
-        ];
+            {
+                "username": "inst",
+                "password": "1234",
+                "role": "instructor",
+            },
+            {
+                "username": "stu",
+                "password": "asdf",
+                "role": "student",
+            }];
     }
 }
 
@@ -54,8 +53,8 @@ createServer((req, res) => {
     let path = urlObj.path;
     //check simplewebproxy.js in webproxy folder for ref
     if (req.method === "GET") {
-        routePath(path, res);
-    } 
+        routePath(path, req, res);
+    }
     else if (req.method === "POST") {
         // httpserverExternal.js ref
         let reqData = "";
@@ -65,7 +64,9 @@ createServer((req, res) => {
         req.on('end', function () {
             //name values from form input types are getting passed in postParams
             let postData = qstringParse(reqData);
-            getResponse(path, postData, res);
+            // req.postData = postData;
+            routePath(path, postData, res);
+            // getResponse(path, postData, res);
         });
     }
 
@@ -78,20 +79,44 @@ createServer((req, res) => {
  * @param {*} path : path to route
  * @param {*} res : server response
  */
-function routePath(path, res) {
+function routePath(path, req, res) {
 
     if (path === "/") {
         // console.log("loading default url => get request");
         console.log("\"/\" page.  Redirect to login page.")
         path = "/login";
         res.writeHead(300);
-        routePath(path, res);
+        routePath(path, req, res);
     }
     else if (path === "/login") {
         setPage(path, res);
     }
     else if (path === "/home") {
-        setPage(path, res);
+
+        let check = checkLogin(req, res);
+        // console.log("check val: ", check);
+        if (check === 401) {
+            let page =
+                "<html><head><title></title></head>" +
+                "<body>" +
+                "<p>You must login first.</p> " +
+                "<a href=\"/\"> Return to Login </a>" +
+                "</body></html>"
+            res.writeHead(401, { "content-type": "text/html" });
+            res.end(page);
+        }
+        else if (check === true) {
+            setPage(path, res);
+        } else {
+            let page =
+                "<html><head><title></title></head>" +
+                "<body>" +
+                "<p>Invalid username/password combination.</p> " +
+                "<a href=\"/\"> Return to Login </a>" +
+                "</body></html>"
+            res.writeHead(400, { "content-type": "text/html" });
+            res.end(page);
+        }
     }
     else {
         console.log("Hit the 404 page.")
@@ -132,33 +157,43 @@ function setPage(page, res) {
     }
 }
 
-function getResponse(path, postData, res) {
-    //TODO post request response here.
-    // console.log("hit the POST REQUEST.");
-    console.log("postData:\n\n", postData);
-    // console.log("path:  ", path);
+function checkLogin(postParams, res) {
 
-    res.end();
+    // console.log(postParams);
 
-    
+    if (postParams.username === undefined ||
+        postParams.password === undefined ||
+        postParams.role === undefined) {
+        res.writeHead(401, { "content-type": "text/html" });
+        return 401;
+    }
 
-
-}
-
-function checkLogin(postParams) {
-
-    for(let i in fake.db) {
+    for (let i in fake.db) {
         console.log(fake.db[i]);
 
         if (postParams.username === fake.db[i].username &&
             postParams.password == fake.db[i].password &&
             postParams.role == fake.db[i].role) {
-                console.log("user and login match");
-                return true;
-        }
-        else {
-            console.log("login didn't match");
-            return false;
+            console.log("user and login match");
+            return true;
         }
     }
+    console.log("login didn't match");
+    return false;
 }
+
+// function getResponse(path, postData, res) {
+//     //TODO post request response here.
+//     // console.log("hit the POST REQUEST.");
+//     console.log("postData:\n\n", postData);
+//     // console.log("path:  ", path);
+
+//     // login in checks
+//     if(checkLogin(postData)) {
+//         console.log("HERHEHERERE");
+//         routePath(path, postData, res);
+//     } else {
+//         res.writeHead(400, { "content-type": "text/html" });
+//         res.end("<html><head> MSG: </head><body>Invalid username/password combination</body></html>");
+//     }
+// }
