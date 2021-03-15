@@ -21,9 +21,7 @@ const port = process.env.PORT || 3000;
  * Class to hold a fake database for username and password lookup on login.
  */
 class fakeDataBase {
-
     constructor() {
-
         this.db = [
             {
                 "username": "inst",
@@ -158,6 +156,12 @@ function setPage(page, res) {
     }
 }
 
+/**
+ * Method to check user login.  Validates login and catches unAuthorized page access.
+ * @param {*} postParams : user post info
+ * @param {*} res : server response
+ * @returns 401 if unAuthorized access, true if login validates, false if not.
+ */
 function checkLogin(postParams, res) {
 
     // console.log(postParams);
