@@ -114,14 +114,14 @@ function homePage(req, res, formData) {
             "content-type": "text/html",
             "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role 
         });
-        console.log("homePage cookie: ", cookie);
+        // console.log("homePage cookie: ", cookie);
     } else {
         res.writeHead(200, {
             "location": "/student",
             "content-type": "text/html",
             "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
         });
-        console.log("homePage cookie: ", cookie);
+        // console.log("homePage cookie: ", cookie);
     }
     readFile("./Lab2/html/home.html", function (err, content) {
         if (err) {
@@ -360,7 +360,7 @@ function unAuthorizedAccess(res) {
 }
 
 /**
- * Method to set page for invalid login. Links back to login page.
+ * Method to set page for invalid login info display to user.
  * @param {*} res 
  */
 function loginInvalid(res) {
