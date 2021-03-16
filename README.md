@@ -164,6 +164,6 @@ Please let me know if you have any questions.
 
 [Back to Top](#Contents)
 
-- Activity 3: Put it all together
+### Activity 3: Put it all together
 
 [Back to Top](#Contents)
