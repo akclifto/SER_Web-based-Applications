@@ -23,7 +23,7 @@ To instantiate object for own testing:
 
 See test FAQ00_test.js to see general call structure.
 
-Class Object Overview:
+Class API Object Overview:
 
   QA:  Class to hold QA objects.  Not directly accessed in test file.
   
