@@ -76,7 +76,7 @@ createServer((req, res) => {
                 }
                 // login is valid, get userRole, set appropriate login
                 else if (status == 200 && formData.role !== undefined) {
-                    console.log("logging in...")
+                    serverLog("Logging in user: " + formData.username + " as " + formData.role);
                     homePage(req, res, formData);
                 }
                 else {
@@ -87,7 +87,7 @@ createServer((req, res) => {
     }
 
 }).listen(port, () => {
-    console.log("Server started. Listening on port: " + port);
+    serverLog("Server started. Listening on port: " + port);
 });
 
 /**
@@ -98,7 +98,7 @@ createServer((req, res) => {
  */
 function homePage(req, res, formData) {
 
-    console.log("setting home page by role: " + formData.role);
+    serverLog("Setting home page by role: " + formData.role);
     let user = "username=" + formData.username;
     let role = "role=" + formData.role;
     let cookie = [user, role];
@@ -191,7 +191,6 @@ function checkAuthorization(postData) {
     return 200;
 }
 
-
 /**
  * Method to route url paths.
  * @param {*} path : path to route
@@ -200,7 +199,7 @@ function checkAuthorization(postData) {
 function routePath(req, res) {
 
     if (req.url === "/") {
-        console.log("\"/\" page.  Redirect to login page.")
+        serverLog("\"/\" page.  Redirecting to login page.")
         req.url = "/login";
         routePath(req, res);
     }
@@ -271,7 +270,7 @@ function loginPage(req, res) {
  * @param {*} resultFunc : callback function result
  */
 function logout(req, res, resultFunc) {
-    console.log("logging out...")
+    serverLog("Logging out user...");
     res.writeHead(200, { "content-type": "text/html" });
     readFile("./Lab2/html/login.html", function (err, content) {
         if (err) {
@@ -292,7 +291,7 @@ function logout(req, res, resultFunc) {
  */
 function pageNotFound(res) {
 
-    console.log("404, page not found.");
+    serverLog("404, page not found.");
     res.writeHead(404, { "content-type": "text/html" });
     readFile("./Lab2/html/pageNotFound.html", function (err, content) {
 
@@ -310,7 +309,7 @@ function pageNotFound(res) {
  */
 function unAuthorizedAccess(res) {
 
-    console.log("Access denied. Unauthorized.")
+    serverLog("Access denied. Unauthorized.")
     res.writeHead(401, { "content-type": "text/html" });
     readFile("./Lab2/html/login.html", function (err, content) {
         if (err) {
@@ -333,7 +332,7 @@ function unAuthorizedAccess(res) {
  */
 function loginInvalid(res) {
 
-    console.log("Login failed. Invalid login credentials.");
+    serverLog("Login failed. Invalid login credentials.");
     res.writeHead(200, { "content-type": "text/html" });
     readFile("./Lab2/html/login.html", function (err, content) {
         if (err) {
@@ -344,4 +343,12 @@ function loginInvalid(res) {
         res.write(content);
         res.end();
     });
+}
+
+/**
+ * Method to normalize server console logs.
+ * @param {*} message : message to be logged from server.
+ */
+function serverLog(message){
+    console.log("Server: " + message);
 }
