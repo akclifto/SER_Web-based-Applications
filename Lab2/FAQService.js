@@ -233,7 +233,7 @@ function routePath(req, res) {
 
 /**
  * Method to set login page, replacing setPage() funct
- * @param {1} req : user request
+ * @param {*} req : user request
  * @param {*} res : server response
  */
 function loginPage(req, res) {
@@ -286,7 +286,7 @@ function logout(req, res, resultFunc) {
 
 /**
  * Method to set pageNotFound page, replacing setPage() funct
- * @param {1} req : user request
+ * @param {*} req : user request
  * @param {*} res : server response
  */
 function pageNotFound(res) {
