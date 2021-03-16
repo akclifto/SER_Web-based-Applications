@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta description="Lab 2 akclifto (akclifto@asu.edu)">
+    <title>Login</title>
+</head>
+
+<body>
+    <h5>{login}</h4>
+    <div id="Lab2--act2">
+        <div class="container"></div>
+        <form action="/home" method="post" style="text-align:center; margin-top: 3rem" name="loginForm">
+            <!-- Username -->
+            <label><b>Username:</b></label>
+            <input required type="text" placeholder="Username" name="username" id="username" value="{Username}"> <br />
+            <!-- Password -->
+            <label><b>Password:</b></label>
+            <input required type="password" placeholder="Password" name="password" id="pw"> <br />
+            <input required type="radio" name="role" value="student" >Student<br>
+            <input required type="radio" name="role" value="instructor" >Instructor<br>
+            <!-- Submit Form -->
+            <input type="submit" value="Login" name="login" id="login">
+        </form>
+    </div>
+</body>
+
+</html>

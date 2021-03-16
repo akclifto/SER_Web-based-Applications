@@ -138,4 +138,6 @@ FAQService00 Class API Object Overview
     `loginInvalid(res)`: Sets login page with text letting user know username/password combination failed and to try to log in again.
 
 ----------------------------------------------------------------------------------
-ACTIVITY TWO:--------------------------------------------------------------------- 
+ACTIVITY THREE:-------------------------------------------------------------------
+
+
