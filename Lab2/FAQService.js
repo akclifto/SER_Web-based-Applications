@@ -11,7 +11,11 @@
 import { readFile } from 'fs';
 import { createServer } from 'http';
 import { parse as qstringParse } from 'querystring';
+import FAQ from "./FAQ.js";
+import path from 'path';
 
+const __dirname = path.resolve();
+const JSON_FILE = (__dirname + "./QA.json");
 const port = process.env.PORT || 3000;
 
 /**
@@ -41,6 +45,9 @@ const fake = new FakeDatabase();
  * @param {*} res : server response
  */
 createServer((req, res) => {
+
+    let faq = new FAQ(JSON_FILE);
+    console.log(faq);
 
     //check simplewebproxy.js, cachewebproxy.js in webproxy folder ref
     if (req.method === "GET") {
