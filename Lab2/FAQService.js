@@ -95,9 +95,29 @@ createServer((req, res) => {
     serverLog("Server started. Listening on port: " + port);
 });
 
-
-function displayQAItems(data, res) {
-    //TODO:
+/**
+ * Method to displayQAItems
+ * @param {*} items 
+ * @returns 
+ */
+function displayQAItems(items) {
+    let page = "";
+    for(let i in items) {
+        // console.log(items[i].author);
+        let each = "";
+        each = items[i].question + "\n" + 
+               new Date() + "\n" + 
+               "Tags: " + items[i].tags + "\n" + 
+               items[i].author + "\n" + 
+               items[i].date + "\n";
+        each = each + 
+            "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
+            " value=\"delete\" name=\"delete\" id=\"delete\" ></form>\n";
+        // console.log(each);
+        page = page.concat(each).concat("\n");
+    }
+    console.log(page);
+    return page;
 }
 
 /**
@@ -134,28 +154,11 @@ function homePage(req, res, formData, faq) {
         content = content.toString().replace('{username1}', formData.username);
         content = content.toString().replace('{username2}', formData.username);
         content = content.toString().replace('{role}', formData.role);
-
+        content = content.toString().replace('{addQA}', "");
 
         // diplay item list from QA
         let items = faq.filter(formData);
-        // content = content.toString().replace("{item}", items);
-        let page = "";
-
-        for(let i in items) {
-            // console.log(items[i].author);
-            let each = "";
-            each = items[i].question + "\n" + 
-                   new Date() + "\n" + 
-                   items[i].tags + "\n" + 
-                   items[i].author + "\n" + 
-                   items[i].date + "\n";
-            each = each + "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
-            " value=\"delete\" name=\"delete\" id=\"delete\" ></form>\n";
-            // console.log(each);
-            page = page.concat(each).concat("\n");
-        }
-        console.log(page);
-        
+        let page = displayQAItems(items)     
         content = content.toString().replace('{item}', page);
         res.write(content);
         res.end();
@@ -258,6 +261,7 @@ function routePath(req, res) {
                 unAuthorizedAccess(res);
             }
         });
+
     }
     else {
         pageNotFound(res);
@@ -324,7 +328,6 @@ function logout(req, res, resultFunc) {
  */
 function pageNotFound(res) {
 
-    serverLog("404, page not found.");
     res.writeHead(404, { "content-type": "text/html" });
     readFile("./Lab2/html/pageNotFound.html", function (err, content) {
 
