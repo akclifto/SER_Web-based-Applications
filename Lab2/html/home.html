@@ -10,6 +10,7 @@
 
 <body>
     <p> Hello <b>{username2}</b>, you are logged in as <b>{role}</b>:<p>
+
     <form action="/" method="post" style="text-align: end">
         <input type="submit" value="Logout" name="logout" id="logout">
     </form>
@@ -18,7 +19,17 @@
     <p style="text-align:center">Put in your filter/search options.</p>
 
 
-    <h1> Forms to go down here</h1>
+    <form action = "/" method="post">
+        <label name="username">Author</label>
+        <input type="text" name="author" placeholder="Author">
+        <label name="tags">Tags</label>
+        <input type="text" name="tags" placeholder="Tags">
+        <label name="startdate">Start Date</label>
+        <input type="Date" id="startdate" name="startdate" placeholder="mm/dd/yyyy">
+        <label name="enddate">End Date</label>
+        <input type="Date" id="enddate" name="enddate" placeholder="mm/dd/yyyy">
+        <input type="submit" value="Search" name="search" id="search" >
+    </form>
 
 </body>
 
