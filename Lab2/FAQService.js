@@ -105,7 +105,7 @@ function displayQAItems(items, role) {
     for (let i in items) {
         // console.log(items[i].author);
 
-        let each = "<b>" + items[i].question + "</b>\n" +
+        let each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
             new Date() + "\n" +
             "Tags: " + items[i].tags + "\n" +
             items[i].author + "\n" +
@@ -119,7 +119,7 @@ function displayQAItems(items, role) {
         page = page.concat(each).concat("\n");
         displays.push(items[i]);
     }
-    console.log(page);
+    // console.log(page);
     return page;
 }
 
@@ -187,11 +187,16 @@ function setInstructorView(req, res, formData, faq) {
             content = content.toString().replace('{username1}', formData.username);
             content = content.toString().replace('{username2}', formData.username);
             content = content.toString().replace('{role}', formData.role);
-            content = content.toString().replace('{addQA}', "add QA");
+            //Make QA button
+            const QAButton = 
+            "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
+            " value=\"Add QA\" name=\"addQA\" id=\"add QA\" ></form>\n";
+
+            content = content.toString().replace('{addQA}', QAButton);
     
             // diplay item list from QA
             let items = faq.filter(formData);
-            let page = displayQAItems(items)
+            let page = displayQAItems(items, formData.role)
             content = content.toString().replace('{item}', page);
             res.write(content);
             res.end();
