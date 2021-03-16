@@ -136,7 +136,7 @@ Please let me know if you have any questions.
 
 ### FAQService00 Class API Object Overview
 
-#### fakeDataBase: Class to hold fake database for authentication
+#### FakeDatabase: Class to hold fake database for authentication
 
 - Not directly accessed
 - constructor():  instantiates `this.db` with username, password, and role.

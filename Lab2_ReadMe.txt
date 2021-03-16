@@ -102,4 +102,40 @@ To test fail cases on login, try some other input variations, accessing  unautho
 
 Please let me know if you have any questions.
 
-TODO: MAKE object API breakdown
+FAQService00 Class API Object Overview
+
+  FakeDatabase: Class to hold fake database for authentication
+    - Not directly accessed
+    - constructor():  instantiates `this.db` with username, password, and role.
+
+  FAQService: Server Method overview
+        - creates fakeDataBase object on initilization.
+
+  FAQService Method overview
+    `createServer() callback`:
+        - creates server on port 3000 by default.
+        - handles GET and POST requests.
+        - implements a `listen() callback` on port.
+    
+    `homePage(req, res, formData)`: set the home page based on the user login role.  This page is accessed after user login is validated.
+    
+    `processFormData(req, res, resultFunc)`: get form data input from login form and logout form. returns callback with data.
+    
+    `checkLogin(postData)`: Authenticates user login.
+    
+    `checkAuthorization(postData)`: helper function for `checkLogin()` to unauthorized access requests.
+    
+    `routePath(req, res)`: handles GET request url routing.
+    
+    `loginPage(req, res)`: sets login page and handles cookie data if present.
+    
+    `logout(req, res, resultFunc)`: Logs out user and redirects to login page.
+    
+    `pageNotFound(res)`: sets 404 request page and links back to login screen.
+    
+    `unAuthorizedAccess(res)`: set unAuthorized page and links back to login page.
+    
+    `loginInvalid(res)`: Sets login page with text letting user know username/password combination failed and to try to log in again.
+
+----------------------------------------------------------------------------------
+ACTIVITY TWO:--------------------------------------------------------------------- 

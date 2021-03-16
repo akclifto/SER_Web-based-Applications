@@ -17,7 +17,7 @@ const port = process.env.PORT || 3000;
 /**
  * Class to hold a fake database for username and password lookup on login.
  */
-class fakeDataBase {
+class FakeDatabase {
     constructor() {
         this.db = [
             {
@@ -33,7 +33,7 @@ class fakeDataBase {
     }
 }
 // load up the fake database.
-const fake = new fakeDataBase();
+const fake = new FakeDatabase();
 // console.log(fake.db);
 
 
