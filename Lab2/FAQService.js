@@ -72,6 +72,15 @@ createServer((req, res) => {
             // get user form data for login
             processFormData(req, res, function (formData) {
 
+                if(formData.search) {
+                    console.log(formData.search);
+                    console.log("search!!!");
+                    // search(req, res, formData, function (content) {
+                    //     res.write(content);
+                    //     res.end();
+                    // })
+                }
+                
                 let status = checkLogin(formData);
                 if (status === 401) {
                     unAuthorizedAccess(res);
@@ -118,7 +127,7 @@ function displayQAItems(items, role) {
             items[i].author + "\n" +
             items[i].date + "\n";
             each = each +
-                "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
+                "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
                 " value=\"delete\" name=\"delete\" id=\"delete\" ></form>\n";
         }
         // console.log(each);
@@ -155,7 +164,7 @@ function homePage(req, res, formData, faq) {
             "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
         });
         readFile("./Lab2/html/home.html", function (err, content) {
-    
+            
             if (err) {
                 console.log("homePage error: ", err);
             }
@@ -173,6 +182,7 @@ function homePage(req, res, formData, faq) {
             res.end();
         });
     }
+    serverLog("Home page display items set.");
 }
 
 function setInstructorView(req, res, formData, faq) {
@@ -230,6 +240,15 @@ function processFormData(req, res, resultFunc) {
         let postData = qstringParse(reqData);
         resultFunc(postData);
     });
+}
+
+function search (req, res, formData, callback) {
+    serverLog("Updating search filters."); 
+
+    console.log("author: ", formData.author,);
+    console.log("tags: ", formData.tags,);
+    console.log("author: ", formData.startdate,);
+    console.log("author: ", formData.enddate,);
 }
 
 
@@ -290,16 +309,6 @@ function routePath(req, res) {
     else if (req.url === "/login") {
         loginPage(req, res);
     }
-    // else if (req.url === "/instructor" || req.url === "/student") {
-    //     processFormData(req, res, function (formData) {
-    //         let status = checkLogin(formData);
-    //         if (status === 401) {
-    //             unAuthorizedAccess(res);
-    //         } else {
-    //             homePage(req, res);
-    //         }
-    //     });
-    // }
     else if (req.url === "/home") {
         //home has been moved to instructor and student pages.
         // should flag correct unAuth access page here.     
@@ -309,7 +318,6 @@ function routePath(req, res) {
                 unAuthorizedAccess(res);
             }
         });
-
     }
     else {
         pageNotFound(res);
