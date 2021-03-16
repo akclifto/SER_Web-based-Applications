@@ -16,7 +16,7 @@ ACTIVITY ONE:-------------------------------------------------------------------
 This has no 3rd party dependencies other than one for dev purposes.
 To run the test file that covers requirements R1 - R5, run the following in terminal:
 
-npm run act1
+`npm run act1`
 
 To instantiate object for own testing:
     `const varName = new FAQ(<path/to/jsonFile>);`
@@ -98,6 +98,8 @@ To login as an instructor use the following username and password.
 "role": "instructor"
 ```
 
-To test fail cases on login, don't use the above input when logging in.  
+To test fail cases on login, try some other input variations, accessing  unauthorized pages, 404s, etc.
+
+Please let me know if you have any questions.
 
 TODO: MAKE object API breakdown
