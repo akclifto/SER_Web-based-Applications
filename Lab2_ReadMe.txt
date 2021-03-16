@@ -77,11 +77,12 @@ Class API Object Overview:
 ----------------------------------------------------------------------------------
 ACTIVITY TWO:--------------------------------------------------------------------- 
 
-To start server, run:
+To start server, from top level, run:
 
-`npm run start` or `npm start`
+`npm run startact2` 
 
-Server is on port 3000, so go to http://localhost:3000 to view.
+See `package.json` file for scripts
+Server is on port 3000, so go to http://localhost:3000 to view. 
 
 To login as a student, use the following username and password:
 

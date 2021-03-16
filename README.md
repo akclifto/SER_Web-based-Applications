@@ -108,11 +108,11 @@ See test `FAQ00_test.js` to see general call structure.
 
 ### Activity 2: Implement a Simple FAQ Service
 
-To start server, run:
+To start server, from top level, run:
 
-`npm run start` or `npm start`
+`npm run startact2`
 
-Server is on port 3000, so go to <http://localhost:3000> to view.
+See `package.json` file for scripts. Server is on port 3000, so go to <http://localhost:3000> to view.
 
 To login as a student, use the following username and password:
 
