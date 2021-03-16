@@ -8,6 +8,7 @@
  * See Lab2_ReadMe.txt for information.
  * 
  */
+import { resolveNaptr } from 'dns';
 import { readFile } from 'fs';
 import { createServer } from 'http';
 import { parse as qstringParse } from 'querystring';
@@ -194,9 +195,6 @@ function checkLogin(postData) {
  */
 function checkAuthorization(postData) {
 
-    // TODO: will need to precheck cookies here to skip subseq logins. 
-    // use diff status code to bypass rest of login check in checkLogin().
-
     // console.log(postData);
     // check if the user tried to access a protected page
     if (postData.username === undefined ||
@@ -222,6 +220,8 @@ function routePath(req, res) {
         routePath(req, res);
     }
     else if (req.url === "/login") {
+        let cookie = req.headers.cookie; // holders user cookie
+        console.log("logout cookie: ", cookie);
         loginPage(req, res);
     }
     else if (req.url === "/instructor") {
@@ -277,9 +277,22 @@ function loginPage(req, res) {
         if (err) {
             console.log("login error: " + err);
         }
-        content = content.toString().replace('{login}', "Login");
-        res.write(content);
-        res.end();
+
+        if (req.headers.cookie) {
+            let name = req.headers.cookie;
+            name = name.split("=");
+            // console.log(name[1]);
+            const greeting = "Welcome back " + name[1] + ", please enter your password.";
+            content = content.toString().replace("{login}", greeting);
+            content = content.toString().replace("{Username}", name[1]);
+            res.write(content);
+            res.end();
+        } else {
+            content = content.toString().replace("{login}", "Login");
+            content = content.toString().replace("{Username}", "Username");
+            res.write(content);
+            res.end();
+        }
     });
 }
 
@@ -292,13 +305,16 @@ function loginPage(req, res) {
 function logout(req, res, resultFunc) {
     console.log("logging out...")
     let cookie = req.headers.cookie; // holders user cookie
+    console.log("logout cookie: ", cookie);
     res.writeHead(200, { "content-type": "text/html" });
     readFile("./Lab2/html/login.html", function (err, content) {
         if (err) {
             console.log("logout error: ", err);
         }
-        console.log("logout cookie: ", cookie);
-        content = content.toString().replace('{login}', "You have been logged out.");
+        let name = req.headers.cookie;
+        name = name.split("=");
+        content = content.toString().replace("{login}", "You have been logged out.");
+        content = content.toString().replace("{Username}", name[1]);
         resultFunc(content);
     });
 }
@@ -356,6 +372,7 @@ function loginInvalid(res) {
             console.log("loginInvalid error: " + err);
         }
         content = content.toString().replace('{login}', "Invalid username/password combination. Please try again.");
+        content = content.toString().replace('{Username}', "Username");
         res.write(content);
         res.end();
     });
