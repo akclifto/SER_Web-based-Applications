@@ -45,7 +45,6 @@ const fake = new FakeDatabase();
  * @param {*} res : server response
  */
 createServer((req, res) => {
-
     let faq = new FAQ(QA_FILE);
     //check simplewebproxy.js, cachewebproxy.js in webproxy folder ref
     if (req.method === "GET") {
@@ -136,10 +135,12 @@ function homePage(req, res, formData, faq) {
         content = content.toString().replace('{username2}', formData.username);
         content = content.toString().replace('{role}', formData.role);
 
+
         // diplay item list from QA
         let items = faq.filter(formData);
         // content = content.toString().replace("{item}", items);
         let page = "";
+
         for(let i in items) {
             // console.log(items[i].author);
             let each = "";
@@ -154,7 +155,8 @@ function homePage(req, res, formData, faq) {
             page = page.concat(each).concat("\n");
         }
         console.log(page);
-        content = content.toString().replace('{item}', page.toString());
+        
+        content = content.toString().replace('{item}', page);
         res.write(content);
         res.end();
     });
