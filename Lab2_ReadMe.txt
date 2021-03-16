@@ -9,6 +9,7 @@
 
 This Lab will use the same structure for the json file as provided in QA.json.
 All scripts will be provided in the `package.json` file along with any dependencies.
+This Lab uses node version 14.15.4.
 
 ----------------------------------------------------------------------------------
 ACTIVITY ONE:--------------------------------------------------------------------- 
