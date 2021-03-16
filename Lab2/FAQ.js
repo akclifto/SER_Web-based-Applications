@@ -164,11 +164,12 @@ class FAQ {
         console.log("Filter tags:", filterParams.tags);
 
         // check valid options per constraints 
-        if (!filterParams.author && !filterParams.dateRange && !filterParams.tags) {
-            return "\nNo valid filters used. Valid filters: author, dateRange, tags.  Format:\n " +
-                "{ author: <authorName>, dateRange: <dateRange>, tags: <tags> }\n " +
-                "Partial filtering of name, dateRange, tags optional. Ex: { author: \"Dr.\" }\n";
-        }
+        // if (!filterParams.author && !filterParams.dateRange && !filterParams.tags) {
+        //     return filteredQA;
+        //     // return "\nNo valid filters used. Valid filters: author, dateRange, tags.  Format:\n " +
+        //     //     "{ author: <authorName>, dateRange: <dateRange>, tags: <tags> }\n " +
+        //     //     "Partial filtering of name, dateRange, tags optional. Ex: { author: \"Dr.\" }\n";
+        // }
         if (filterParams.author) {
             filteredQA = filteredQA.filter(qa => qa.author.toLowerCase().includes(filterParams.author.toLowerCase()));
         }
@@ -230,7 +231,7 @@ class FAQ {
             writeFileSync("./Lab2/QA.json", qas);
             return "Store written to file";
         } catch (err) {
-            console.log("storetoFile Error: " + err);
+            console.log("storeToFile Error: " + err);
             return "Store not written to file.";
         }
     }

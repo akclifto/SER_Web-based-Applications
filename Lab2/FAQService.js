@@ -15,7 +15,7 @@ import FAQ from "./FAQ.js";
 import path from 'path';
 
 const __dirname = path.resolve();
-const JSON_FILE = (__dirname + "./QA.json");
+const QA_FILE = (__dirname + "/Lab2/QA.json");
 const port = process.env.PORT || 3000;
 
 /**
@@ -46,11 +46,10 @@ const fake = new FakeDatabase();
  */
 createServer((req, res) => {
 
-    let faq = new FAQ(JSON_FILE);
-    console.log(faq);
-
+    let faq = new FAQ(QA_FILE);
     //check simplewebproxy.js, cachewebproxy.js in webproxy folder ref
     if (req.method === "GET") {
+        // console.log("faq: ", faq.dataStore);
         routePath(req, res);
     }
     else if (req.method === "POST") {
@@ -84,7 +83,7 @@ createServer((req, res) => {
                 // login is valid, get userRole, set appropriate login
                 else if (status == 200 && formData.role !== undefined) {
                     serverLog("Logging in user: " + formData.username + " as " + formData.role);
-                    homePage(req, res, formData);
+                    homePage(req, res, formData, faq);
                 }
                 else {
                     loginInvalid(res);
@@ -97,13 +96,18 @@ createServer((req, res) => {
     serverLog("Server started. Listening on port: " + port);
 });
 
+
+function displayQAItems(data, res) {
+    //TODO:
+}
+
 /**
  * Method to set homePage based on user login. Sets up instructor and student.
  * @param {*} req : user request
  * @param {*} res : server response
  * @param {*} formData : formData from login input
  */
-function homePage(req, res, formData) {
+function homePage(req, res, formData, faq) {
 
     serverLog("Setting home page by role: " + formData.role);
     let user = "username=" + formData.username;
@@ -131,6 +135,26 @@ function homePage(req, res, formData) {
         content = content.toString().replace('{username1}', formData.username);
         content = content.toString().replace('{username2}', formData.username);
         content = content.toString().replace('{role}', formData.role);
+
+        // diplay item list from QA
+        let items = faq.filter(formData);
+        // content = content.toString().replace("{item}", items);
+        let page = "";
+        for(let i in items) {
+            // console.log(items[i].author);
+            let each = "";
+            each = items[i].question + "\n" + 
+                   new Date() + "\n" + 
+                   items[i].tags + "\n" + 
+                   items[i].author + "\n" + 
+                   items[i].date + "\n";
+            each = each + "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
+            " value=\"delete\" name=\"delete\" id=\"delete\" ></form>\n";
+            // console.log(each);
+            page = page.concat(each).concat("\n");
+        }
+        console.log(page);
+        content = content.toString().replace('{item}', page.toString());
         res.write(content);
         res.end();
     });
