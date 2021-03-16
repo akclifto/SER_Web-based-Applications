@@ -97,7 +97,7 @@ See test `FAQ00_test.js` to see general call structure.
   `let someFilters = { author: <authorName>, dateRange: <dateRange>, tags:<tags> }`
   - Partial filter is optional, ex: `let someFilter = { author: "dr" }` will return collection with all authors start with "dr" substring. (which is everyone but Ruben)
   - See `Testing R5:` in FAQ00_test.js for usage.
-- genId() : helper method that generates a random float id.  Do not need to directly access.
+- `genId()`: helper method that generates a random float id.  Do not need to directly access.
 - `getId(id)`: helpter method to return index of id in store collection. Do not need to directly access.
 - `storeToFile(dataStore)`: method that sync write to QA.json file.
   - See `Testing Write to JSON file:` in FAQ00_test.js for usage.
@@ -136,7 +136,19 @@ Please let me know if you have any questions.
 
 ### FAQService00 Class API Object Overview
 
+#### fakeDataBase: Class to hold fake database for authentication
 
+- Not directly accessed
+- constructor():  instantiates `this.db` with username, password, and role.
+
+#### FAQService: Server Method overview
+
+- creates fakeDataBase object on initilization.
+
+#### FAQService Method overview
+
+- `createServer() callback`:
+  - implements a `listen() callback`.
 
 [Back to Top](#Contents)
 

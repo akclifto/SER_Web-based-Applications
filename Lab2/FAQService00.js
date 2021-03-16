@@ -8,7 +8,6 @@
  * See Lab2_ReadMe.txt for information.
  * 
  */
-import { resolveNaptr } from 'dns';
 import { readFile } from 'fs';
 import { createServer } from 'http';
 import { parse as qstringParse } from 'querystring';
