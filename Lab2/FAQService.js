@@ -104,19 +104,26 @@ function displayQAItems(items, role) {
     let page = "";
     for (let i in items) {
         // console.log(items[i].author);
-
-        let each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
+        let each = "";
+        if(role === "student") {
+            each = "<b>" + items[i].question + "</b>\n" +
+                new Date() + "\n" +
+                "Tags: " + items[i].tags + "\n" +
+                items[i].author + "\n" +
+                items[i].date + "\n";
+        } else {
+            each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
             new Date() + "\n" +
             "Tags: " + items[i].tags + "\n" +
             items[i].author + "\n" +
             items[i].date + "\n";
-        if (role === "instructor") {
             each = each +
                 "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
                 " value=\"delete\" name=\"delete\" id=\"delete\" ></form>\n";
         }
         // console.log(each);
         page = page.concat(each).concat("\n");
+        // TODO: think I will need this for list manip since everything is being rendered as a string.
         displays.push(items[i]);
     }
     // console.log(page);
@@ -283,16 +290,16 @@ function routePath(req, res) {
     else if (req.url === "/login") {
         loginPage(req, res);
     }
-    else if (req.url === "/instructor" || req.url === "/student") {
-        processFormData(req, res, function (formData) {
-            let status = checkLogin(formData);
-            if (status === 401) {
-                unAuthorizedAccess(res);
-            } else {
-                homePage(req, res);
-            }
-        });
-    }
+    // else if (req.url === "/instructor" || req.url === "/student") {
+    //     processFormData(req, res, function (formData) {
+    //         let status = checkLogin(formData);
+    //         if (status === 401) {
+    //             unAuthorizedAccess(res);
+    //         } else {
+    //             homePage(req, res);
+    //         }
+    //     });
+    // }
     else if (req.url === "/home") {
         //home has been moved to instructor and student pages.
         // should flag correct unAuth access page here.     
