@@ -7,7 +7,7 @@
     <meta description="Lab 2 akclifto (akclifto@asu.edu)">
     <title>Home</title>
 </head>
-<script src="http://localhost:3000/file.js"></script>
+
 
 <body>
     <div classname="container">
@@ -37,13 +37,18 @@
         <br />
     
         <!-- Add QA Item -->
-        <form value="{addQA}" action="/" method="post">
-            <input type="submit" value="Add QA" name="addQA" id="addQA">
-        </form>
-        <!-- QA item list -->
-        <div classname="item-list" id="item-list">
-            {item}
+        <div classname="addQA">
+            {addQA}
         </div>
+        <br />
+        <!-- <form value="{addQA}" action="/" method="post">
+            <input type="submit" value="Add QA" name="addQA" id="addQA">
+        </form> -->
+        
+        <!-- QA item list -->
+        <div classname="item-list" 
+            id="item-list" 
+            style="white-space:pre-wrap;">{item}</div>
     </div>
 
 </body>

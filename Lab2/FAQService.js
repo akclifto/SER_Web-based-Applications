@@ -38,7 +38,7 @@ class FakeDatabase {
 }
 // load up the fake database.
 const fake = new FakeDatabase();
-
+let displays = [];
 /**
  * Method to create server.
  * @param {*} req : incoming request
@@ -100,21 +100,24 @@ createServer((req, res) => {
  * @param {*} items 
  * @returns 
  */
-function displayQAItems(items) {
+function displayQAItems(items, role) {
     let page = "";
-    for(let i in items) {
+    for (let i in items) {
         // console.log(items[i].author);
-        let each = "";
-        each = items[i].question + "\n" + 
-               new Date() + "\n" + 
-               "Tags: " + items[i].tags + "\n" + 
-               items[i].author + "\n" + 
-               items[i].date + "\n";
-        each = each + 
-            "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
-            " value=\"delete\" name=\"delete\" id=\"delete\" ></form>\n";
+
+        let each = "<b>" + items[i].question + "</b>\n" +
+            new Date() + "\n" +
+            "Tags: " + items[i].tags + "\n" +
+            items[i].author + "\n" +
+            items[i].date + "\n";
+        if (role === "instructor") {
+            each = each +
+                "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
+                " value=\"delete\" name=\"delete\" id=\"delete\" ></form>\n";
+        }
         // console.log(each);
         page = page.concat(each).concat("\n");
+        displays.push(items[i]);
     }
     console.log(page);
     return page;
@@ -129,40 +132,73 @@ function displayQAItems(items) {
 function homePage(req, res, formData, faq) {
 
     serverLog("Setting home page by role: " + formData.role);
-    let user = "username=" + formData.username;
-    let role = "role=" + formData.role;
-    let cookie = [user, role];
 
-    if (role === "instructor") {
-        res.writeHead(200, {
-            "location": "/instructor",
-            "content-type": "text/html",
-            "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role 
-        });
-    } else {
+    if (formData.role === "instructor") {
+        //set instructor own page.
+        setInstructorView(req, res, formData, faq);
+    }
+    // set student view
+    else {
+        let user = "username=" + formData.username;
+        let role = "role=" + formData.role;
+        let cookie = [user, role];
         res.writeHead(200, {
             "location": "/student",
             "content-type": "text/html",
             "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
         });
+        readFile("./Lab2/html/home.html", function (err, content) {
+    
+            if (err) {
+                console.log("homePage error: ", err);
+            }
+            // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
+            content = content.toString().replace('{username1}', formData.username);
+            content = content.toString().replace('{username2}', formData.username);
+            content = content.toString().replace('{role}', formData.role);
+            content = content.toString().replace('{addQA}', "");
+            
+            // diplay item list from QA
+            let items = faq.filter(formData);
+            let page = displayQAItems(items, formData.role);
+            content = content.toString().replace('{item}', page);
+            res.write(content);
+            res.end();
+        });
     }
-    readFile("./Lab2/html/home.html", function (err, content) {
-        if (err) {
-            console.log("homePage error: ", err);
-        }
-        // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
-        content = content.toString().replace('{username1}', formData.username);
-        content = content.toString().replace('{username2}', formData.username);
-        content = content.toString().replace('{role}', formData.role);
-        content = content.toString().replace('{addQA}', "");
+}
 
-        // diplay item list from QA
-        let items = faq.filter(formData);
-        let page = displayQAItems(items)     
-        content = content.toString().replace('{item}', page);
-        res.write(content);
-        res.end();
-    });
+function setInstructorView(req, res, formData, faq) {
+    let user = "username=" + formData.username;
+    let role = "role=" + formData.role;
+    let cookie = [user, role];
+
+    try {
+        res.writeHead(200, {
+            "location": "/instructor",
+            "content-type": "text/html",
+            "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role 
+        });
+        readFile("./Lab2/html/home.html", function (err, content) {
+            if (err) {
+                console.log("homePage error: ", err);
+            }
+            // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
+            content = content.toString().replace('{username1}', formData.username);
+            content = content.toString().replace('{username2}', formData.username);
+            content = content.toString().replace('{role}', formData.role);
+            content = content.toString().replace('{addQA}', "add QA");
+    
+            // diplay item list from QA
+            let items = faq.filter(formData);
+            let page = displayQAItems(items)
+            content = content.toString().replace('{item}', page);
+            res.write(content);
+            res.end();
+        });
+    } catch (err) {
+        console.log("setInstructorView error: ", err);
+    }
 }
 
 /**
@@ -292,7 +328,7 @@ function loginPage(req, res) {
             res.write(content);
             res.end();
         } else {
-            content = content.toString().replace("{login}", "Login");
+            content = content.toString().replace("{login}", "Login Page");
             content = content.toString().replace("{Username}", "Username");
             res.write(content);
             res.end();
@@ -385,6 +421,6 @@ function loginInvalid(res) {
  * Method to normalize server console logs.
  * @param {*} message : message to be logged from server.
  */
-function serverLog(message){
+function serverLog(message) {
     console.log("Server: " + message);
 }
