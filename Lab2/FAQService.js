@@ -109,6 +109,7 @@ function routePostPaths(req, res, faq) {
             if (formData.search) {
                 // console.log(formData.author);
                 // console.log("search!!!");
+                //TODO fix search display
                 search(req, res, formData, faq, function (content) {
                     res.write(content);
                     res.end();
@@ -391,7 +392,6 @@ function editPage(req, res) {
             console.log("login error: " + err);
         }
         let username = req.headers.cookie;
-        console.log(username);
         username = username.split("=");
 
         content = content.toString().replace("{username1}", username[1]);
