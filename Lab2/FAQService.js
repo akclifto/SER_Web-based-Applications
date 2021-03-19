@@ -50,7 +50,7 @@ createServer((req, res) => {
     //check simplewebproxy.js, cachewebproxy.js in webproxy folder ref
     try {
         if (req.method === "GET") {
-            routeGetPaths(req, res, faq);
+            routeGetPaths(req, res);
         }
         else if (req.method === "POST") {
             routePostPaths(req, res, faq);
@@ -63,7 +63,12 @@ createServer((req, res) => {
     serverLog("Server started. Listening on port: " + port);
 });
 
-function routeGetPaths(req, res, faq) {
+/**
+ * Method to handle GET request path routing
+ * @param {*} req : user request
+ * @param {*} res : server response
+ */
+function routeGetPaths(req, res) {
     // console.log("faq: ", faq.dataStore);
     if (req.url == "/home") {
 
@@ -88,6 +93,12 @@ function routeGetPaths(req, res, faq) {
     }
 }
 
+/**
+ * Method to handle POST request path routing.
+ * @param {*} req : user request
+ * @param {*} res : server response
+ * @param {*} faq : faq object containing QA information.
+ */
 function routePostPaths(req, res, faq) {
 
     if (req.url === "/") {
@@ -251,7 +262,13 @@ function homePage(req, res, formData, faq) {
     serverLog("Home page display items set.");
 }
 
-
+/**
+ * Method to set the view for the instructor's home page.
+ * @param {*} req : user request
+ * @param {*} res : server response
+ * @param {*} formData : user form data input
+ * @param {*} faq : faq object containing QA information
+ */
 function setInstructorView(req, res, formData, faq) {
 
     // let role = "";
@@ -317,6 +334,14 @@ function processFormData(req, res, resultFunc) {
     });
 }
 
+/**
+ * Method to handle search filter options
+ * @param {*} req : user request
+ * @param {*} res : server response
+ * @param {*} formData : user input for search filter parameters
+ * @param {*} faq : faq object containing QA information
+ * @param {*} callback : response containing filtered data content
+ */
 function search(req, res, formData, faq, callback) {
     serverLog("Updating search filters.");
 
