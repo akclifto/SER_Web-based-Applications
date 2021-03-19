@@ -48,77 +48,89 @@ createServer((req, res) => {
     let faq = new FAQ(QA_FILE);
     //check simplewebproxy.js, cachewebproxy.js in webproxy folder ref
     if (req.method === "GET") {
-        // console.log("faq: ", faq.dataStore);
-        if(req.url == "/home") {
-            processFormData(req, res, function (formData) {
-                let status = checkLogin(formData);
-                if (status === 401) {
-                    unAuthorizedAccess(res);
-                }
-            });
-            routePath(req, res);
-        } else {
-            routePath(req, res);
-        }
+        routeGetPaths(req, res, faq);
     }
     else if (req.method === "POST") {
-
-        if (req.url === "/") {
-            processFormData(req, res, function (formData) {
-                //check logout
-                if (formData.logout) {
-                    logout(req, res, function (content) {
-                        res.write(content);
-                        res.end();
-                    });
-                }
-            });
-            // routePath(req, res);
-        }
-        if (req.url === "/home") {
-            // get user form data for login
-            processFormData(req, res, function (formData) {
-
-                if(formData.search) {
-                    console.log(formData.search);
-                    console.log("search!!!");
-                    // search(req, res, formData, function (content) {
-                    //     res.write(content);
-                    //     res.end();
-                    // })
-                }
-                
-                if(formData.login) {
-                    let status = checkLogin(formData);
-                    if (status === 401) {
-                        unAuthorizedAccess(res);
-                    }
-                    else if (status === 403) {
-                        loginInvalid(res);
-                    }
-                    // login is valid, get userRole, set appropriate login
-                    else if (status == 200 && formData.role !== undefined) {
-                        serverLog("Logging in user: " + formData.username + " as " + formData.role);
-                        homePage(req, res, formData, faq);
-                    }
-                    else {
-                        loginInvalid(res);
-                    }
-                }
-            });
-        }
+        routePostPaths(req, res, faq);
     }
 
 }).listen(port, () => {
     serverLog("Server started. Listening on port: " + port);
 });
 
+function routeGetPaths(req, res, faq) {
+    // console.log("faq: ", faq.dataStore);
+    if (req.url == "/home") {
+
+        processFormData(req, res, function (formData) {
+            let status = checkLogin(formData);
+            if (status === 401) {
+                unAuthorizedAccess(res);
+            } else {
+                routePath(req, res);
+            }
+        });
+    } else {
+        routePath(req, res);
+    }
+}
+
+function routePostPaths(req, res, faq) {
+
+    if (req.url === "/") {
+        processFormData(req, res, function (formData) {
+            //check logout
+            if (formData.logout) {
+                logout(req, res, function (content) {
+                    res.write(content);
+                    res.end();
+                });
+            }
+        });
+        // routePath(req, res);
+    }
+    if (req.url === "/home") {
+        // get user form data for login
+        processFormData(req, res, function (formData) {
+
+            if (formData.search) {
+                console.log(formData.search);
+                console.log("search!!!");
+                // search(req, res, formData, function (content) {
+                //     res.write(content);
+                //     res.end();
+                // })
+            }
+
+            if (formData.login) {
+                let status = checkLogin(formData);
+                if (status === 401) {
+                    unAuthorizedAccess(res);
+                }
+                else if (status === 403) {
+                    loginInvalid(res);
+                }
+                // login is valid, get userRole, set appropriate login
+                else if (status == 200 && formData.role !== undefined) {
+                    serverLog("Logging in user: " + 
+                            formData.username + " as " + 
+                            formData.role);
+                    homePage(req, res, formData, faq);
+                }
+                else {
+                    loginInvalid(res);
+                }
+            }
+        });
+    }
+}
+
 /**
- * Method to route url paths.
+ * Helper method for GET method to route url paths.
  * @param {*} path : path to route
  * @param {*} res : server response
  */
- function routePath(req, res) {
+function routePath(req, res) {
 
     if (req.url === "/") {
         serverLog("\"/\" page.  Redirecting to login page.")
@@ -127,16 +139,6 @@ createServer((req, res) => {
     }
     else if (req.url === "/login") {
         loginPage(req, res);
-    }
-    else if (req.url === "/home") {
-        //home has been moved to instructor and student pages.
-        // should flag correct unAuth access page here.     
-        // processFormData(req, res, function (formData) {
-        //     let status = checkLogin(formData);
-        //     if (status === 401) {
-        //         unAuthorizedAccess(res);
-        //     }
-        // });
     }
     else {
         pageNotFound(res);
@@ -153,7 +155,7 @@ function displayQAItems(items, role) {
     for (let i in items) {
         // console.log(items[i].author);
         let each = "";
-        if(role === "student") {
+        if (role === "student") {
             each = "<b>" + items[i].question + "</b>\n" +
                 new Date() + "\n" +
                 "Tags: " + items[i].tags + "\n" +
@@ -161,10 +163,10 @@ function displayQAItems(items, role) {
                 items[i].date + "\n";
         } else {
             each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
-            new Date() + "\n" +
-            "Tags: " + items[i].tags + "\n" +
-            items[i].author + "\n" +
-            items[i].date + "\n";
+                new Date() + "\n" +
+                "Tags: " + items[i].tags + "\n" +
+                items[i].author + "\n" +
+                items[i].date + "\n";
             each = each +
                 "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
                 " value=\"delete\" name=\"delete\" id=\"delete\" ></form>\n";
@@ -203,7 +205,7 @@ function homePage(req, res, formData, faq) {
             "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
         });
         readFile("./Lab2/html/home.html", function (err, content) {
-            
+
             if (err) {
                 console.log("homePage error: ", err);
             }
@@ -212,7 +214,7 @@ function homePage(req, res, formData, faq) {
             content = content.toString().replace('{username2}', formData.username);
             content = content.toString().replace('{role}', formData.role);
             content = content.toString().replace('{addQA}', "");
-            
+
             // diplay item list from QA
             let items = faq.filter(formData);
             let page = displayQAItems(items, formData.role);
@@ -244,12 +246,12 @@ function setInstructorView(req, res, formData, faq) {
             content = content.toString().replace('{username2}', formData.username);
             content = content.toString().replace('{role}', formData.role);
             //Make QA button
-            const QAButton = 
-            "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
-            " value=\"Add QA\" name=\"addQA\" id=\"add QA\" ></form>\n";
+            const QAButton =
+                "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
+                " value=\"Add QA\" name=\"addQA\" id=\"add QA\" ></form>\n";
 
             content = content.toString().replace('{addQA}', QAButton);
-    
+
             // diplay item list from QA
             let items = faq.filter(formData);
             let page = displayQAItems(items, formData.role)
@@ -281,8 +283,8 @@ function processFormData(req, res, resultFunc) {
     });
 }
 
-function search (req, res, formData, callback) {
-    serverLog("Updating search filters."); 
+function search(req, res, formData, callback) {
+    serverLog("Updating search filters.");
 
     console.log("author: ", formData.author,);
     console.log("tags: ", formData.tags,);
