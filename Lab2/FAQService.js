@@ -216,15 +216,15 @@ function homePage(req, res, formData, faq) {
     else {
         roleStatus = 0; // set roleStatus as student
         let user = "username=" + formData.username;
-        let role = "role=" + formData.role;
-        let cookie = [user, role];
-        // let cookie = [user];
+        // let role = "role=" + formData.role;
+        // let cookie = [user, role];
+        let cookie = [user];
 
         try {
             res.writeHead(200, {
                 "content-type": "text/html",
-                "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
-                // "set-cookie": cookie[0], // user 
+                // "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
+                "set-cookie": cookie[0], // user 
             });
             readFile("./Lab2/html/home.html", function (err, content) {
 
@@ -254,7 +254,7 @@ function homePage(req, res, formData, faq) {
 
 function setInstructorView(req, res, formData, faq) {
 
-    let role = "";
+    // let role = "";
     let user = "";
     // belore if-statement used for redirects back to home page from edit/add QA
     if (formData.username === undefined || formData.role === undefined) {
@@ -262,13 +262,14 @@ function setInstructorView(req, res, formData, faq) {
         formData.role = findRole();
     }
     user = "username=" + formData.username;
-    role = "role=" + formData.role;
-    let cookie = [user, role];
+    // role = "role=" + formData.role;
+    let cookie = [user];
 
     try {
         res.writeHead(200, {
             "content-type": "text/html",
-            "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role 
+            // "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role 
+            "set-cookie": cookie[0],
         });
         readFile("./Lab2/html/home.html", function (err, content) {
             if (err) {
@@ -333,13 +334,19 @@ function search(req, res, formData, faq, callback) {
 
 }
 
-/** Helper method to set role for displayQAItems method
+/** Helper method to set role based on roleStatus
  * @returns instructor if roleStatus is 1, student otherwise.
  */
 function findRole() {
     return (roleStatus === 1) ? "instructor" : "student";
 }
 
+
+/**
+ * Helper method to get username from cookie.
+ * @param {*} req :req object
+ * @returns username in cookie.
+ */
 function findUsername(req) {
     let username = req.headers.cookie;
     username = username.split("=");
