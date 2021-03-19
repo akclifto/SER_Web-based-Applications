@@ -17,6 +17,7 @@ import path from 'path';
 const __dirname = path.resolve();
 const QA_FILE = (__dirname + "/Lab2/QA.json");
 const port = process.env.PORT || 3000;
+let roleStatus = 0; // 0 for student, 1 for instructor
 
 /**
  * Class to hold a fake database for username and password lookup on login.
@@ -47,11 +48,15 @@ let displays = [];
 createServer((req, res) => {
     let faq = new FAQ(QA_FILE);
     //check simplewebproxy.js, cachewebproxy.js in webproxy folder ref
-    if (req.method === "GET") {
-        routeGetPaths(req, res, faq);
-    }
-    else if (req.method === "POST") {
-        routePostPaths(req, res, faq);
+    try {
+        if (req.method === "GET") {
+            routeGetPaths(req, res, faq);
+        }
+        else if (req.method === "POST") {
+            routePostPaths(req, res, faq);
+        }
+    } catch (err) {
+        console.log("createServer routing error: ", err);
     }
 
 }).listen(port, () => {
@@ -94,12 +99,12 @@ function routePostPaths(req, res, faq) {
         processFormData(req, res, function (formData) {
 
             if (formData.search) {
-                console.log(formData.search);
-                console.log("search!!!");
-                // search(req, res, formData, function (content) {
-                //     res.write(content);
-                //     res.end();
-                // })
+                // console.log(formData.author);
+                // console.log("search!!!");
+                search(req, res, formData, faq, function (content) {
+                    res.write(content);
+                    res.end();
+                })
             }
 
             if (formData.login) {
@@ -112,9 +117,9 @@ function routePostPaths(req, res, faq) {
                 }
                 // login is valid, get userRole, set appropriate login
                 else if (status == 200 && formData.role !== undefined) {
-                    serverLog("Logging in user: " + 
-                            formData.username + " as " + 
-                            formData.role);
+                    serverLog("Logging in user " +
+                        formData.username + " as " +
+                        formData.role);
                     homePage(req, res, formData, faq);
                 }
                 else {
@@ -192,10 +197,12 @@ function homePage(req, res, formData, faq) {
 
     if (formData.role === "instructor") {
         //set instructor own page.
+        roleStatus = 1; // set roleStatus as instructor
         setInstructorView(req, res, formData, faq);
     }
     // set student view
     else {
+        roleStatus = 0; // set roleStatus as student
         let user = "username=" + formData.username;
         let role = "role=" + formData.role;
         let cookie = [user, role];
@@ -283,13 +290,24 @@ function processFormData(req, res, resultFunc) {
     });
 }
 
-function search(req, res, formData, callback) {
+function search(req, res, formData, faq, callback) {
     serverLog("Updating search filters.");
 
-    console.log("author: ", formData.author,);
-    console.log("tags: ", formData.tags,);
-    console.log("author: ", formData.startdate,);
-    console.log("author: ", formData.enddate,);
+    console.log("Author filter: ", formData.author);
+    console.log("Tags filter: ", formData.tags);
+    console.log("Startdate filter: ", formData.startdate);
+    console.log("Enddate filter: ", formData.enddate);
+    let filter = faq.filter(formData);
+    let page = displayQAItems(filter, findRole());
+    callback(page);
+
+}
+
+/** Helper method to set role for displayQAItems method
+ * @returns instructor if roleStatus is 1, student otherwise.
+ */
+function findRole() {
+    return (roleStatus === 1) ? "instructor" : "student";
 }
 
 
