@@ -114,7 +114,9 @@ function routePostPaths(req, res, faq) {
                     res.end();
                 })
             }
-
+            if(formData.editCancel) {
+                setInstructorView(req, res, formData, faq);
+            }
             if (formData.login) {
                 let status = checkLogin(formData);
                 if (status === 401) {
@@ -249,6 +251,7 @@ function homePage(req, res, formData, faq) {
     }
     serverLog("Home page display items set.");
 }
+
 
 function setInstructorView(req, res, formData, faq) {
     let user = "username=" + formData.username;

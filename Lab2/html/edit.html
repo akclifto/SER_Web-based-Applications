@@ -20,27 +20,16 @@
     <p style="text-align:center"><b>{question}</b></p>
     <br />
 
-    <div classname="edit-body">
-        <label name="answer"> Answer:</label> 
-        <textarea name="answerText" id="answerText" rows="4" cols="4">
-            {answer}
-        </textarea>
+    <form action="/" method="post" style="text-align:center">
+        <label name="answer"> Answer:</label> <br />
+        <textarea name="answerText" id="answerText" rows="10" cols="50">{answer}</textarea><br />
 
-        <label name="tags"> Tags:</label> 
-        <textarea name="answerText" id="answerText" rows="4" cols="4">
-            {tags}
-        </textarea>
+        <label name="tags"> Tags:</label> <br />
+        <textarea name="answerText" id="answerText" rows="10" cols="50">{tags}</textarea><br />
 
-        <input type="submit" value="Save Edit" name="saveEdit" >
-        <input type="submit" value="Save Edit" name="saveEdit" >
-    </div>
-
-
-
-
-
-    <h2>This is the edit page</h2>
-    <p> <a href="/">Go Home</a> </p>
+        <input type="submit" value="Save Edit" name="editSave" >
+        <a href="/home"><input type="submit" value="Cancel" name="editCancel"></a> 
+    </form>
 </body>
 
 </html>
