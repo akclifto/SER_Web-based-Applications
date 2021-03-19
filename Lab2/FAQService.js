@@ -217,29 +217,35 @@ function homePage(req, res, formData, faq) {
         let user = "username=" + formData.username;
         let role = "role=" + formData.role;
         let cookie = [user, role];
-        res.writeHead(200, {
-            "location": "/student",
-            "content-type": "text/html",
-            "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
-        });
-        readFile("./Lab2/html/home.html", function (err, content) {
+        // let cookie = [user];
 
-            if (err) {
-                console.log("homePage error: ", err);
-            }
-            // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
-            content = content.toString().replace('{username1}', formData.username);
-            content = content.toString().replace('{username2}', formData.username);
-            content = content.toString().replace('{role}', formData.role);
-            content = content.toString().replace('{addQA}', "");
-
-            // diplay item list from QA
-            let items = faq.filter(formData);
-            let page = displayQAItems(items, formData.role);
-            content = content.toString().replace('{item}', page);
-            res.write(content);
-            res.end();
-        });
+        try {
+            res.writeHead(200, {
+                "content-type": "text/html",
+                "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
+                // "set-cookie": cookie[0], // user 
+            });
+            readFile("./Lab2/html/home.html", function (err, content) {
+    
+                if (err) {
+                    console.log("homePage error: ", err);
+                }
+                // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
+                content = content.toString().replace('{username1}', formData.username);
+                content = content.toString().replace('{username2}', formData.username);
+                content = content.toString().replace('{role}', formData.role);
+                content = content.toString().replace('{addQA}', "");
+    
+                // diplay item list from QA
+                let items = faq.filter(formData);
+                let page = displayQAItems(items, formData.role);
+                content = content.toString().replace('{item}', page);
+                res.write(content);
+                res.end();
+            });
+        } catch (err) {
+            console.log("homePage Student error: ", err);
+        }
     }
     serverLog("Home page display items set.");
 }
@@ -251,7 +257,6 @@ function setInstructorView(req, res, formData, faq) {
 
     try {
         res.writeHead(200, {
-            "location": "/instructor",
             "content-type": "text/html",
             "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role 
         });
@@ -382,10 +387,11 @@ function editPage(req, res) {
         if (err) {
             console.log("login error: " + err);
         }
-        let name = req.headers.cookie;
-        name = name.split("=");
+        let username = req.headers.cookie;
+        console.log(username);
+        username = username.split("=");
 
-        content = content.toString().replace("{username1}", name[1]);
+        content = content.toString().replace("{username1}", username[1]);
         content = content.toString().replace("{role}", "instructor");
         // TODO:  replace {question}, {answer}, {tags}
         res.write(content);
@@ -408,12 +414,12 @@ function loginPage(req, res) {
         }
         // check cookies and set content
         if (req.headers.cookie) {
-            let name = req.headers.cookie;
-            name = name.split("=");
-            const greeting = "Welcome back " + name[1] + ", please enter your password.";
+            let username = req.headers.cookie;
+            username = username.split("=");
+            const greeting = "Welcome back " + username[1] + ", please enter your password.";
 
             content = content.toString().replace("{login}", greeting);
-            content = content.toString().replace("{Username}", name[1]);
+            content = content.toString().replace("{Username}", username[1]);
             res.write(content);
             res.end();
         } else {
@@ -438,10 +444,10 @@ function logout(req, res, resultFunc) {
         if (err) {
             console.log("logout error: ", err);
         }
-        let name = req.headers.cookie;
-        name = name.split("=");
+        let username = req.headers.cookie;
+        username = username.split("=");
         content = content.toString().replace("{login}", "You have been logged out.");
-        content = content.toString().replace("{Username}", name[1]);
+        content = content.toString().replace("{Username}", username[1]);
         resultFunc(content);
     });
 }
