@@ -107,15 +107,13 @@ function routePostPaths(req, res, faq) {
         processFormData(req, res, function (formData) {
 
             if (formData.search) {
-                // console.log(formData.author);
-                // console.log("search!!!");
                 //TODO fix search display
                 search(req, res, formData, faq, function (content) {
                     res.write(content);
                     res.end();
                 })
             }
-            if(formData.editCancel) {
+            if (formData.editCancel) {
                 setInstructorView(req, res, formData, faq);
             }
             if (formData.login) {
@@ -229,7 +227,7 @@ function homePage(req, res, formData, faq) {
                 // "set-cookie": cookie[0], // user 
             });
             readFile("./Lab2/html/home.html", function (err, content) {
-    
+
                 if (err) {
                     console.log("homePage error: ", err);
                 }
@@ -238,7 +236,7 @@ function homePage(req, res, formData, faq) {
                 content = content.toString().replace('{username2}', formData.username);
                 content = content.toString().replace('{role}', formData.role);
                 content = content.toString().replace('{addQA}', "");
-    
+
                 // diplay item list from QA
                 let items = faq.filter(formData);
                 let page = displayQAItems(items, formData.role);
@@ -255,8 +253,16 @@ function homePage(req, res, formData, faq) {
 
 
 function setInstructorView(req, res, formData, faq) {
-    let user = "username=" + formData.username;
-    let role = "role=" + formData.role;
+
+    let role = "";
+    let user = "";
+    // belore if-statement used for redirects back to home page from edit/add QA
+    if (formData.username === undefined || formData.role === undefined) {
+        formData.username = findUsername(req);
+        formData.role = findRole();
+    }
+    user = "username=" + formData.username;
+    role = "role=" + formData.role;
     let cookie = [user, role];
 
     try {
@@ -334,6 +340,11 @@ function findRole() {
     return (roleStatus === 1) ? "instructor" : "student";
 }
 
+function findUsername(req) {
+    let username = req.headers.cookie;
+    username = username.split("=");
+    return username[1];
+}
 
 /**
  * Method to check user login.  Validates login credentials.
@@ -443,16 +454,21 @@ function loginPage(req, res) {
 function logout(req, res, resultFunc) {
     serverLog("Logging out user...");
     res.writeHead(200, { "content-type": "text/html" });
-    readFile("./Lab2/html/login.html", function (err, content) {
-        if (err) {
-            console.log("logout error: ", err);
-        }
-        let username = req.headers.cookie;
-        username = username.split("=");
-        content = content.toString().replace("{login}", "You have been logged out.");
-        content = content.toString().replace("{Username}", username[1]);
-        resultFunc(content);
-    });
+    roleStatus = 0;
+    try {
+        readFile("./Lab2/html/login.html", function (err, content) {
+            if (err) {
+                console.log("logout error: ", err);
+            }
+            let username = req.headers.cookie;
+            username = username.split("=");
+            content = content.toString().replace("{login}", "You have been logged out.");
+            content = content.toString().replace("{Username}", username[1]);
+            resultFunc(content);
+        });
+    } catch (err) {
+        console.log("logout error: ", err);
+    }
 }
 
 /**
