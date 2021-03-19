@@ -26,13 +26,13 @@ class FakeDatabase {
     constructor() {
         this.db = [
             {
-                "username": "inst",
+                "username": "admin",
                 "password": "admin",
                 "role": "instructor",
             },
             {
                 "username": "stu",
-                "password": "dent",
+                "password": "stu",
                 "role": "student",
             }];
     }
@@ -75,7 +75,15 @@ function routeGetPaths(req, res, faq) {
                 routePath(req, res);
             }
         });
-    } else {
+    }
+    else if (req.url == "/edit") {
+        if (findRole() === "student") {
+            unAuthorizedAccess(res);
+        } else {
+            routePath(req, res);
+        }
+    }
+    else {
         routePath(req, res);
     }
 }
@@ -145,6 +153,9 @@ function routePath(req, res) {
     else if (req.url === "/login") {
         loginPage(req, res);
     }
+    else if (req.url === "/edit") {
+        editPage(req, res);
+    }
     else {
         pageNotFound(res);
     }
@@ -174,7 +185,7 @@ function displayQAItems(items, role) {
                 items[i].date + "\n";
             each = each +
                 "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
-                " value=\"delete\" name=\"delete\" id=\"delete\" ></form>\n";
+                " value=\"Delete\" name=\"delete\" id=\"delete\" ></form>\n";
         }
         // console.log(each);
         page = page.concat(each).concat("\n");
@@ -297,8 +308,12 @@ function search(req, res, formData, faq, callback) {
     console.log("Tags filter: ", formData.tags);
     console.log("Startdate filter: ", formData.startdate);
     console.log("Enddate filter: ", formData.enddate);
+
+
     let filter = faq.filter(formData);
+    // TODO: will need to rebuild the full page.
     let page = displayQAItems(filter, findRole());
+
     callback(page);
 
 }
@@ -351,6 +366,31 @@ function checkAuthorization(postData) {
         return 401;
     }
     return 200;
+}
+
+/**
+ * Method to set edit page, instructor access only.  Instructors only can access.
+ * Instructor can edit answers and tags of a question.
+ * @param {*} req : user request
+ * @param {*} res : server response
+ */
+function editPage(req, res) {
+    res.writeHead(200, { "content-type": "text/html" });
+
+    readFile('./Lab2/html/edit.html', function (err, content) {
+
+        if (err) {
+            console.log("login error: " + err);
+        }
+        let name = req.headers.cookie;
+        name = name.split("=");
+
+        content = content.toString().replace("{username1}", name[1]);
+        content = content.toString().replace("{role}", "instructor");
+        // TODO:  replace {question}, {answer}, {tags}
+        res.write(content);
+        res.end();
+    });
 }
 
 /**

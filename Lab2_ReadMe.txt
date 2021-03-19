@@ -88,14 +88,14 @@ To login as a student, use the following username and password:
 
 ```javascript
 "username": "stu",
-"password": "dent",
+"password": "stu",
 "role": "student",
 ```
 
 To login as an instructor use the following username and password.
 
 ```javascript
-"username": "inst",
+"username": "admin",
 "password": "admin",
 "role": "instructor"
 ```
