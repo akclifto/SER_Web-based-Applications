@@ -257,20 +257,3 @@ class FAQ {
 }
 
 export default FAQ;
-
-    // /**
-    //  * Async Attempt to read file.
-    //  * @param {*} jsonFile 
-    //  * @returns nothing, doesn't work
-    //  */
-    // async loadTest(jsonFile) {
-    //     const options = { encoding: 'utf8', flag: 'r' };
-    //     readFile(jsonFile, options, function (err, data) {
-    //         if (err) {
-    //             console.log("Error in loadTest: ", err);
-    //         } else {
-    //             let qas = JSON.parse(data);
-    //             return qas;
-    //         }
-    //     });
-    // }

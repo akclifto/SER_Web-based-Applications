@@ -49,7 +49,17 @@ createServer((req, res) => {
     //check simplewebproxy.js, cachewebproxy.js in webproxy folder ref
     if (req.method === "GET") {
         // console.log("faq: ", faq.dataStore);
-        routePath(req, res);
+        if(req.url == "/home") {
+            processFormData(req, res, function (formData) {
+                let status = checkLogin(formData);
+                if (status === 401) {
+                    unAuthorizedAccess(res);
+                }
+            });
+            routePath(req, res);
+        } else {
+            routePath(req, res);
+        }
     }
     else if (req.method === "POST") {
 
@@ -63,11 +73,8 @@ createServer((req, res) => {
                     });
                 }
             });
+            // routePath(req, res);
         }
-        else {
-            routePath(req, res);
-        }
-
         if (req.url === "/home") {
             // get user form data for login
             processFormData(req, res, function (formData) {
@@ -81,20 +88,22 @@ createServer((req, res) => {
                     // })
                 }
                 
-                let status = checkLogin(formData);
-                if (status === 401) {
-                    unAuthorizedAccess(res);
-                }
-                else if (status === 403) {
-                    loginInvalid(res);
-                }
-                // login is valid, get userRole, set appropriate login
-                else if (status == 200 && formData.role !== undefined) {
-                    serverLog("Logging in user: " + formData.username + " as " + formData.role);
-                    homePage(req, res, formData, faq);
-                }
-                else {
-                    loginInvalid(res);
+                if(formData.login) {
+                    let status = checkLogin(formData);
+                    if (status === 401) {
+                        unAuthorizedAccess(res);
+                    }
+                    else if (status === 403) {
+                        loginInvalid(res);
+                    }
+                    // login is valid, get userRole, set appropriate login
+                    else if (status == 200 && formData.role !== undefined) {
+                        serverLog("Logging in user: " + formData.username + " as " + formData.role);
+                        homePage(req, res, formData, faq);
+                    }
+                    else {
+                        loginInvalid(res);
+                    }
                 }
             });
         }
@@ -105,9 +114,39 @@ createServer((req, res) => {
 });
 
 /**
+ * Method to route url paths.
+ * @param {*} path : path to route
+ * @param {*} res : server response
+ */
+ function routePath(req, res) {
+
+    if (req.url === "/") {
+        serverLog("\"/\" page.  Redirecting to login page.")
+        req.url = "/login";
+        routePath(req, res);
+    }
+    else if (req.url === "/login") {
+        loginPage(req, res);
+    }
+    else if (req.url === "/home") {
+        //home has been moved to instructor and student pages.
+        // should flag correct unAuth access page here.     
+        // processFormData(req, res, function (formData) {
+        //     let status = checkLogin(formData);
+        //     if (status === 401) {
+        //         unAuthorizedAccess(res);
+        //     }
+        // });
+    }
+    else {
+        pageNotFound(res);
+    }
+}
+
+/**
  * Method to displayQAItems
  * @param {*} items 
- * @returns 
+ * @returns formatted list of QA items to display.
  */
 function displayQAItems(items, role) {
     let page = "";
@@ -295,36 +334,6 @@ function checkAuthorization(postData) {
 }
 
 /**
- * Method to route url paths.
- * @param {*} path : path to route
- * @param {*} res : server response
- */
-function routePath(req, res) {
-
-    if (req.url === "/") {
-        serverLog("\"/\" page.  Redirecting to login page.")
-        req.url = "/login";
-        routePath(req, res);
-    }
-    else if (req.url === "/login") {
-        loginPage(req, res);
-    }
-    else if (req.url === "/home") {
-        //home has been moved to instructor and student pages.
-        // should flag correct unAuth access page here.     
-        processFormData(req, res, function (formData) {
-            let status = checkLogin(formData);
-            if (status === 401) {
-                unAuthorizedAccess(res);
-            }
-        });
-    }
-    else {
-        pageNotFound(res);
-    }
-}
-
-/**
  * Method to set login page, replacing setPage() funct
  * @param {*} req : user request
  * @param {*} res : server response
@@ -384,6 +393,7 @@ function logout(req, res, resultFunc) {
  */
 function pageNotFound(res) {
 
+    serverLog("Status 404, page not found.");
     res.writeHead(404, { "content-type": "text/html" });
     readFile("./Lab2/html/pageNotFound.html", function (err, content) {
 
