@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta description="Lab 2 akclifto (akclifto@asu.edu)">
+    <title>Home</title>
+</head>
+
+<body>
+    <p> Hello <b>{username1}</b>, you are logged in as <b>{role}</b>:</p>
+    
+    <!-- Logout -->
+    <form action="/" method="post" style="text-align: end">
+        <input type="submit" value="Logout" name="logout" id="logout">
+    </form>
+    
+    <p style="text-align:center">Add a new Question:</p>
+    <p style="text-align:center"><b>Question:</b></p>
+    
+    <form action="/home" method="post" style="text-align:center">
+        <textarea 
+            name="answerText" 
+            id="answerText" 
+            placeholder="Enter question here..." 
+            rows="10" 
+            cols="50">Enter question here...
+        </textarea><br />
+        <br />
+        <label name="answer"> Answer:</label> <br />
+        <textarea 
+            name="answerText" 
+            id="answerText" 
+            rows="10" 
+            cols="50"
+            placeholder="Enter answer here...">Enter answer here...
+        </textarea><br />
+
+        <label name="tags"> Tags:</label> <br />
+        <textarea 
+            name="tagsText" 
+            id="tagsText" 
+            rows="10" 
+            cols="50"
+            placeholder="Enter tags...">Enter tags...
+        </textarea><br />
+
+        <input type="submit" value="Add QA" name="addQASave" >
+        <a href="/home"><input type="submit" value="Cancel" name="addQACancel"></a> 
+    </form>
+</body>
+
+</html>

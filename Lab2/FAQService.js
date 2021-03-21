@@ -81,7 +81,7 @@ function routeGetPaths(req, res) {
             }
         });
     }
-    else if (req.url == "/edit") {
+    else if (req.url == "/edit" || req.url == "/add") {
         if (findRole() === "student") {
             unAuthorizedAccess(res);
         } else {
@@ -124,7 +124,7 @@ function routePostPaths(req, res, faq) {
                     res.end();
                 })
             }
-            if (formData.editCancel) {
+            if (formData.editCancel || formData.addQACancel) {
                 setInstructorView(req, res, formData, faq);
             }
             if (formData.login) {
@@ -167,6 +167,10 @@ function routePath(req, res) {
     }
     else if (req.url === "/edit") {
         editPage(req, res);
+    }
+    else if (req.url === "/add") {
+        console.log("add page......")
+        addPage(req, res);
     }
     else {
         pageNotFound(res);
@@ -298,8 +302,7 @@ function setInstructorView(req, res, formData, faq) {
             content = content.toString().replace('{role}', formData.role);
             //Make QA button
             const QAButton =
-                "<form action=\"/\" method=\"post\"><input type=\"submit\" " +
-                " value=\"Add QA\" name=\"addQA\" id=\"add QA\" ></form>\n";
+                "<button name=\"addQAButton\" onClick=\"window.location.href='/add';\">Add QA</button>\n";
 
             content = content.toString().replace('{addQA}', QAButton);
 
@@ -432,7 +435,26 @@ function editPage(req, res) {
     readFile('./Lab2/html/edit.html', function (err, content) {
 
         if (err) {
-            console.log("login error: " + err);
+            console.log("edut error: " + err);
+        }
+        let username = req.headers.cookie;
+        username = username.split("=");
+
+        content = content.toString().replace("{username1}", username[1]);
+        content = content.toString().replace("{role}", "instructor");
+        // TODO:  replace {question}, {answer}, {tags}
+        res.write(content);
+        res.end();
+    });
+}
+
+function addPage(req, res) {
+    res.writeHead(200, { "content-type": "text/html" });
+
+    readFile('./Lab2/html/add.html', function (err, content) {
+
+        if (err) {
+            console.log("add page error: " + err);
         }
         let username = req.headers.cookie;
         username = username.split("=");
