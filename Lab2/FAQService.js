@@ -191,26 +191,25 @@ function displayQAItems(items, role) {
     for (let i in items) {
         let each = "";
         //convert date string
-        let date = new Date(items[i].date);
+        // let date = new Date(items[i].date);
 
         if (role === "student") {
 
             each = "<b>" + items[i].question + "</b>\n" +
-                "Search date: " + new Date().toUTCString() + "\n" +
+                items[i].answer + "\n" + 
                 "Tags: " + items[i].tags + "\n" +
                 items[i].author + "\n" +
-                date.toDateString() + "\n";
+                new Date(items[i].date).toDateString() + "\n";
         } else {
             each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
-                "Search date: " + new Date() + "\n" +
+                items[i].answer + "\n" + 
                 "Tags: " + items[i].tags + "\n" +
                 items[i].author + "\n" +
-                date.toDateString() + "\n";
+                new Date(items[i].date).toDateString() + "\n";
             each = each +
                 "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
                 " value=\"Delete\" name=\"delete\" id=\"delete\" ></form>\n";
         }
-        // console.log(each);
         page = page.concat(each).concat("\n");
         // TODO: think I will need this for list manip since everything is being rendered as a string.
         displays.push(items[i]);
