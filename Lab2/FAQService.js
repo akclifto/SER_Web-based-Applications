@@ -103,6 +103,7 @@ function routePostPaths(req, res, faq) {
 
     if (req.url === "/") {
         processFormData(req, res, function (formData) {
+            
             //check logout
             if (formData.logout) {
                 logout(req, res, function (content) {
@@ -118,11 +119,7 @@ function routePostPaths(req, res, faq) {
         processFormData(req, res, function (formData) {
 
             if (formData.search) {
-                //TODO fix search display
-                search(req, res, formData, faq, function (content) {
-                    res.write(content);
-                    res.end();
-                })
+                homePage(req, res, formData, faq);
             }
             if (formData.editCancel || formData.addQACancel) {
                 setInstructorView(req, res, formData, faq);
@@ -169,7 +166,6 @@ function routePath(req, res) {
         editPage(req, res);
     }
     else if (req.url === "/add") {
-        console.log("add page......")
         addPage(req, res);
     }
     else {
@@ -220,6 +216,10 @@ function displayQAItems(items, role) {
  */
 function homePage(req, res, formData, faq) {
 
+    if (formData.username === undefined || formData.role === undefined) {
+        formData.username = findUsername(req);
+        formData.role = findRole();
+    }
     serverLog("Setting home page by role: " + formData.role);
 
     if (formData.role === "instructor") {
@@ -229,6 +229,7 @@ function homePage(req, res, formData, faq) {
     }
     // set student view
     else {
+
         roleStatus = 0; // set roleStatus as student
         let user = "username=" + formData.username;
         // let role = "role=" + formData.role;
@@ -335,31 +336,6 @@ function processFormData(req, res, resultFunc) {
         let postData = qstringParse(reqData);
         resultFunc(postData);
     });
-}
-
-/**
- * Method to handle search filter options
- * @param {*} req : user request
- * @param {*} res : server response
- * @param {*} formData : user input for search filter parameters
- * @param {*} faq : faq object containing QA information
- * @param {*} callback : response containing filtered data content
- */
-function search(req, res, formData, faq, callback) {
-    serverLog("Updating search filters.");
-
-    console.log("Author filter: ", formData.author);
-    console.log("Tags filter: ", formData.tags);
-    console.log("Startdate filter: ", formData.startdate);
-    console.log("Enddate filter: ", formData.enddate);
-
-
-    let filter = faq.filter(formData);
-    // TODO: will need to rebuild the full page.
-    let page = displayQAItems(filter, findRole());
-
-    callback(page);
-
 }
 
 /** Helper method to set role based on roleStatus
