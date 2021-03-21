@@ -159,22 +159,21 @@ class FAQ {
     filter(filterParams) {
 
         let filteredQA = this.dataStore;
-        console.log("Filter author:", filterParams.author);
-        console.log("Filter dateRange:", filterParams.dateRange);
-        console.log("Filter tags:", filterParams.tags);
+        // console.log("Filter author:", filterParams.author);
+        // console.log("Filter startdate:", filterParams.startdate);
+        // console.log("Filter enddate:", filterParams.enddate);
+        // console.log("Filter tags:", filterParams.tags);
 
-        // check valid options per constraints 
-        // if (!filterParams.author && !filterParams.dateRange && !filterParams.tags) {
-        //     return filteredQA;
-        //     // return "\nNo valid filters used. Valid filters: author, dateRange, tags.  Format:\n " +
-        //     //     "{ author: <authorName>, dateRange: <dateRange>, tags: <tags> }\n " +
-        //     //     "Partial filtering of name, dateRange, tags optional. Ex: { author: \"Dr.\" }\n";
-        // }
         if (filterParams.author) {
             filteredQA = filteredQA.filter(qa => qa.author.toLowerCase().includes(filterParams.author.toLowerCase()));
         }
-        if (filterParams.dateRange) {
-            filteredQA = filteredQA.filter(qa => qa.date.includes(filterParams.dateRange));
+        if (filterParams.startdate) {
+            // let startDate = new Date(filterParams.startdate);
+            filteredQA = filteredQA.filter(qa => qa.date >= filterParams.startdate);
+        }
+        if (filterParams.enddate) {
+            // let endDate = new Date(filterParams.enddate);
+            filteredQA = filteredQA.filter(qa => qa.date <= filterParams.enddate);
         }
         if (filterParams.tags) {
             filteredQA = filteredQA.filter(qa => qa.tags.toLowerCase().includes(filterParams.tags.toLowerCase()));

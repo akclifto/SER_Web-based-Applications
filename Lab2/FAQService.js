@@ -180,21 +180,32 @@ function routePath(req, res) {
  */
 function displayQAItems(items, role) {
     let page = "";
+
+    // Check no filtered results.  
+    // If the first item is undefined, all items will be undefined.
+    if(items[0].question === undefined) {
+        page = "<b>No results from search filter. <b>";
+        return page;
+    }
+
     for (let i in items) {
-        // console.log(items[i].author);
         let each = "";
+        //convert date string
+        let date = new Date(items[i].date);
+
         if (role === "student") {
+
             each = "<b>" + items[i].question + "</b>\n" +
-                new Date() + "\n" +
+                "Search date: " + new Date().toUTCString() + "\n" +
                 "Tags: " + items[i].tags + "\n" +
                 items[i].author + "\n" +
-                items[i].date + "\n";
+                date.toDateString() + "\n";
         } else {
             each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
-                new Date() + "\n" +
+                "Search date: " + new Date() + "\n" +
                 "Tags: " + items[i].tags + "\n" +
                 items[i].author + "\n" +
-                items[i].date + "\n";
+                date.toDateString() + "\n";
             each = each +
                 "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
                 " value=\"Delete\" name=\"delete\" id=\"delete\" ></form>\n";
