@@ -230,7 +230,6 @@ function homePage(req, res, formData, faq) {
         formData.username = findUsername(req);
         formData.role = findRole();
     }
-    serverLog("Setting home page by role: " + formData.role);
 
     if (formData.role === "instructor") {
         //set instructor own page.
@@ -296,7 +295,7 @@ function setInstructorView(req, res, formData, faq) {
     user = "username=" + formData.username;
     // role = "role=" + formData.role;
     let cookie = [user];
-
+    serverLog("Setting home page by role: " + formData.role);
     try {
         res.writeHead(200, {
             "content-type": "text/html",

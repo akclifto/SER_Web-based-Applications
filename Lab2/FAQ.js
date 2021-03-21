@@ -168,13 +168,16 @@ class FAQ {
             filteredQA = filteredQA.filter(qa => qa.author.toLowerCase().includes(filterParams.author.toLowerCase()));
         }
         if (filterParams.startdate) {
-            // let startDate = new Date(filterParams.startdate);
-            filteredQA = filteredQA.filter(qa => qa.date >= filterParams.startdate);
+            filteredQA = filteredQA.filter(qa => 
+                qa.date >= filterParams.startdate || 
+                qa.date.includes(filterParams.startdate));
         }
         if (filterParams.enddate) {
-            // let endDate = new Date(filterParams.enddate);
-            filteredQA = filteredQA.filter(qa => qa.date <= filterParams.enddate);
+            filteredQA = filteredQA.filter(qa => 
+                qa.date <= filterParams.enddate ||
+                qa.date.includes(filterParams.enddate));
         }
+
         if (filterParams.tags) {
             filteredQA = filteredQA.filter(qa => qa.tags.toLowerCase().includes(filterParams.tags.toLowerCase()));
         }
