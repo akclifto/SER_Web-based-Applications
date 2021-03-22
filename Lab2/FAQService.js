@@ -144,7 +144,7 @@ function routePostPaths(req, res, faq) {
 
             }
             if (formData.editCancel || formData.addQACancel) {
-                setInstructorView(req, res, formData, faq);
+                homePage(req, res, formData, faq);
             }
             if (formData.login) {
                 let status = checkLogin(req, formData);
@@ -208,11 +208,12 @@ function displayQAItems(items, role) {
 
     // Check no filtered results.  
     // If the first item is undefined, all items will be undefined.
-    if (items[0] === undefined) {
-        display = "<b>No results from search filter. <b>";
-        return display;
-    }
-    else if (role === "student") {
+    if (role === "student") {
+        
+        if (items[0] === undefined) {
+            display = "<b>No results from search filter. <b>";
+            return display;
+        }
 
         let addToPage = items.map((item) => {
             let itemContent =
@@ -225,22 +226,39 @@ function displayQAItems(items, role) {
         });
 
         display = "<br />" +
-            "<div classname=\"item-list\" id=\"item-list\" style=\"white-space:pre-wrap;\">" +
+            "<div classname=\"item-list\" id=\"item-list\">" +
             addToPage.join("<br/>") +
             "</div>";
-
         return display;
     } else {
 
+        if (items[0] === undefined) {
+            display = "<br />" +
+            "<button name=\"addQAButton\" onClick=\"window.location.href='/add';\">Add QA</button>" + 
+            "<br/><br/>" + "<b>No results from search filter. <b>";
+            return display;
+        }
 
-        // each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
-        //     items[i].answer + "\n" +
-        //     "Tags: " + items[i].tags + "\n" +
-        //     items[i].author + "\n" +
-        //     new Date(items[i].date).toDateString() + "\n";
-        // each = each +
-        //     "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
-        //     " value=\"Delete\" name=\"delete\" id=\"delete\" ></form>\n";
+        let addToPage = items.map((item) => {
+            let itemContent =
+                "<a href=\"/edit\"<b>" + item.question + "</b></a><br/>" +
+                item.answer + "<br/>" +
+                "Tags: " + item.tags + "<br/>" +
+                item.author + "<br/>" +
+                new Date(item.date).toDateString() + "<br/>" + 
+                "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
+                "value=\"Delete\" name=\"delete\" id=\"delete\" ></form>";
+            return itemContent;
+        });
+
+        display = 
+            "<br />" +
+            "<button name=\"addQAButton\" onClick=\"window.location.href='/add';\">Add QA</button>" + 
+            "<br/><br/>" +
+            "<div classname=\"item-list\" id=\"item-list\" style=\"white-space:pre-wrap;\">" +
+            addToPage.join("<br/>") +
+            "</div>";
+        return display;
     }
 }
 
@@ -256,13 +274,6 @@ function homePage(req, res, formData, faq) {
         formData.username = findUsername(req);
         formData.role = findRole(req);
     }
-
-    // if (formData.role === "instructor") {
-    //     //set instructor own page.
-    //     setInstructorView(req, res, formData, faq);
-    // }
-    // set student view
-    // else {
 
     let user = "username=" + formData.username;
 
@@ -300,9 +311,9 @@ function homePage(req, res, formData, faq) {
                 "<input type=\"submit\" value=\"Search\" name=\"search\" >" +
                 "</form>";
 
-            // add QA here, itemList and admin priv for instructor
             //write out the QA item list
             let items = faq.filter(formData);
+            // add QA here, itemList and admin priv for instructor
             let itemList = displayQAItems(items, formData.role);
             page = page.concat(" " + itemList);
             content = content.toString().replace('{content}', page);
@@ -322,48 +333,48 @@ function homePage(req, res, formData, faq) {
  * @param {*} formData : user form data input
  * @param {*} faq : faq object containing QA information
  */
-function setInstructorView(req, res, formData, faq) {
+// function setInstructorView(req, res, formData, faq) {
 
-    // let role = "";
-    let user = "";
-    // belore if-statement used for redirects back to home page from edit/add QA
-    if (formData.username === undefined || formData.role === undefined) {
-        formData.username = findUsername(req);
-        formData.role = findRole(req);
-    }
-    user = "username=" + formData.username;
+//     // let role = "";
+//     let user = "";
+//     // belore if-statement used for redirects back to home page from edit/add QA
+//     if (formData.username === undefined || formData.role === undefined) {
+//         formData.username = findUsername(req);
+//         formData.role = findRole(req);
+//     }
+//     user = "username=" + formData.username;
 
-    serverLog("Setting home page by role: " + formData.role);
-    try {
-        res.writeHead(200, {
-            "content-type": "text/html",
-            "set-cookie": user,
-        });
-        readFile("./Lab2/html/home.html", function (err, content) {
-            if (err) {
-                console.log("homePage error: ", err);
-            }
-            // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
-            content = content.toString().replace('{username1}', formData.username);
-            content = content.toString().replace('{username2}', formData.username);
-            content = content.toString().replace('{role}', formData.role);
-            //Make QA button
-            const QAButton =
-                "<button name=\"addQAButton\" onClick=\"window.location.href='/add';\">Add QA</button>\n";
+//     serverLog("Setting home page by role: " + formData.role);
+//     try {
+//         res.writeHead(200, {
+//             "content-type": "text/html",
+//             "set-cookie": user,
+//         });
+//         readFile("./Lab2/html/home.html", function (err, content) {
+//             if (err) {
+//                 console.log("homePage error: ", err);
+//             }
+//             // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
+//             content = content.toString().replace('{username1}', formData.username);
+//             content = content.toString().replace('{username2}', formData.username);
+//             content = content.toString().replace('{role}', formData.role);
+//             //Make QA button
+//             const QAButton =
+//                 "<button name=\"addQAButton\" onClick=\"window.location.href='/add';\">Add QA</button>\n";
 
-            content = content.toString().replace('{addQA}', QAButton);
+//             content = content.toString().replace('{addQA}', QAButton);
 
-            // diplay item list from QA
-            let items = faq.filter(formData);
-            let page = displayQAItems(items, formData.role)
-            content = content.toString().replace('{item}', page);
-            res.write(content);
-            res.end();
-        });
-    } catch (err) {
-        console.log("setInstructorView error: ", err);
-    }
-}
+//             // diplay item list from QA
+//             let items = faq.filter(formData);
+//             let page = displayQAItems(items, formData.role)
+//             content = content.toString().replace('{item}', page);
+//             res.write(content);
+//             res.end();
+//         });
+//     } catch (err) {
+//         console.log("setInstructorView error: ", err);
+//     }
+// }
 
 /**
  * Method to get form data input. Check http_server_external.js class example.
@@ -606,7 +617,7 @@ function addQASave(req, res, formData, faq) {
             findUsername(req),
             new Date().toISOString());
         serverLog("New QA has been successfully added.");
-        setInstructorView(req, res, formData, faq);
+        homePage(req, res, formData, faq);
     } else {
         res.writeHead(200, { "content-type": "text/html" });
         try {
