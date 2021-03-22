@@ -17,7 +17,6 @@
  const __dirname = path.resolve();
  const QA_FILE = (__dirname + "/Lab2/QA.json");
  const port = process.env.PORT || 3000;
- let roleStatus = 0; // 0 for student, 1 for instructor
  
  /**
   * Class to hold a fake database for username and password lookup on login.
@@ -82,7 +81,7 @@
          });
      }
      else if (req.url == "/edit" || req.url == "/add") {
-         if (findRole() === "student") {
+         if (findRole(req) === "student") {
              unAuthorizedAccess(res);
          } else {
              routePath(req, res);
@@ -230,28 +229,26 @@
  
      if (formData.username === undefined || formData.role === undefined) {
          formData.username = findUsername(req);
-         formData.role = findRole();
+         formData.role = findRole(req);
      }
  
      if (formData.role === "instructor") {
          //set instructor own page.
-         roleStatus = 1; // set roleStatus as instructor
          setInstructorView(req, res, formData, faq);
      }
      // set student view
      else {
  
-         roleStatus = 0; // set roleStatus as student
          let user = "username=" + formData.username;
          // let role = "role=" + formData.role;
          // let cookie = [user, role];
-         let cookie = [user];
+        //  let cookie = [user];
  
          try {
              res.writeHead(200, {
                  "content-type": "text/html",
                  // "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
-                 "set-cookie": cookie[0], // user 
+                 "set-cookie": user, // user 
              });
              readFile("./Lab2/html/home.html", function (err, content) {
  
@@ -292,17 +289,17 @@
      // belore if-statement used for redirects back to home page from edit/add QA
      if (formData.username === undefined || formData.role === undefined) {
          formData.username = findUsername(req);
-         formData.role = findRole();
+         formData.role = findRole(req);
      }
      user = "username=" + formData.username;
      // role = "role=" + formData.role;
-     let cookie = [user];
+    //  let cookie = [user];
      serverLog("Setting home page by role: " + formData.role);
      try {
          res.writeHead(200, {
              "content-type": "text/html",
              // "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role 
-             "set-cookie": cookie[0],
+             "set-cookie": user,
          });
          readFile("./Lab2/html/home.html", function (err, content) {
              if (err) {
@@ -349,12 +346,23 @@
      });
  }
  
- /** Helper method to set role based on roleStatus
+ /** Helper method to set role based on database.  Multi-cookies do not function properly in browser.
+  * This is a workaround to get role.
   * @returns instructor if roleStatus is 1, student otherwise.
   */
- function findRole() {
-     // TODO: remove this and parse from cookies
-     return (roleStatus === 1) ? "instructor" : "student";
+ function findRole(req) {
+
+     let username = qstringParse(req.headers.cookie);
+     console.log("username: ", username.username);
+     username = username.username.toString();
+     for (let i in fake.db) {
+         if(username === fake.db[i].username) {
+             console.log("db role: ", fake.db[i].role);
+             return fake.db[i].role;
+         }
+     }
+     return "No Role Found";
+    //  return (roleStatus === 1) ? "instructor" : "student";
  }
  
  
@@ -390,8 +398,8 @@
      for (let i in fake.db) {
  
          if (postData.username === fake.db[i].username &&
-             postData.password == fake.db[i].password &&
-             postData.role == fake.db[i].role) {
+             postData.password === fake.db[i].password &&
+             postData.role === fake.db[i].role) {
              return 200;
          }
      }
@@ -515,7 +523,6 @@
   */
  function logout(req, res, resultFunc) {
      serverLog("Logging out user " + findUsername(req));
-     roleStatus = 0;
      res.writeHead(200, { "content-type": "text/html" });
      try {
          readFile("./Lab2/html/login.html", function (err, content) {
@@ -663,4 +670,3 @@
  function serverLog(message) {
      console.log("Server: " + message);
  }
- 
