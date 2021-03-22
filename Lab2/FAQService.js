@@ -177,7 +177,7 @@ function routePath(req, res) {
 }
 
 /**
- * Method to displayQAItems
+ * Method to display QA Items on home page.
  * @param {*} items 
  * @returns formatted list of QA items to display.
  */
@@ -353,6 +353,7 @@ function processFormData(req, res, resultFunc) {
  * @returns instructor if roleStatus is 1, student otherwise.
  */
 function findRole() {
+    // TODO: remove this and parse from cookies
     return (roleStatus === 1) ? "instructor" : "student";
 }
 
@@ -443,7 +444,7 @@ function editPage(req, res) {
 }
 
 /**
- * Method to render the add QA page.
+ * Method to set the add QA page. Instructor's access only.
  * @param {*} req : user request
  * @param {*} res : server response
  */
@@ -533,7 +534,7 @@ function logout(req, res, resultFunc) {
 }
 
 /**
- * Method to add a new QA to the data store.  This will do preliminary check to 
+ * Method to add a new QA to the faq data store.  This will do preliminary check to 
  * ensure fields are valid, and if so, will write the new QA to the data store.
  * @param {*} req : user request
  * @param {*} res : server response

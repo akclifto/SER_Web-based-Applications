@@ -151,16 +151,28 @@ Please let me know if you have any questions.
   - creates server on port 3000 by default.
   - handles GET and POST requests.
   - implements a `listen() callback` on port.
-- `homePage(req, res, formData)`: set the home page based on the user login role.  This page is accessed after user login is validated.
+- `routeGetPaths(req, res)`: Method to route get requests.  
+- `routePostPaths(req, res)`: Method to routes post requests.  
+- `routePath(req, res)`: Helper method for GET method to route url paths.
+- `displayQAItems(items, role)`: Method to display QA Items on home page.
+- `homePage(req, res, formData, faq)`: set the home page based on the user login role.  This page is accessed after user login is validated.
+- `setInstructorView(req, res, formData, faq)`: Method to set the view for the instructor's home page.
 - `processFormData(req, res, resultFunc)`: get form data input from login form and logout form. returns callback with data.
+- `findRole()`: method to check role status for instructor or student. temporary fix for holding role.
+- `findUsername(req)`: Helper method to get username from cookie.
 - `checkLogin(postData)`: Authenticates user login.
 - `checkAuthorization(postData)`: helper function for `checkLogin()` to unauthorized access requests.
+- `editPage(req, res)`: Method to set the edit page view. Instructor's access only.
+- `addPage(req, res)`: Method to set the add QA page view. Instructor's access only.
 - `routePath(req, res)`: handles GET request url routing.
 - `loginPage(req, res)`: sets login page and handles cookie data if present.
 - `logout(req, res, resultFunc)`: Logs out user and redirects to login page.
+- `addQASave(req, res, formData, faq)`: Method to add a new QA to the faq data store.
+- `addQACheck(formData)`: Method to validate add QA form.
 - `pageNotFound(res)`: sets 404 request page and links back to login screen.
 - `unAuthorizedAccess(res)`: set unAuthorized page and links back to login page.
 - `loginInvalid(res)`: Sets login page with text letting user know username/password combination failed and to try to log in again.
+- `serverLog(message)`: Method to normalize server console logs.
 
 [Back to Top](#Contents)
 
