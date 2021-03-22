@@ -480,7 +480,7 @@ function loginPage(req, res) {
     res.writeHead(200, { "content-type": "text/html" });
     try {
         readFile('./Lab2/html/login.html', function (err, content) {
-    
+
             if (err) {
                 console.log("login error: " + err);
             }
@@ -489,7 +489,7 @@ function loginPage(req, res) {
                 let username = req.headers.cookie;
                 username = username.split("=");
                 const greeting = "Welcome back " + username[1] + ", please enter your password.";
-    
+
                 content = content.toString().replace("{login}", greeting);
                 content = content.toString().replace("{Username}", username[1]);
                 res.write(content);
