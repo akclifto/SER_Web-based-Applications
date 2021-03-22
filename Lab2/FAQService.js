@@ -263,14 +263,10 @@ function homePage(req, res, formData, faq) {
     else {
 
         let user = "username=" + formData.username;
-        // let role = "role=" + formData.role;
-        // let cookie = [user, role];
-        //  let cookie = [user];
 
         try {
             res.writeHead(200, {
                 "content-type": "text/html",
-                // "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
                 "set-cookie": user, // user 
             });
             readFile("./Lab2/html/home.html", function (err, content) {
@@ -315,13 +311,11 @@ function setInstructorView(req, res, formData, faq) {
         formData.role = findRole(req);
     }
     user = "username=" + formData.username;
-    // role = "role=" + formData.role;
-    //  let cookie = [user];
+
     serverLog("Setting home page by role: " + formData.role);
     try {
         res.writeHead(200, {
             "content-type": "text/html",
-            // "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role 
             "set-cookie": user,
         });
         readFile("./Lab2/html/home.html", function (err, content) {
