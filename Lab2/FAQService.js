@@ -69,7 +69,7 @@ createServer((req, res) => {
     //check simplewebproxy.js, cachewebproxy.js in webproxy folder ref
     try {
         if (req.method === "GET") {
-            routeGetPaths(req, res);
+            routeGetPaths(req, res, faq);
         }
         else if (req.method === "POST") {
             routePostPaths(req, res, faq);
@@ -87,16 +87,16 @@ createServer((req, res) => {
  * @param {*} req : user request
  * @param {*} res : server response
  */
-function routeGetPaths(req, res) {
+function routeGetPaths(req, res, faq) {
     // console.log("faq: ", faq.dataStore);
     if (req.url == "/home") {
 
         processFormData(req, res, function (formData) {
-            let status = checkLogin(formData);
+            let status = checkLogin(req, formData);
             if (status === 401) {
                 unAuthorizedAccess(res);
             } else {
-                routePath(req, res);
+                routePath(req, res, formData, faq);
             }
         });
     }
@@ -147,7 +147,7 @@ function routePostPaths(req, res, faq) {
                 setInstructorView(req, res, formData, faq);
             }
             if (formData.login) {
-                let status = checkLogin(formData);
+                let status = checkLogin(req, formData);
                 if (status === 401) {
                     unAuthorizedAccess(res);
                 }
@@ -174,7 +174,7 @@ function routePostPaths(req, res, faq) {
  * @param {*} path : path to route
  * @param {*} res : server response
  */
-function routePath(req, res) {
+function routePath(req, res, formData, faq) {
 
     if (req.url === "/") {
         serverLog("\"/\" page.  Redirecting to login page.")
@@ -189,6 +189,9 @@ function routePath(req, res) {
     }
     else if (req.url === "/add") {
         addPage(req, res);
+    }
+    else if (req.url === "/home") {
+        homePage(req, res, formData, faq);
     }
     else {
         pageNotFound(res);
@@ -403,9 +406,20 @@ function findUsername(req) {
  * @param {*} res : server response
  * @returns 200 if login validates, 402 otherwise.
  */
-function checkLogin(postData) {
+function checkLogin(req, postData) {
 
-    console.log(postData.username);
+    //check page access
+    const status = checkAuthorization(postData);
+    if (status === 401) {
+        let user = findUsername(req);
+        for (let i in fake.db) {
+            if (user === fake.db[i].username && fake.db[i].isActive === true) {
+                return 200;
+            }
+        }
+        return 401;
+    }
+
     // login validation
     for (let i in fake.db) {
 
@@ -416,12 +430,6 @@ function checkLogin(postData) {
             return 200;
         }
     }
-    //check page access
-    const status = checkAuthorization(postData);
-    if (status === 401) {
-        return 401;
-    }
-
     return 403;
 }
 
