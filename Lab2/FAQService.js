@@ -17,7 +17,7 @@ import path from 'path';
 const __dirname = path.resolve();
 const QA_FILE = (__dirname + "/Lab2/QA.json");
 const port = process.env.PORT || 3000;
-let roleStatus = 0; // 0 for student, 1 for instructor
+// let roleStatus = 0; // 0 for student, 1 for instructor
 
 /**
  * Class to hold a fake database for username and password lookup on login.
@@ -82,7 +82,7 @@ function routeGetPaths(req, res) {
         });
     }
     else if (req.url == "/edit" || req.url == "/add") {
-        if (findRole() === "student") {
+        if (findRole(req) === "student") {
             unAuthorizedAccess(res);
         } else {
             routePath(req, res);
@@ -230,29 +230,30 @@ function homePage(req, res, formData, faq) {
 
     if (formData.username === undefined || formData.role === undefined) {
         formData.username = findUsername(req);
-        formData.role = findRole();
+        formData.role = findRole(req);
     }
 
     if (formData.role === "instructor") {
         //set instructor own page.
-        roleStatus = 1; // set roleStatus as instructor
+        // roleStatus = 1; // set roleStatus as instructor
         setInstructorView(req, res, formData, faq);
     }
     // set student view
     else {
 
-        roleStatus = 0; // set roleStatus as student
+        // roleStatus = 0; // set roleStatus as student
+        //cookies
         let user = "username=" + formData.username;
-        // let role = "role=" + formData.role;
-        // let cookie = [user, role];
-        let cookie = [user];
+        let role = "role=" + formData.role;
+        let loggedIn = "loggedIn=" + true;
+        // let cookie = [user];
 
         try {
             res.writeHead(200, {
                 "content-type": "text/html",
-                // "set-cookie": cookie[0] + " ;" + cookie[1], // user ; role
-                "set-cookie": cookie[0], // user 
+                "set-cookie": user + ";" + role + ";" + loggedIn + ";", // user ; role ; loggedIn
             });
+            
             readFile("./Lab2/html/home.html", function (err, content) {
 
                 if (err) {
@@ -268,6 +269,10 @@ function homePage(req, res, formData, faq) {
                 let items = faq.filter(formData);
                 let page = displayQAItems(items, formData.role);
                 content = content.toString().replace('{item}', page);
+
+                let cookieParse = qstringParse(req.headers.cookie, ";");
+                console.log("cookieParse: ", cookieParse);
+                
                 res.write(content);
                 res.end();
             });
@@ -292,7 +297,7 @@ function setInstructorView(req, res, formData, faq) {
     // belore if-statement used for redirects back to home page from edit/add QA
     if (formData.username === undefined || formData.role === undefined) {
         formData.username = findUsername(req);
-        formData.role = findRole();
+        formData.role = findRole(req);
     }
     user = "username=" + formData.username;
     // role = "role=" + formData.role;
@@ -352,9 +357,18 @@ function processFormData(req, res, resultFunc) {
 /** Helper method to set role based on roleStatus
  * @returns instructor if roleStatus is 1, student otherwise.
  */
-function findRole() {
+function findRole(req) {
     // TODO: remove this and parse from cookies
-    return (roleStatus === 1) ? "instructor" : "student";
+    if (req.headers === undefined || req.headers.cookie === undefined) {
+        console.log("findRole: ", "User Role is not defined.");
+        return "No Role Defined";
+    } else {
+        let role = qstringParse(req.headers.cookie, ";");
+        console.log(role.role);
+        return role.role;
+
+    }
+    // return (roleStatus === 1) ? "instructor" : "student";
 }
 
 
@@ -364,12 +378,12 @@ function findRole() {
  * @returns username in cookie.
  */
 function findUsername(req) {
-    if (req.headers === undefined) {
+    if (req.headers === undefined || req.headers.cookie === undefined) {
         return "Username";
     }
-    let username = req.headers.cookie;
-    username = username.split("=");
-    return username[1];
+    let username = qstringParse(req.headers.cookie, ";");
+    return username.username;
+
 }
 
 /**
@@ -427,12 +441,13 @@ function editPage(req, res) {
         readFile('./Lab2/html/edit.html', function (err, content) {
 
             if (err) {
-                console.log("edut error: " + err);
+                console.log("editPage error: " + err);
             }
-            let username = req.headers.cookie;
-            username = username.split("=");
+            let username = findUsername(req);
+            // let username = req.headers.cookie;
+            // username = username.split("=");
 
-            content = content.toString().replace("{username1}", username[1]);
+            content = content.toString().replace("{username1}", username);
             content = content.toString().replace("{role}", "instructor");
             // TODO:  replace {question}, {answer}, {tags}
             res.write(content);
@@ -457,10 +472,11 @@ function addPage(req, res) {
             if (err) {
                 console.log("add page error: " + err);
             }
-            let username = req.headers.cookie;
-            username = username.split("=");
+            let username = findUsername(req);
+            // let username = req.headers.cookie;
+            // username = username.split("=");
 
-            content = content.toString().replace("{username1}", username[1]);
+            content = content.toString().replace("{username1}", username);
             content = content.toString().replace("{role}", "instructor");
             content = content.toString().replace("{errorText}", "");
             res.write(content);
@@ -487,12 +503,14 @@ function loginPage(req, res) {
             }
             // check cookies and set content
             if (req.headers.cookie) {
-                let username = req.headers.cookie;
-                username = username.split("=");
-                const greeting = "Welcome back " + username[1] + ", please enter your password.";
+                
+                let username = findUsername(req);
+                // let username = req.headers.cookie;
+                // username = username.split("=");
+                const greeting = "Welcome back " + username + ", please enter your password.";
 
                 content = content.toString().replace("{login}", greeting);
-                content = content.toString().replace("{Username}", username[1]);
+                content = content.toString().replace("{Username}", username);
                 res.write(content);
                 res.end();
             } else {
@@ -515,17 +533,22 @@ function loginPage(req, res) {
  */
 function logout(req, res, resultFunc) {
     serverLog("Logging out user " + findUsername(req));
-    roleStatus = 0;
-    res.writeHead(200, { "content-type": "text/html" });
+    // roleStatus = 0;
+    let loggedIn = "loggedIn=false";
+    res.writeHead(200, { 
+        "content-type": "text/html",
+        "set-cookie": loggedIn,
+     });
     try {
         readFile("./Lab2/html/login.html", function (err, content) {
             if (err) {
                 console.log("logout error: ", err);
             }
-            let username = req.headers.cookie;
-            username = username.split("=");
+            let username = findUsername(req);
+            // let username = req.headers.cookie;
+            // username = username.split("=");
             content = content.toString().replace("{login}", "You have been logged out.");
-            content = content.toString().replace("{Username}", username[1]);
+            content = content.toString().replace("{Username}", username);
             resultFunc(content);
         });
     } catch (err) {
@@ -562,10 +585,11 @@ function addQASave(req, res, formData, faq) {
                 if (err) {
                     console.log("add page error: " + err);
                 }
-                let username = req.headers.cookie;
-                username = username.split("=");
+                let username = findUsername(req);
+                // let username = req.headers.cookie;
+                // username = username.split("=");
                 const error = "One or more fields are missing. Please fill out all fields to add a question.";
-                content = content.toString().replace("{username1}", username[1]);
+                content = content.toString().replace("{username1}", username);
                 content = content.toString().replace("{role}", "instructor");
                 content = content.toString().replace("{errorText}", error);
                 serverLog("Add QA unsuccessful due to missing form fields.");
