@@ -642,14 +642,14 @@ function pageNotFound(res) {
 
     serverLog("Status 404, page not found.");
     res.writeHead(404, { "content-type": "text/html" });
-    readFile("./Lab2/html/pageNotFound.html", function (err, content) {
-
-        if (err) {
-            console.log("pageNotFound error: " + err);
-        }
-        res.write(content);
-        res.end();
-    });
+    let page =
+        "<html><head><title></title></head>" +
+        "<body>" +
+        "<p>404 Page Not Found!</p> " +
+        "<a href=\"/\"> Return to Login </a>" +
+        "</body></html>";
+    res.write(page);
+    res.end();
 }
 
 /**
@@ -660,19 +660,14 @@ function unAuthorizedAccess(res) {
 
     serverLog("Access denied. Unauthorized.")
     res.writeHead(401, { "content-type": "text/html" });
-    readFile("./Lab2/html/login.html", function (err, content) {
-        if (err) {
-            console.log("unAuthorizedAccess error: " + err);
-        }
-        let page =
-            "<html><head><title></title></head>" +
-            "<body>" +
-            "<p>You do not have permission to view this page. You must login first!</p> " +
-            "<a href=\"/\"> Return to Login </a>" +
-            "</body></html>"
-        content = page;
-        res.end(content);
-    });
+    let page =
+        "<html><head><title></title></head>" +
+        "<body>" +
+        "<p>You do not have permission to view this page. You must login first!</p> " +
+        "<a href=\"/\"> Return to Login </a>" +
+        "</body></html>";
+    res.write(page);
+    res.end();
 }
 
 /**
