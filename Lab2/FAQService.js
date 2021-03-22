@@ -204,7 +204,6 @@ function routePath(req, res, formData, faq) {
  * @returns formatted list of QA items to display.
  */
 function displayQAItems(items, role) {
-    console.log(items.length);
     let display = "";
 
     // Check no filtered results.  
@@ -222,16 +221,18 @@ function displayQAItems(items, role) {
                 "Tags: " + item.tags + "<br/>" +
                 item.author + "<br/>" +
                 new Date(item.date).toDateString() + "<br/>";
-                return itemContent;
+            return itemContent;
         });
 
         display = "<br />" +
-        "<div classname=\"item-list\" id=\"item-list\" style=\"white-space:pre-wrap;\">" +
-        addToPage.join("<br/>") +
-        "</div>";
+            "<div classname=\"item-list\" id=\"item-list\" style=\"white-space:pre-wrap;\">" +
+            addToPage.join("<br/>") +
+            "</div>";
 
         return display;
     } else {
+
+
         // each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
         //     items[i].answer + "\n" +
         //     "Tags: " + items[i].tags + "\n" +
@@ -300,37 +301,19 @@ function homePage(req, res, formData, faq) {
                 "</form>";
 
             // add QA here, itemList and admin priv for instructor
-            if (formData.role === "instructor") {
-                setInstructorView(req, res, formData, faq);
-            } else {
-                //write out the QA item list
-                let items = faq.filter(formData);
-                let itemList = displayQAItems(items, formData.role);
-
-                // let itemList = faq.dataStore.map(item => {
-                //     let itemContent =
-                //         "<b>" + item.question + "</b><br/>" +
-                //         item.answer + "<br/>" +
-                //         "Tags: " + item.tags + "<br/>" +
-                //         item.author + "<br/>" +
-                //         new Date(item.date).toDateString() + "<br/>";
-                //     return itemContent;
-            // });
-        // let addToPage = "<br />" +
-        //     "<div classname=\"item-list\" id=\"item-list\" style=\"white-space:pre-wrap;\">" +
-        //     itemList.join("<br/>") +
-        //     "</div>";
-        page = page.concat(" " + itemList);
-        content = content.toString().replace('{content}', page);
-        res.write(content);
-        res.end();
+            //write out the QA item list
+            let items = faq.filter(formData);
+            let itemList = displayQAItems(items, formData.role);
+            page = page.concat(" " + itemList);
+            content = content.toString().replace('{content}', page);
+            res.write(content);
+            res.end();
+        });
+    } catch (err) {
+        console.log("homePage Student error: ", err);
     }
-            });
-        } catch (err) {
-    console.log("homePage Student error: ", err);
+    serverLog("Search filter items set.");
 }
-serverLog("Search filter items set.");
-    }
 
 /**
  * Method to set the view for the instructor's home page.
@@ -695,7 +678,7 @@ function unAuthorizedAccess(res) {
     let page =
         "<html><head><title></title></head>" +
         "<body>" +
-        "<p>You do not have permission to view this page. You must login first!</p> " +
+        "<p>You do not have permission to view this page.</p> " +
         "<a href=\"/\"> Return to Login </a>" +
         "</body></html>";
     res.write(page);
