@@ -151,6 +151,41 @@ Please let me know if you have any questions.
   - creates server on port 3000 by default.
   - handles GET and POST requests.
   - implements a `listen() callback` on port.
+- `homePage(req, res, formData)`: set the home page based on the user login role.  This page is accessed after user login is validated.
+- `processFormData(req, res, resultFunc)`: get form data input from login form and logout form. returns callback with data.
+- `checkLogin(postData)`: Authenticates user login.
+- `checkAuthorization(postData)`: helper function for `checkLogin()` to unauthorized access requests.
+- `routePath(req, res)`: handles GET request url routing.
+- `loginPage(req, res)`: sets login page and handles cookie data if present.
+- `logout(req, res, resultFunc)`: Logs out user and redirects to login page.
+- `pageNotFound(res)`: sets 404 request page and links back to login screen.
+- `unAuthorizedAccess(res)`: set unAuthorized page and links back to login page.
+- `loginInvalid(res)`: Sets login page with text letting user know username/password combination failed and to try to log in again.
+
+[Back to Top](#Contents)
+
+### Activity 3: Put it all together
+
+To start server for activity 3, run:
+
+`npm run start`
+
+Please see the package.json file for scripts available. No dependencies used other than a dev linter.
+
+API similar to activity 2, with added functionality; uses the FakeDatabase class, and FAQ class.  The `filter()`  method in FAQ class had to be modified to function with the FAQService class.
+
+#### Known issues or incomplete functionality
+
+R7 edit a QA.  
+R8 delete a QA.  
+URL routing to /home after login goes to unauth page.
+
+#### FAQService API Overview
+
+- `createServer() callback`:
+  - creates server on port 3000 by default.
+  - handles GET and POST requests.
+  - implements a `listen() callback` on port.
 - `routeGetPaths(req, res)`: Method to route get requests.  
 - `routePostPaths(req, res)`: Method to routes post requests.  
 - `routePath(req, res)`: Helper method for GET method to route url paths.
@@ -173,9 +208,5 @@ Please let me know if you have any questions.
 - `unAuthorizedAccess(res)`: set unAuthorized page and links back to login page.
 - `loginInvalid(res)`: Sets login page with text letting user know username/password combination failed and to try to log in again.
 - `serverLog(message)`: Method to normalize server console logs.
-
-[Back to Top](#Contents)
-
-### Activity 3: Put it all together
 
 [Back to Top](#Contents)
