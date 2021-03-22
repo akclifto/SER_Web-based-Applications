@@ -178,7 +178,6 @@ API similar to activity 2, with added functionality; uses the FakeDatabase class
 
 R7 edit a QA.  
 R8 delete a QA.  
-URL manual routing to /home after login goes to unauth page.
 
 #### FAQService API Overview
 
