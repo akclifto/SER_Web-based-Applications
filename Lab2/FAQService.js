@@ -204,42 +204,43 @@ function routePath(req, res, formData, faq) {
  * @returns formatted list of QA items to display.
  */
 function displayQAItems(items, role) {
-    let page = "";
+    console.log(items.length);
+    let display = "";
 
     // Check no filtered results.  
     // If the first item is undefined, all items will be undefined.
-    if (items[0].question === undefined) {
-        page = "<b>No results from search filter. <b>";
-        return page;
+    if (items[0] === undefined) {
+        display = "<b>No results from search filter. <b>";
+        return display;
     }
+    else if (role === "student") {
 
-    for (let i in items) {
-        let each = "";
-        //convert date string
+        let addToPage = items.map((item) => {
+            let itemContent =
+                "<b>" + item.question + "</b><br/>" +
+                item.answer + "<br/>" +
+                "Tags: " + item.tags + "<br/>" +
+                item.author + "<br/>" +
+                new Date(item.date).toDateString() + "<br/>";
+                return itemContent;
+        });
 
-        if (role === "student") {
+        display = "<br />" +
+        "<div classname=\"item-list\" id=\"item-list\" style=\"white-space:pre-wrap;\">" +
+        addToPage.join("<br/>") +
+        "</div>";
 
-            each = "<b>" + items[i].question + "</b>\n" +
-                items[i].answer + "\n" +
-                "Tags: " + items[i].tags + "\n" +
-                items[i].author + "\n" +
-                new Date(items[i].date).toDateString() + "\n";
-        } else {
-            each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
-                items[i].answer + "\n" +
-                "Tags: " + items[i].tags + "\n" +
-                items[i].author + "\n" +
-                new Date(items[i].date).toDateString() + "\n";
-            each = each +
-                "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
-                " value=\"Delete\" name=\"delete\" id=\"delete\" ></form>\n";
-        }
-        page = page.concat(each).concat("\n");
-        // TODO: think I will need this for list manip since everything is being rendered as a string.
-        displays.push(items[i]);
+        return display;
+    } else {
+        // each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
+        //     items[i].answer + "\n" +
+        //     "Tags: " + items[i].tags + "\n" +
+        //     items[i].author + "\n" +
+        //     new Date(items[i].date).toDateString() + "\n";
+        // each = each +
+        //     "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
+        //     " value=\"Delete\" name=\"delete\" id=\"delete\" ></form>\n";
     }
-    // console.log(page);
-    return page;
 }
 
 /**
@@ -255,44 +256,81 @@ function homePage(req, res, formData, faq) {
         formData.role = findRole(req);
     }
 
-    if (formData.role === "instructor") {
-        //set instructor own page.
-        setInstructorView(req, res, formData, faq);
-    }
+    // if (formData.role === "instructor") {
+    //     //set instructor own page.
+    //     setInstructorView(req, res, formData, faq);
+    // }
     // set student view
-    else {
+    // else {
 
-        let user = "username=" + formData.username;
+    let user = "username=" + formData.username;
 
-        try {
-            res.writeHead(200, {
-                "content-type": "text/html",
-                "set-cookie": user, // user 
-            });
-            readFile("./Lab2/html/home.html", function (err, content) {
+    try {
+        res.writeHead(200, {
+            "content-type": "text/html",
+            "set-cookie": user, // user 
+        });
+        readFile("./Lab2/html/home.html", function (err, content) {
 
-                if (err) {
-                    console.log("homePage error: ", err);
-                }
-                // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
-                content = content.toString().replace('{username1}', formData.username);
-                content = content.toString().replace('{username2}', formData.username);
-                content = content.toString().replace('{role}', formData.role);
-                content = content.toString().replace('{addQA}', "");
+            if (err) {
+                console.log("homePage error: ", err);
+            }
+            let page =
+                "<p> Hello <b>" + formData.username + "</b>, you are logged in as <b>" + formData.role + "</b>:</p>" +
+                "<form action=\"/\" method=\"post\" style=\"text-align: end\">" +
+                "<input type=\"submit\" value=\"Logout\" name=\"logout\" id=\"logout\"></form>" +
 
-                // diplay item list from QA
+                "<p style=\"text-align: center\">Welcome " + formData.username + " to the View Q&A homepage.</p>" +
+                "<p style=\"text - align: center\">Put in your filter/search options.</p>" +
+
+                "<form action = \"/home\" method=\"post\"> " +
+                "<label name=\"username\">Author</label> " +
+                "<input type=\"text\" name=\"author\" placeholder=\"Author\"> " +
+
+                "<label name=\"tags\">Tags</label>" +
+                "<input type=\"text\" name=\"tags\" placeholder=\"Tags\">" +
+
+                "<label name=\"startdate\">Start Date</label>" +
+                "<input type=\"Date\" name=\"startdate\" placeholder=\"mm/dd/yyyy\">" +
+
+                "<label name=\"enddate\">End Date</label>" +
+                "<input type=\"Date\" name=\"enddate\" placeholder=\"mm/dd/yyyy\">" +
+
+                "<input type=\"submit\" value=\"Search\" name=\"search\" >" +
+                "</form>";
+
+            // add QA here, itemList and admin priv for instructor
+            if (formData.role === "instructor") {
+                setInstructorView(req, res, formData, faq);
+            } else {
+                //write out the QA item list
                 let items = faq.filter(formData);
-                let page = displayQAItems(items, formData.role);
-                content = content.toString().replace('{item}', page);
-                res.write(content);
-                res.end();
+                let itemList = displayQAItems(items, formData.role);
+
+                // let itemList = faq.dataStore.map(item => {
+                //     let itemContent =
+                //         "<b>" + item.question + "</b><br/>" +
+                //         item.answer + "<br/>" +
+                //         "Tags: " + item.tags + "<br/>" +
+                //         item.author + "<br/>" +
+                //         new Date(item.date).toDateString() + "<br/>";
+                //     return itemContent;
+            // });
+        // let addToPage = "<br />" +
+        //     "<div classname=\"item-list\" id=\"item-list\" style=\"white-space:pre-wrap;\">" +
+        //     itemList.join("<br/>") +
+        //     "</div>";
+        page = page.concat(" " + itemList);
+        content = content.toString().replace('{content}', page);
+        res.write(content);
+        res.end();
+    }
             });
         } catch (err) {
-            console.log("homePage Student error: ", err);
-        }
-    }
-    serverLog("Search filter items set.");
+    console.log("homePage Student error: ", err);
 }
+serverLog("Search filter items set.");
+    }
 
 /**
  * Method to set the view for the instructor's home page.

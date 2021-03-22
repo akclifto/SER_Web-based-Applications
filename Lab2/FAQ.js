@@ -184,7 +184,8 @@ class FAQ {
 
         // check if anything returned after filtering
         if (filteredQA.length === 0) {
-            return "No Results produces from specified filters.";
+            console.log("FAQ: ", "No Results produces from specified filters.");
+            return filteredQA;
         } else {
             return filteredQA;
         }

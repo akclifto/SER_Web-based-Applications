@@ -10,47 +10,20 @@
 
 <body>
     <div classname="container">
-        <p> Hello <b>{username1}</b>, you are logged in as <b>{role}</b>:</p>
-    
-        <!-- Logout -->
-        <form action="/" method="post" style="text-align: end">
-            <input type="submit" value="Logout" name="logout" id="logout">
-        </form>
-    
-        <p style="text-align:center">Welcome {username2} to the View Q&A homepage.</p>
-        <p style="text-align:center">Put in your filter/search options.</p>
-    
-        <!-- Filter Search form -->
-        <form action = "/home" method="post">
 
-            <label name="username">Author</label>
-            <input type="text" name="author" placeholder="Author">
-
-            <label name="tags">Tags</label>
-            <input type="text" name="tags" placeholder="Tags">
-
-            <label name="startdate">Start Date</label>
-            <input type="Date" name="startdate" placeholder="mm/dd/yyyy">
-            
-            <label name="enddate">End Date</label>
-            <input type="Date" name="enddate" placeholder="mm/dd/yyyy">
-            
-            <input type="submit" value="Search" name="search" >
-        </form>
-
-        <br />
+        {content}
     
         <!-- Add QA Item -->
-        <div classname="addQA">
+        <!-- <div classname="addQA">
             {addQA}
         </div>
 
-        <br />
+        <br /> -->
         
         <!-- QA item list: format display here wonky because need to use pre-wrap. -->
-        <div classname="item-list" 
+        <!-- <div classname="item-list" 
             id="item-list" 
-            style="white-space:pre-wrap;">{item}</div>
+            style="white-space:pre-wrap;">{item}</div> -->
     </div>
 
 </body>
