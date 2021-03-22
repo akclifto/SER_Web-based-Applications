@@ -112,10 +112,9 @@ function routePostPaths(req, res, faq) {
                 });
             }
         });
-        // routePath(req, res);
     }
     if (req.url === "/home") {
-        // get user form data for login
+        // get user form data for posts
         processFormData(req, res, function (formData) {
 
             if (formData.search) {
@@ -195,7 +194,6 @@ function displayQAItems(items, role) {
     for (let i in items) {
         let each = "";
         //convert date string
-        // let date = new Date(items[i].date);
 
         if (role === "student") {
 
@@ -365,6 +363,9 @@ function findRole() {
  * @returns username in cookie.
  */
 function findUsername(req) {
+    if (req.headers === undefined) {
+        return "Username";
+    }
     let username = req.headers.cookie;
     username = username.split("=");
     return username[1];
@@ -421,39 +422,52 @@ function checkAuthorization(postData) {
 function editPage(req, res) {
     res.writeHead(200, { "content-type": "text/html" });
 
-    readFile('./Lab2/html/edit.html', function (err, content) {
+    try {
+        readFile('./Lab2/html/edit.html', function (err, content) {
 
-        if (err) {
-            console.log("edut error: " + err);
-        }
-        let username = req.headers.cookie;
-        username = username.split("=");
+            if (err) {
+                console.log("edut error: " + err);
+            }
+            let username = req.headers.cookie;
+            username = username.split("=");
 
-        content = content.toString().replace("{username1}", username[1]);
-        content = content.toString().replace("{role}", "instructor");
-        // TODO:  replace {question}, {answer}, {tags}
-        res.write(content);
-        res.end();
-    });
+            content = content.toString().replace("{username1}", username[1]);
+            content = content.toString().replace("{role}", "instructor");
+            // TODO:  replace {question}, {answer}, {tags}
+            res.write(content);
+            res.end();
+        });
+    } catch (err) {
+        console.log("editPage error", err);
+    }
 }
 
+/**
+ * Method to render the add QA page.
+ * @param {*} req : user request
+ * @param {*} res : server response
+ */
 function addPage(req, res) {
 
     res.writeHead(200, { "content-type": "text/html" });
-    readFile('./Lab2/html/add.html', function (err, content) {
+    try {
+        readFile('./Lab2/html/add.html', function (err, content) {
 
-        if (err) {
-            console.log("add page error: " + err);
-        }
-        let username = req.headers.cookie;
-        username = username.split("=");
+            if (err) {
+                console.log("add page error: " + err);
+            }
+            let username = req.headers.cookie;
+            username = username.split("=");
 
-        content = content.toString().replace("{username1}", username[1]);
-        content = content.toString().replace("{role}", "instructor");
-        content = content.toString().replace("{errorText}", "");
-        res.write(content);
-        res.end();
-    });
+            content = content.toString().replace("{username1}", username[1]);
+            content = content.toString().replace("{role}", "instructor");
+            content = content.toString().replace("{errorText}", "");
+            res.write(content);
+            res.end();
+        });
+    } catch (err) {
+        console.log("addPage error: ", err);
+    }
 }
 
 /**
@@ -464,28 +478,32 @@ function addPage(req, res) {
 function loginPage(req, res) {
 
     res.writeHead(200, { "content-type": "text/html" });
-    readFile('./Lab2/html/login.html', function (err, content) {
-
-        if (err) {
-            console.log("login error: " + err);
-        }
-        // check cookies and set content
-        if (req.headers.cookie) {
-            let username = req.headers.cookie;
-            username = username.split("=");
-            const greeting = "Welcome back " + username[1] + ", please enter your password.";
-
-            content = content.toString().replace("{login}", greeting);
-            content = content.toString().replace("{Username}", username[1]);
-            res.write(content);
-            res.end();
-        } else {
-            content = content.toString().replace("{login}", "Login Page");
-            content = content.toString().replace("{Username}", "Username");
-            res.write(content);
-            res.end();
-        }
-    });
+    try {
+        readFile('./Lab2/html/login.html', function (err, content) {
+    
+            if (err) {
+                console.log("login error: " + err);
+            }
+            // check cookies and set content
+            if (req.headers.cookie) {
+                let username = req.headers.cookie;
+                username = username.split("=");
+                const greeting = "Welcome back " + username[1] + ", please enter your password.";
+    
+                content = content.toString().replace("{login}", greeting);
+                content = content.toString().replace("{Username}", username[1]);
+                res.write(content);
+                res.end();
+            } else {
+                content = content.toString().replace("{login}", "Login Page");
+                content = content.toString().replace("{Username}", "Username");
+                res.write(content);
+                res.end();
+            }
+        });
+    } catch (err) {
+        console.log("loginPage error: ", err);
+    }
 }
 
 /**
@@ -495,9 +513,9 @@ function loginPage(req, res) {
  * @param {*} resultFunc : callback function result
  */
 function logout(req, res, resultFunc) {
-    serverLog("Logging out user...");
-    res.writeHead(200, { "content-type": "text/html" });
+    serverLog("Logging out user " + findUsername(req));
     roleStatus = 0;
+    res.writeHead(200, { "content-type": "text/html" });
     try {
         readFile("./Lab2/html/login.html", function (err, content) {
             if (err) {
@@ -514,10 +532,15 @@ function logout(req, res, resultFunc) {
     }
 }
 
+/**
+ * Method to add a new QA to the data store.  This will do preliminary check to 
+ * ensure fields are valid, and if so, will write the new QA to the data store.
+ * @param {*} req : user request
+ * @param {*} res : server response
+ * @param {*} formData : user input form data
+ * @param {*} faq : faq object containing QA information
+ */
 function addQASave(req, res, formData, faq) {
-    console.log("question: ", formData.questionText);
-    console.log("answer: ", formData.answerText);
-    console.log("tags: ", formData.tagsText);
 
     //check fields for addQA
     const qaCheck = addQACheck(formData);
@@ -528,10 +551,11 @@ function addQASave(req, res, formData, faq) {
             formData.tagsText,
             findUsername(req),
             new Date().toISOString());
+        serverLog("New QA has been successfully added.");
         setInstructorView(req, res, formData, faq);
     } else {
+        res.writeHead(200, { "content-type": "text/html" });
         try {
-            res.writeHead(200, { "content-type": "text/html" });
             readFile('./Lab2/html/add.html', function (err, content) {
 
                 if (err) {
@@ -539,10 +563,11 @@ function addQASave(req, res, formData, faq) {
                 }
                 let username = req.headers.cookie;
                 username = username.split("=");
-                const error = "One or more fields missing. Please fill out all fields.";
+                const error = "One or more fields are missing. Please fill out all fields to add a question.";
                 content = content.toString().replace("{username1}", username[1]);
                 content = content.toString().replace("{role}", "instructor");
                 content = content.toString().replace("{errorText}", error);
+                serverLog("Add QA unsuccessful due to missing form fields.");
                 res.write(content);
                 res.end();
             });
@@ -552,15 +577,20 @@ function addQASave(req, res, formData, faq) {
     }
 }
 
+/**
+ * Method to validate add QA form.
+ * @param {*} formData : user form data input
+ * @returns true if add QA form is valid, false otherwise.
+ */
 function addQACheck(formData) {
 
     if (formData.questionText === undefined || formData.questionText === "" ||
         formData.answerText === undefined || formData.answerText === "" ||
         formData.tagsText === undefined || formData.tagsText === "") {
-        console.log("Some fields are missing in add QA");
+        // console.log("Some fields are missing in add QA");
         return false;
     }
-    console.log("add QA field check passed.");
+    // console.log("add QA field check passed.");
     return true;
 }
 
