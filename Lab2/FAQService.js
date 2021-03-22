@@ -47,9 +47,12 @@ class FakeDatabase {
         for (let i in fake.db) {
             if (username === fake.db[i].username) {
                 fake.db[i].isActive = activeStatus;
+                serverLog("Active status set to " + fake.db[i].isActive + " for user: " + fake.db[i].username);
+                return true
             }
         }
         serverLog("User not found in persistent store.  Active Status unchanged");
+        return false;
     }
 }
 
@@ -402,13 +405,14 @@ function findUsername(req) {
  */
 function checkLogin(postData) {
 
+    console.log(postData.username);
     // login validation
     for (let i in fake.db) {
 
         if (postData.username === fake.db[i].username &&
             postData.password === fake.db[i].password &&
             postData.role === fake.db[i].role) {
-            fake.setActiveStatus(postData.username, true);
+            fake.setActiveStatus(postData.username.toString(), true);
             return 200;
         }
     }
@@ -417,7 +421,7 @@ function checkLogin(postData) {
     if (status === 401) {
         return 401;
     }
-    
+
     return 403;
 }
 
@@ -537,7 +541,11 @@ function loginPage(req, res) {
  * @param {*} resultFunc : callback function result
  */
 function logout(req, res, resultFunc) {
+
     serverLog("Logging out user " + findUsername(req));
+
+    fake.setActiveStatus(findUsername(req), false);
+
     res.writeHead(200, { "content-type": "text/html" });
     try {
         readFile("./Lab2/html/login.html", function (err, content) {
