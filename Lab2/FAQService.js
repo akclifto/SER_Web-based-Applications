@@ -121,6 +121,10 @@ function routePostPaths(req, res, faq) {
             if (formData.search) {
                 homePage(req, res, formData, faq);
             }
+            if(formData.addQASave) {
+                addQASave(req, res, formData, faq);
+
+            }
             if (formData.editCancel || formData.addQACancel) {
                 setInstructorView(req, res, formData, faq);
             }
@@ -273,7 +277,7 @@ function homePage(req, res, formData, faq) {
             console.log("homePage Student error: ", err);
         }
     }
-    serverLog("Home page display items set.");
+    serverLog("Search filter items set.");
 }
 
 /**
@@ -434,8 +438,8 @@ function editPage(req, res) {
 }
 
 function addPage(req, res) {
-    res.writeHead(200, { "content-type": "text/html" });
 
+    res.writeHead(200, { "content-type": "text/html" });
     readFile('./Lab2/html/add.html', function (err, content) {
 
         if (err) {
@@ -446,7 +450,7 @@ function addPage(req, res) {
 
         content = content.toString().replace("{username1}", username[1]);
         content = content.toString().replace("{role}", "instructor");
-        // TODO:  replace {question}, {answer}, {tags}
+        content = content.toString().replace("{errorText}", "");
         res.write(content);
         res.end();
     });
@@ -508,6 +512,56 @@ function logout(req, res, resultFunc) {
     } catch (err) {
         console.log("logout error: ", err);
     }
+}
+
+function addQASave(req, res, formData, faq) {
+    console.log("question: ", formData.questionText);
+    console.log("answer: ", formData.answerText);
+    console.log("tags: ", formData.tagsText);
+
+    //check fields for addQA
+    const qaCheck = addQACheck(formData);
+    // if check OK, add the QA to the store
+    if(qaCheck) {
+        faq.writeQA(formData.questionText, 
+            formData.answerText, 
+            formData.tagsText,
+            findUsername(),
+            new Date().toISOString());
+        setInstructorView(req, res, formData, faq);
+    } else {
+        try {
+            res.writeHead(200, { "content-type": "text/html" });
+            readFile('./Lab2/html/add.html', function (err, content) {
+    
+                if (err) {
+                    console.log("add page error: " + err);
+                }
+                let username = req.headers.cookie;
+                username = username.split("=");
+                const error = "One or more fields missing. Please fill out all fields.";
+                content = content.toString().replace("{username1}", username[1]);
+                content = content.toString().replace("{role}", "instructor");
+                content = content.toString().replace("{errorText}", error);
+                res.write(content);
+                res.end();
+            });
+        } catch (err) {
+            console.log("addQASave error: ", err);
+        }
+    }
+
+
+}
+
+function addQACheck(formData) {
+
+    if(formData.questionText === undefined || 
+        formData.answer === undefined || 
+        formData.tags === undefined) {
+         return false;
+        }
+    return true;
 }
 
 /**

@@ -21,12 +21,11 @@
     
     <form action="/home" method="post" style="text-align:center">
         <textarea 
-            name="answerText" 
-            id="answerText" 
+            name="questionText" 
+            id="questionText" 
             placeholder="Enter question here..." 
             rows="10" 
-            cols="50">Enter question here...
-        </textarea><br />
+            cols="50"></textarea><br />
         <br />
         <label name="answer"> Answer:</label> <br />
         <textarea 
@@ -34,8 +33,7 @@
             id="answerText" 
             rows="10" 
             cols="50"
-            placeholder="Enter answer here...">Enter answer here...
-        </textarea><br />
+            placeholder="Enter answer here..."></textarea><br />
 
         <label name="tags"> Tags:</label> <br />
         <textarea 
@@ -43,9 +41,8 @@
             id="tagsText" 
             rows="10" 
             cols="50"
-            placeholder="Enter tags...">Enter tags...
-        </textarea><br />
-
+            placeholder="Enter tags..."></textarea><br />
+        <b>{errorText}</b> <br />
         <input type="submit" value="Add QA" name="addQASave" >
         <a href="/home"><input type="submit" value="Cancel" name="addQACancel"></a> 
     </form>
