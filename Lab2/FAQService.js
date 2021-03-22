@@ -103,7 +103,7 @@ function routePostPaths(req, res, faq) {
 
     if (req.url === "/") {
         processFormData(req, res, function (formData) {
-            
+
             //check logout
             if (formData.logout) {
                 logout(req, res, function (content) {
@@ -121,7 +121,7 @@ function routePostPaths(req, res, faq) {
             if (formData.search) {
                 homePage(req, res, formData, faq);
             }
-            if(formData.addQASave) {
+            if (formData.addQASave) {
                 addQASave(req, res, formData, faq);
 
             }
@@ -187,7 +187,7 @@ function displayQAItems(items, role) {
 
     // Check no filtered results.  
     // If the first item is undefined, all items will be undefined.
-    if(items[0].question === undefined) {
+    if (items[0].question === undefined) {
         page = "<b>No results from search filter. <b>";
         return page;
     }
@@ -200,13 +200,13 @@ function displayQAItems(items, role) {
         if (role === "student") {
 
             each = "<b>" + items[i].question + "</b>\n" +
-                items[i].answer + "\n" + 
+                items[i].answer + "\n" +
                 "Tags: " + items[i].tags + "\n" +
                 items[i].author + "\n" +
                 new Date(items[i].date).toDateString() + "\n";
         } else {
             each = "<a href=\"/edit\"><b>" + items[i].question + "</b></a>\n" +
-                items[i].answer + "\n" + 
+                items[i].answer + "\n" +
                 "Tags: " + items[i].tags + "\n" +
                 items[i].author + "\n" +
                 new Date(items[i].date).toDateString() + "\n";
@@ -522,18 +522,18 @@ function addQASave(req, res, formData, faq) {
     //check fields for addQA
     const qaCheck = addQACheck(formData);
     // if check OK, add the QA to the store
-    if(qaCheck) {
-        faq.writeQA(formData.questionText, 
-            formData.answerText, 
+    if (qaCheck) {
+        faq.writeQA(formData.questionText,
+            formData.answerText,
             formData.tagsText,
-            findUsername(),
+            findUsername(req),
             new Date().toISOString());
         setInstructorView(req, res, formData, faq);
     } else {
         try {
             res.writeHead(200, { "content-type": "text/html" });
             readFile('./Lab2/html/add.html', function (err, content) {
-    
+
                 if (err) {
                     console.log("add page error: " + err);
                 }
@@ -550,17 +550,17 @@ function addQASave(req, res, formData, faq) {
             console.log("addQASave error: ", err);
         }
     }
-
-
 }
 
 function addQACheck(formData) {
 
-    if(formData.questionText === undefined || 
-        formData.answer === undefined || 
-        formData.tags === undefined) {
-         return false;
-        }
+    if (formData.questionText === undefined || formData.questionText === "" ||
+        formData.answerText === undefined || formData.answerText === "" ||
+        formData.tagsText === undefined || formData.tagsText === "") {
+        console.log("Some fields are missing in add QA");
+        return false;
+    }
+    console.log("add QA field check passed.");
     return true;
 }
 
