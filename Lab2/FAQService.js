@@ -58,7 +58,7 @@ class FakeDatabase {
 
 // load up the fake database.
 const fake = new FakeDatabase();
-let displays = [];
+
 /**
  * Method to create server.
  * @param {*} req : incoming request
@@ -209,7 +209,7 @@ function displayQAItems(items, role) {
     // Check no filtered results.  
     // If the first item is undefined, all items will be undefined.
     if (role === "student") {
-        
+
         if (items[0] === undefined) {
             display = "<b>No results from search filter. <b>";
             return display;
@@ -234,8 +234,8 @@ function displayQAItems(items, role) {
 
         if (items[0] === undefined) {
             display = "<br />" +
-            "<button name=\"addQAButton\" onClick=\"window.location.href='/add';\">Add QA</button>" + 
-            "<br/><br/>" + "<b>No results from search filter. <b>";
+                "<button name=\"addQAButton\" onClick=\"window.location.href='/add';\">Add QA</button>" +
+                "<br/><br/>" + "<b>No results from search filter. <b>";
             return display;
         }
 
@@ -245,15 +245,15 @@ function displayQAItems(items, role) {
                 item.answer + "<br/>" +
                 "Tags: " + item.tags + "<br/>" +
                 item.author + "<br/>" +
-                new Date(item.date).toDateString() + "<br/>" + 
+                new Date(item.date).toDateString() + "<br/>" +
                 "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
                 "value=\"Delete\" name=\"delete\" id=\"delete\" ></form>";
             return itemContent;
         });
 
-        display = 
+        display =
             "<br />" +
-            "<button name=\"addQAButton\" onClick=\"window.location.href='/add';\">Add QA</button>" + 
+            "<button name=\"addQAButton\" onClick=\"window.location.href='/add';\">Add QA</button>" +
             "<br/><br/>" +
             "<div classname=\"item-list\" id=\"item-list\" style=\"white-space:pre-wrap;\">" +
             addToPage.join("<br/>") +
@@ -325,56 +325,6 @@ function homePage(req, res, formData, faq) {
     }
     serverLog("Search filter items set.");
 }
-
-/**
- * Method to set the view for the instructor's home page.
- * @param {*} req : user request
- * @param {*} res : server response
- * @param {*} formData : user form data input
- * @param {*} faq : faq object containing QA information
- */
-// function setInstructorView(req, res, formData, faq) {
-
-//     // let role = "";
-//     let user = "";
-//     // belore if-statement used for redirects back to home page from edit/add QA
-//     if (formData.username === undefined || formData.role === undefined) {
-//         formData.username = findUsername(req);
-//         formData.role = findRole(req);
-//     }
-//     user = "username=" + formData.username;
-
-//     serverLog("Setting home page by role: " + formData.role);
-//     try {
-//         res.writeHead(200, {
-//             "content-type": "text/html",
-//             "set-cookie": user,
-//         });
-//         readFile("./Lab2/html/home.html", function (err, content) {
-//             if (err) {
-//                 console.log("homePage error: ", err);
-//             }
-//             // for some reason, have to replace each instance of {username} hence 1 and 2 appended.
-//             content = content.toString().replace('{username1}', formData.username);
-//             content = content.toString().replace('{username2}', formData.username);
-//             content = content.toString().replace('{role}', formData.role);
-//             //Make QA button
-//             const QAButton =
-//                 "<button name=\"addQAButton\" onClick=\"window.location.href='/add';\">Add QA</button>\n";
-
-//             content = content.toString().replace('{addQA}', QAButton);
-
-//             // diplay item list from QA
-//             let items = faq.filter(formData);
-//             let page = displayQAItems(items, formData.role)
-//             content = content.toString().replace('{item}', page);
-//             res.write(content);
-//             res.end();
-//         });
-//     } catch (err) {
-//         console.log("setInstructorView error: ", err);
-//     }
-// }
 
 /**
  * Method to get form data input. Check http_server_external.js class example.
@@ -482,19 +432,40 @@ function checkAuthorization(postData) {
  * @param {*} res : server response
  */
 function editPage(req, res) {
-    res.writeHead(200, { "content-type": "text/html" });
 
     try {
-        readFile('./Lab2/html/edit.html', function (err, content) {
+        readFile('./Lab2/html/home.html', function (err, content) {
+            res.writeHead(200, { "content-type": "text/html" });
 
             if (err) {
-                console.log("edut error: " + err);
+                console.log("edit error: " + err);
             }
-            let username = req.headers.cookie;
-            username = username.split("=");
+            let username = findUsername(req);
 
-            content = content.toString().replace("{username1}", username[1]);
-            content = content.toString().replace("{role}", "instructor");
+            let page =
+                "<p> Hello <b>" + username + "</b>, you are logged in as <b>instructor</b>:</p>" + 
+                
+                "<form action=\"/\" method=\"post\" style=\"text-align: end\">" +
+                "<input type=\"submit\" value=\"Logout\" name=\"logout\" id=\"logout\">" +
+                "</form>" +
+
+                "<p style=\"text-align:center\">In this form you can edit the answer and tags.</p>" +
+                "<p style=\"text-align:center\"><b>{question}</b></p>" +
+                "<br />" +
+
+                "<form action=\"/home\" method=\"post\" style=\"text-align:center\">" +
+                "<label name=\"answer\"> Answer:</label> <br />" +
+                "<textarea name=\"answerText\" id=\"answerText\" rows=\"10\" cols=\"50\">{answer}</textarea><br />" +
+
+                "<label name=\"tags\"> Tags:</label> <br />" +
+                "<textarea name=\"tagsText\" id=\"tagsText\" rows=\"10\" cols=\"50\">{tags}</textarea><br />" +
+
+                "<input type=\"submit\" value=\"Save Edit\" name=\"editSave\" >" +
+                "<a href=\"/home\"><input type=\"submit\" value=\"Cancel\" name=\"editCancel\"></a>" +
+                "</form>";
+
+            content = content.toString().replace("{content}", page);
+            console.log(content);
             // TODO:  replace {question}, {answer}, {tags}
             res.write(content);
             res.end();

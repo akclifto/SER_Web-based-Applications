@@ -190,7 +190,6 @@ R8 delete a QA.
 - `routePath(req, res)`: Helper method for GET method to route url paths.
 - `displayQAItems(items, role)`: Method to display QA Items on home page.
 - `homePage(req, res, formData, faq)`: set the home page based on the user login role.  This page is accessed after user login is validated.
-- `setInstructorView(req, res, formData, faq)`: Method to set the view for the instructor's home page.
 - `processFormData(req, res, resultFunc)`: get form data input from login form and logout form. returns callback with data.
 - `findRole()`: method to check role status for instructor or student. temporary fix for holding role.
 - `findUsername(req)`: Helper method to get username from cookie.
