@@ -100,11 +100,13 @@ class FAQ {
         let qaIndex = this.getId(id);
         if (qaIndex === -1) {
             // console.log("Id not found in persistent store.");
-            return "Id not found in persistent store.";
+            console.log("FAQ: ", "Id not found in persistent store.");
+            return false;
         } else {
             this.dataStore[qaIndex].answer = answer;
             this.storeToFile(this.dataStore);
-            return "Answer updated to: " + this.dataStore[qaIndex].answer;
+            console.log("FAQ: ","Answer updated to: \"" + this.dataStore[qaIndex].answer + "\"");
+            return true;
         }
     }
 

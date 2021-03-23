@@ -151,7 +151,13 @@ function routePostPaths(req, res, faq) {
                 homePage(req, res, formData, faq);
             }
             if(formData.edit) {
-                manageQA(req, res, formData, faq);
+                manageQA(req, res, formData);
+            }
+            if(formData.editSave) {
+                // console.log(formData);
+                editSaveQA(formData, faq);
+                homePage(req, res, formData, faq);
+
             }
             if (formData.login) {
                 let status = checkLogin(req, formData);
@@ -191,8 +197,15 @@ function routePath(req, res, formData, faq) {
     else if (req.url === "/login") {
         loginPage(req, res);
     }
-    else if (req.url === "/edit" || req.url === "/add") {
-        manageQA(req, res, formData, faq);
+    else if (req.url === "/edit") {
+        if(formData === undefined) {
+            unAuthorizedAccess(res);
+        } else {
+            manageQA(req, res, formData);
+        }
+    }
+    else if(req.url === "/add"){
+        manageQA(req, res, res, formData);
     }
     else if (req.url === "/home") {
         homePage(req, res, formData, faq);
@@ -255,11 +268,11 @@ function displayQAItems(items, role) {
 
                 "<form type=\"submit\" action=\"/home\" method=\"post\" style=\"margin-bottom:0\">" + 
                     "<input type=\"submit\" name=\"edit\" value=\"Edit\" id=\"edit\">" + 
-                    "<input type=\"hidden\" name=\"itemQuestion\" value="+JSON.stringify(item.question)+">" + 
-                    "<input type=\"hidden\" name=\"itemAnswer\" value="+JSON.stringify(item.answer) +">" + 
-                    "<input type=\"hidden\" name=\"itemTags\" value="+JSON.stringify(item.tags)+">" + 
-                    "<input type=\"hidden\" name=\"itemId\" value="+JSON.stringify(item.id)+">" +
                     "<input type=\"submit\" value=\"Delete\" name=\"delete\" id=\"delete\">" + 
+                    "<input type=\"hidden\" name=\"itemQuestion\" value=" + JSON.stringify(item.question) + ">" + 
+                    "<input type=\"hidden\" name=\"itemAnswer\" value=" + JSON.stringify(item.answer) + ">" + 
+                    "<input type=\"hidden\" name=\"itemTags\" value=" + JSON.stringify(item.tags)+">" + 
+                    "<input type=\"hidden\" name=\"itemId\" value=" + item.id + ">" +
                 "</form> ";
                 // " <form name=\"deleteForm\" action=\"/home\" method=\"post\"style=\"margin-top:0\">" + 
                 //     "<input type=\"hidden\" value=" + item.id + " name=\"itemId\">" + 
@@ -290,6 +303,26 @@ function deleteQA(id, faq) {
         serverLog("QA with id: " + id + " successfully deleted.");
     } else {
         serverLog("Id not found in persistent store. QA was not deleted.");
+    }
+}
+
+/**
+ * Method to edit QA from faq datastore
+ * @param {*} formData : user input for edit updates
+ * @param {*} faq : faq object containing QA information
+ */
+function editSaveQA(formData, faq) {
+    let success = faq.updateAnswer(formData.itemId, formData.answerText);
+    if(success) {
+        serverLog("Answer updated for id: ", formData.itemId);
+    } else {
+        serverLog("Answer was not updated for id: ", formData.itemId);
+    }
+    success = faq.updateTags(formData.itemId, formData.tagsText);
+    if(success) {
+        serverLog("Tags updated for id: ", formData.itemId);
+    } else {
+        serverLog("Tags were not updated for id: ", formData.itemId);
     }
 }
 
@@ -440,7 +473,7 @@ function checkAuthorization(postData) {
  * @param {*} req : user request
  * @param {*} res : server response
  */
-function manageQA(req, res, formData, faq) {
+function manageQA(req, res, formData) {
 
     try {
         readFile('./Lab2/html/home.html', function (err, content) {
@@ -463,7 +496,7 @@ function manageQA(req, res, formData, faq) {
                 res.end();
             } else {
                 //edit page content
-                let edit = editContentPage(formData, faq);
+                let edit = editContentPage(formData);
                 page = page.concat(" ", edit);
                 content = content.toString().replace("{content}", page);
                 content = content.toString().replace("{question}", formData.itemQuestion);
@@ -483,7 +516,7 @@ function manageQA(req, res, formData, faq) {
  * Method to set the content for the /edit page. instructor access only.
  * @returns content for the /edit page.
  */
-function editContentPage() {
+function editContentPage(formData) {
     let page =
         "<p style=\"text-align:center\">In this form you can edit the answer and tags.</p>" +
         "<p style=\"text-align:center\"><b>{question}</b></p>" +
@@ -497,6 +530,7 @@ function editContentPage() {
             "<textarea name=\"tagsText\" id=\"tagsText\" rows=\"10\" cols=\"50\">{tags}</textarea><br />" +
 
             "<input type=\"submit\" value=\"Save Edit\" name=\"editSave\" >" +
+            "<input type=\"hidden\" name=\"itemId\" value=" + formData.itemId + ">" +
             "<a href=\"/home\"><input type=\"submit\" value=\"Cancel\" name=\"editCancel\"></a>" +
         "</form>";
     return page;
