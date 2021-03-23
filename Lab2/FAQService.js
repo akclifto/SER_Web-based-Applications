@@ -150,14 +150,11 @@ function routePostPaths(req, res, faq) {
                 deleteQA(formData.itemId, faq);
                 homePage(req, res, formData, faq);
             }
-            if(formData.edit) {
+            if (formData.edit) {
                 manageQA(req, res, formData);
             }
-            if(formData.editSave) {
-                // console.log(formData);
-                editSaveQA(formData, faq);
-                homePage(req, res, formData, faq);
-
+            if (formData.editSave) {
+                editSaveQA(req, res, formData, faq);
             }
             if (formData.login) {
                 let status = checkLogin(req, formData);
@@ -198,13 +195,13 @@ function routePath(req, res, formData, faq) {
         loginPage(req, res);
     }
     else if (req.url === "/edit") {
-        if(formData === undefined) {
+        if (formData === undefined) {
             unAuthorizedAccess(res);
         } else {
             manageQA(req, res, formData);
         }
     }
-    else if(req.url === "/add"){
+    else if (req.url === "/add") {
         manageQA(req, res, res, formData);
     }
     else if (req.url === "/home") {
@@ -257,26 +254,20 @@ function displayQAItems(items, role) {
         let addToPage = items.map((item) => {
             let itemContent =
 
-                // "<button type=\"submit\" name=\"editQAButton\" onClick=\"window.location.href='/edit';\"" + 
-                // "style=\"margin-left:0; padding:0; border: none; background: none; color:blue; text-align: left; font-size: 16px\">"
-                // +item.question+"</button><br />" +
                 "<b>" + item.question + "</b><br />" +
                 item.answer + "<br/>" +
                 "Tags: " + item.tags + "<br/>" +
                 item.author + "<br/>" +
                 new Date(item.date).toDateString() + "<br/>" +
 
-                "<form type=\"submit\" action=\"/home\" method=\"post\" style=\"margin-bottom:0\">" + 
-                    "<input type=\"submit\" name=\"edit\" value=\"Edit\" id=\"edit\">" + 
-                    "<input type=\"submit\" value=\"Delete\" name=\"delete\" id=\"delete\">" + 
-                    "<input type=\"hidden\" name=\"itemQuestion\" value=" + JSON.stringify(item.question) + ">" + 
-                    "<input type=\"hidden\" name=\"itemAnswer\" value=" + JSON.stringify(item.answer) + ">" + 
-                    "<input type=\"hidden\" name=\"itemTags\" value=" + JSON.stringify(item.tags)+">" + 
-                    "<input type=\"hidden\" name=\"itemId\" value=" + item.id + ">" +
+                "<form type=\"submit\" action=\"/home\" method=\"post\" style=\"margin-bottom:0\">" +
+                "<input type=\"submit\" name=\"edit\" value=\"Edit\" id=\"edit\">" +
+                "<input type=\"submit\" value=\"Delete\" name=\"delete\" id=\"delete\">" +
+                "<input type=\"hidden\" name=\"itemQuestion\" value=" + JSON.stringify(item.question) + ">" +
+                "<input type=\"hidden\" name=\"itemAnswer\" value=" + JSON.stringify(item.answer) + ">" +
+                "<input type=\"hidden\" name=\"itemTags\" value=" + JSON.stringify(item.tags) + ">" +
+                "<input type=\"hidden\" name=\"itemId\" value=" + item.id + ">" +
                 "</form> ";
-                // " <form name=\"deleteForm\" action=\"/home\" method=\"post\"style=\"margin-top:0\">" + 
-                //     "<input type=\"hidden\" value=" + item.id + " name=\"itemId\">" + 
-                // "</form>";
 
             return itemContent;
         });
@@ -311,18 +302,45 @@ function deleteQA(id, faq) {
  * @param {*} formData : user input for edit updates
  * @param {*} faq : faq object containing QA information
  */
-function editSaveQA(formData, faq) {
-    let success = faq.updateAnswer(formData.itemId, formData.answerText);
-    if(success) {
-        serverLog("Answer updated for id: ", formData.itemId);
+function editSaveQA(req, res, formData, faq) {
+    //check fields 
+    const qaCheck = addQACheck(formData);
+    // if check OK, make updates
+    if (qaCheck) {
+        let success = faq.updateAnswer(formData.itemId, formData.answerText);
+        if (success) {
+            serverLog("Answer updated for id: "+ formData.itemId);
+        } else {
+            serverLog("Answer was not updated for id: " + formData.itemId);
+        }
+        success = faq.updateTags(formData.itemId, formData.tagsText);
+        if (success) {
+            serverLog("Tags updated for id: " + formData.itemId);
+        } else {
+            serverLog("Tags were not updated for id: " + formData.itemId);
+        }
+        homePage(req, res, formData, faq);
     } else {
-        serverLog("Answer was not updated for id: ", formData.itemId);
-    }
-    success = faq.updateTags(formData.itemId, formData.tagsText);
-    if(success) {
-        serverLog("Tags updated for id: ", formData.itemId);
-    } else {
-        serverLog("Tags were not updated for id: ", formData.itemId);
+        res.writeHead(200, { "content-type": "text/html" });
+        try {
+            readFile('./Lab2/html/home.html', function (err, content) {
+                let page = "";
+
+                page = setPageHead(findUsername(req), findRole(req));
+                page = page.concat(" ", editContentPage(formData));
+
+                const error = "One or more fields are missing. Please fill out all fields before saving.";
+                content = content.toString().replace("{content}", page);
+                content = content.toString().replace("{question}", formData.itemQuestion);
+                content = content.toString().replace("{answer}", formData.answerText);
+                content = content.toString().replace("{tags}", formData.tagsText);
+                content = content.toString().replace("{errorText}", error);
+                res.write(content);
+                res.end();
+            });
+        } catch (err) {
+            console.log("editSaveQA error: ", err);
+        }
     }
 }
 
@@ -502,7 +520,7 @@ function manageQA(req, res, formData) {
                 content = content.toString().replace("{question}", formData.itemQuestion);
                 content = content.toString().replace("{answer}", formData.itemAnswer);
                 content = content.toString().replace("{tags}", formData.itemTags);
-                // TODO:  replace {question}, {answer}, {tags}
+                content = content.toString().replace("{errorText}", "");
                 res.write(content);
                 res.end();
             }
@@ -523,15 +541,18 @@ function editContentPage(formData) {
         "<br />" +
 
         "<form action=\"/home\" method=\"post\" style=\"text-align:center\">" +
-            "<label name=\"answer\"> Answer:</label> <br />" +
-            "<textarea name=\"answerText\" id=\"answerText\" rows=\"10\" cols=\"50\">{answer}</textarea><br />" +
+        "<label name=\"answer\"> Answer:</label> <br />" +
+        "<textarea name=\"answerText\" id=\"answerText\" rows=\"10\" cols=\"50\">{answer}</textarea><br />" +
 
-            "<label name=\"tags\"> Tags:</label> <br />" +
-            "<textarea name=\"tagsText\" id=\"tagsText\" rows=\"10\" cols=\"50\">{tags}</textarea><br />" +
+        "<label name=\"tags\"> Tags:</label> <br />" +
+        "<textarea name=\"tagsText\" id=\"tagsText\" rows=\"10\" cols=\"50\">{tags}</textarea><br />" +
 
-            "<input type=\"submit\" value=\"Save Edit\" name=\"editSave\" >" +
-            "<input type=\"hidden\" name=\"itemId\" value=" + formData.itemId + ">" +
-            "<a href=\"/home\"><input type=\"submit\" value=\"Cancel\" name=\"editCancel\"></a>" +
+        "<b>{errorText}</b> <br />" +
+
+        "<input type=\"submit\" value=\"Save Edit\" name=\"editSave\" >" +
+        "<input type=\"hidden\" name=\"itemId\" value=" + formData.itemId + ">" +
+        "<input type=\"hidden\" name=\"questionText\" value=" + JSON.stringify(formData.itemQuestion) + ">" +
+        "<a href=\"/home\"><input type=\"submit\" value=\"Cancel\" name=\"editCancel\"></a>" +
         "</form>";
     return page;
 }
