@@ -150,6 +150,9 @@ function routePostPaths(req, res, faq) {
                 deleteQA(formData.itemId, faq);
                 homePage(req, res, formData, faq);
             }
+            if(formData.edit) {
+                manageQA(req, res, formData, faq);
+            }
             if (formData.login) {
                 let status = checkLogin(req, formData);
                 if (status === 401) {
@@ -189,7 +192,7 @@ function routePath(req, res, formData, faq) {
         loginPage(req, res);
     }
     else if (req.url === "/edit" || req.url === "/add") {
-        manageQA(req, res);
+        manageQA(req, res, formData, faq);
     }
     else if (req.url === "/home") {
         homePage(req, res, formData, faq);
@@ -241,18 +244,26 @@ function displayQAItems(items, role) {
         let addToPage = items.map((item) => {
             let itemContent =
 
-                "<button name=\"editQAButton\" onClick=\"window.location.href='/edit';\"" + 
-                "style=\"margin-left:0; padding:0; border: none; background: none; color:blue; text-align: left; font-size: 16px\">"
-                +item.question+"</button><br />" +
+                // "<button type=\"submit\" name=\"editQAButton\" onClick=\"window.location.href='/edit';\"" + 
+                // "style=\"margin-left:0; padding:0; border: none; background: none; color:blue; text-align: left; font-size: 16px\">"
+                // +item.question+"</button><br />" +
+                "<b>" + item.question + "</b><br />" +
                 item.answer + "<br/>" +
                 "Tags: " + item.tags + "<br/>" +
                 item.author + "<br/>" +
                 new Date(item.date).toDateString() + "<br/>" +
 
-                "<form name=\"deleteForm\" action=\"/home\" method=\"post\">" + 
+                "<form type=\"submit\" action=\"/home\" method=\"post\" style=\"margin-bottom:0\">" + 
+                    "<input type=\"submit\" name=\"edit\" value=\"Edit\" id=\"edit\">" + 
+                    "<input type=\"hidden\" name=\"itemQuestion\" value="+JSON.stringify(item.question)+">" + 
+                    "<input type=\"hidden\" name=\"itemAnswer\" value="+JSON.stringify(item.answer) +">" + 
+                    "<input type=\"hidden\" name=\"itemTags\" value="+JSON.stringify(item.tags)+">" + 
+                    "<input type=\"hidden\" name=\"itemId\" value="+JSON.stringify(item.id)+">" +
                     "<input type=\"submit\" value=\"Delete\" name=\"delete\" id=\"delete\">" + 
-                    "<input type=\"hidden\" value=" + item.id + " name=\"itemId\">" + 
-                "</form>";
+                "</form> ";
+                // " <form name=\"deleteForm\" action=\"/home\" method=\"post\"style=\"margin-top:0\">" + 
+                //     "<input type=\"hidden\" value=" + item.id + " name=\"itemId\">" + 
+                // "</form>";
 
             return itemContent;
         });
@@ -429,7 +440,7 @@ function checkAuthorization(postData) {
  * @param {*} req : user request
  * @param {*} res : server response
  */
-function manageQA(req, res) {
+function manageQA(req, res, formData, faq) {
 
     try {
         readFile('./Lab2/html/home.html', function (err, content) {
@@ -452,9 +463,12 @@ function manageQA(req, res) {
                 res.end();
             } else {
                 //edit page content
-                let edit = editContentPage();
+                let edit = editContentPage(formData, faq);
                 page = page.concat(" ", edit);
                 content = content.toString().replace("{content}", page);
+                content = content.toString().replace("{question}", formData.itemQuestion);
+                content = content.toString().replace("{answer}", formData.itemAnswer);
+                content = content.toString().replace("{tags}", formData.itemTags);
                 // TODO:  replace {question}, {answer}, {tags}
                 res.write(content);
                 res.end();
@@ -476,14 +490,14 @@ function editContentPage() {
         "<br />" +
 
         "<form action=\"/home\" method=\"post\" style=\"text-align:center\">" +
-        "<label name=\"answer\"> Answer:</label> <br />" +
-        "<textarea name=\"answerText\" id=\"answerText\" rows=\"10\" cols=\"50\">{answer}</textarea><br />" +
+            "<label name=\"answer\"> Answer:</label> <br />" +
+            "<textarea name=\"answerText\" id=\"answerText\" rows=\"10\" cols=\"50\">{answer}</textarea><br />" +
 
-        "<label name=\"tags\"> Tags:</label> <br />" +
-        "<textarea name=\"tagsText\" id=\"tagsText\" rows=\"10\" cols=\"50\">{tags}</textarea><br />" +
+            "<label name=\"tags\"> Tags:</label> <br />" +
+            "<textarea name=\"tagsText\" id=\"tagsText\" rows=\"10\" cols=\"50\">{tags}</textarea><br />" +
 
-        "<input type=\"submit\" value=\"Save Edit\" name=\"editSave\" >" +
-        "<a href=\"/home\"><input type=\"submit\" value=\"Cancel\" name=\"editCancel\"></a>" +
+            "<input type=\"submit\" value=\"Save Edit\" name=\"editSave\" >" +
+            "<a href=\"/home\"><input type=\"submit\" value=\"Cancel\" name=\"editCancel\"></a>" +
         "</form>";
     return page;
 }
