@@ -146,6 +146,9 @@ function routePostPaths(req, res, faq) {
             if (formData.editCancel || formData.addQACancel) {
                 homePage(req, res, formData, faq);
             }
+            if (formData.delete) {
+                homePage(req, res, formData, faq);
+            }
             if (formData.login) {
                 let status = checkLogin(req, formData);
                 if (status === 401) {
@@ -203,7 +206,7 @@ function routePath(req, res, formData, faq) {
  * @param {*} items 
  * @returns formatted list of QA items to display.
  */
-function displayQAItems(items, role) {
+function displayQAItems(items, role, faq) {
     let display = "";
 
     // Check no filtered results.  
@@ -214,7 +217,6 @@ function displayQAItems(items, role) {
             display = "<b>No results from search filter. <b>";
             return display;
         }
-
         let addToPage = items.map((item) => {
             let itemContent =
                 "<b>" + item.question + "</b><br/>" +
@@ -224,7 +226,6 @@ function displayQAItems(items, role) {
                 new Date(item.date).toDateString() + "<br/>";
             return itemContent;
         });
-
         display = "<br />" +
             "<div classname=\"item-list\" id=\"item-list\">" +
             addToPage.join("<br/>") +
@@ -246,8 +247,14 @@ function displayQAItems(items, role) {
                 "Tags: " + item.tags + "<br/>" +
                 item.author + "<br/>" +
                 new Date(item.date).toDateString() + "<br/>" +
-                "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
-                "value=\"Delete\" name=\"delete\" id=\"delete\" ></form>";
+
+                "<button name=\"delete\" id=\"item.id\" onClick=" + deleteQA(item.id,faq) + 
+                ">Delete</button>"; 
+                // "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
+                // "value=\"Delete\" name=\"delete\" id=" + item.id + 
+                // " onClick="+ "deleteQA(item.id, faq)" +  
+                // "></form>";
+
             return itemContent;
         });
 
@@ -259,6 +266,15 @@ function displayQAItems(items, role) {
             addToPage.join("<br/>") +
             "</div>";
         return display;
+    }
+}
+
+function deleteQA(id, faq) {
+    let success = faq.deleteQA(id);
+    if (success) {
+        serverLog("QA with id: " + id + " successfully deleted.");
+    } else {
+        serverLog("Id not found in persistent store. QA was not deleted.");
     }
 }
 
@@ -293,7 +309,7 @@ function homePage(req, res, formData, faq) {
             //write out the QA item list
             let items = faq.filter(formData);
             // add QA here, itemList and admin priv for instructor
-            let itemList = displayQAItems(items, formData.role);
+            let itemList = displayQAItems(items, formData.role, faq);
             page = page.concat(" " + itemList);
             content = content.toString().replace('{content}', page);
             res.write(content);
@@ -405,8 +421,7 @@ function checkAuthorization(postData) {
 }
 
 /**
- * Method to set edit page, instructor access only.  Instructors only can access.
- * Instructor can edit answers and tags of a question.
+ * Method to set edit and add page, instructor access only.
  * @param {*} req : user request
  * @param {*} res : server response
  */
@@ -518,25 +533,25 @@ function setPageHead(username, role) {
 
 function homepageContentBody(username) {
 
-    let page = 
-    "<p style=\"text-align: center\">Welcome " + username + " to the View Q&A homepage.</p>" +
-    "<p style=\"text - align: center\">Put in your filter/search options.</p>" +
+    let page =
+        "<p style=\"text-align: center\">Welcome " + username + " to the View Q&A homepage.</p>" +
+        "<p style=\"text - align: center\">Put in your filter/search options.</p>" +
 
-    "<form action = \"/home\" method=\"post\"> " +
-    "<label name=\"username\">Author</label> " +
-    "<input type=\"text\" name=\"author\" placeholder=\"Author\"> " +
+        "<form action = \"/home\" method=\"post\"> " +
+        "<label name=\"username\">Author</label> " +
+        "<input type=\"text\" name=\"author\" placeholder=\"Author\"> " +
 
-    "<label name=\"tags\">Tags</label>" +
-    "<input type=\"text\" name=\"tags\" placeholder=\"Tags\">" +
+        "<label name=\"tags\">Tags</label>" +
+        "<input type=\"text\" name=\"tags\" placeholder=\"Tags\">" +
 
-    "<label name=\"startdate\">Start Date</label>" +
-    "<input type=\"Date\" name=\"startdate\" placeholder=\"mm/dd/yyyy\">" +
+        "<label name=\"startdate\">Start Date</label>" +
+        "<input type=\"Date\" name=\"startdate\" placeholder=\"mm/dd/yyyy\">" +
 
-    "<label name=\"enddate\">End Date</label>" +
-    "<input type=\"Date\" name=\"enddate\" placeholder=\"mm/dd/yyyy\">" +
+        "<label name=\"enddate\">End Date</label>" +
+        "<input type=\"Date\" name=\"enddate\" placeholder=\"mm/dd/yyyy\">" +
 
-    "<input type=\"submit\" value=\"Search\" name=\"search\" >" +
-    "</form>";
+        "<input type=\"submit\" value=\"Search\" name=\"search\" >" +
+        "</form>";
     return page;
 }
 
