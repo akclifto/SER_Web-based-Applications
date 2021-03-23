@@ -287,29 +287,8 @@ function homePage(req, res, formData, faq) {
             if (err) {
                 console.log("homePage error: ", err);
             }
-            let page =
-                "<p> Hello <b>" + formData.username + "</b>, you are logged in as <b>" + formData.role + "</b>:</p>" +
-                "<form action=\"/\" method=\"post\" style=\"text-align: end\">" +
-                "<input type=\"submit\" value=\"Logout\" name=\"logout\" id=\"logout\"></form>" +
-
-                "<p style=\"text-align: center\">Welcome " + formData.username + " to the View Q&A homepage.</p>" +
-                "<p style=\"text - align: center\">Put in your filter/search options.</p>" +
-
-                "<form action = \"/home\" method=\"post\"> " +
-                "<label name=\"username\">Author</label> " +
-                "<input type=\"text\" name=\"author\" placeholder=\"Author\"> " +
-
-                "<label name=\"tags\">Tags</label>" +
-                "<input type=\"text\" name=\"tags\" placeholder=\"Tags\">" +
-
-                "<label name=\"startdate\">Start Date</label>" +
-                "<input type=\"Date\" name=\"startdate\" placeholder=\"mm/dd/yyyy\">" +
-
-                "<label name=\"enddate\">End Date</label>" +
-                "<input type=\"Date\" name=\"enddate\" placeholder=\"mm/dd/yyyy\">" +
-
-                "<input type=\"submit\" value=\"Search\" name=\"search\" >" +
-                "</form>";
+            let page = setPageHead(formData.username, formData.role);
+            page = page.concat(" ", homepageContentBody(formData.username));
 
             //write out the QA item list
             let items = faq.filter(formData);
@@ -325,6 +304,7 @@ function homePage(req, res, formData, faq) {
     }
     serverLog("Search filter items set.");
 }
+
 
 /**
  * Method to get form data input. Check http_server_external.js class example.
@@ -395,7 +375,6 @@ function checkLogin(req, postData) {
         }
         return 401;
     }
-
     // login validation
     for (let i in fake.db) {
 
@@ -521,6 +500,12 @@ function addContentPage() {
     return page;
 }
 
+/**
+ * Method to set the page head with the message and logout button that are on each page.
+ * @param {*} username : username for message
+ * @param {*} role : role for message
+ * @returns content of page head.
+ */
 function setPageHead(username, role) {
     let page =
         "<p> Hello <b>" + username + "</b>, you are logged in as <b>" + role + "</b>:</p>" +
@@ -528,6 +513,30 @@ function setPageHead(username, role) {
         "<form action=\"/\" method=\"post\" style=\"text-align: end\">" +
         "<input type=\"submit\" value=\"Logout\" name=\"logout\" id=\"logout\">" +
         "</form>";
+    return page;
+}
+
+function homepageContentBody(username) {
+
+    let page = 
+    "<p style=\"text-align: center\">Welcome " + username + " to the View Q&A homepage.</p>" +
+    "<p style=\"text - align: center\">Put in your filter/search options.</p>" +
+
+    "<form action = \"/home\" method=\"post\"> " +
+    "<label name=\"username\">Author</label> " +
+    "<input type=\"text\" name=\"author\" placeholder=\"Author\"> " +
+
+    "<label name=\"tags\">Tags</label>" +
+    "<input type=\"text\" name=\"tags\" placeholder=\"Tags\">" +
+
+    "<label name=\"startdate\">Start Date</label>" +
+    "<input type=\"Date\" name=\"startdate\" placeholder=\"mm/dd/yyyy\">" +
+
+    "<label name=\"enddate\">End Date</label>" +
+    "<input type=\"Date\" name=\"enddate\" placeholder=\"mm/dd/yyyy\">" +
+
+    "<input type=\"submit\" value=\"Search\" name=\"search\" >" +
+    "</form>";
     return page;
 }
 
@@ -632,17 +641,6 @@ function addQASave(req, res, formData, faq) {
                 res.write(content);
                 res.end();
             });
-            // readFile('./Lab2/html/add.html', function (err, content) {
-
-            //     if (err) {
-            //         console.log("add page error: " + err);
-            //     }
-            //     const error = "One or more fields are missing. Please fill out all fields to add a question.";
-            //     content = content.toString().replace("{errorText}", error);
-            //     serverLog("Add QA unsuccessful due to missing form fields.");
-            //     res.write(content);
-            //     res.end();
-            // });
         } catch (err) {
             console.log("addQASave error: ", err);
         }
