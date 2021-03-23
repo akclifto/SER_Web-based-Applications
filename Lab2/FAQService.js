@@ -136,6 +136,8 @@ function routePostPaths(req, res, faq) {
         // get user form data for posts
         processFormData(req, res, function (formData) {
 
+            console.log(formData);
+
             if (formData.search) {
                 homePage(req, res, formData, faq);
             }
@@ -147,6 +149,7 @@ function routePostPaths(req, res, faq) {
                 homePage(req, res, formData, faq);
             }
             if (formData.delete) {
+                deleteQA(formData.itemId, faq);
                 homePage(req, res, formData, faq);
             }
             if (formData.login) {
@@ -206,7 +209,7 @@ function routePath(req, res, formData, faq) {
  * @param {*} items 
  * @returns formatted list of QA items to display.
  */
-function displayQAItems(items, role, faq) {
+function displayQAItems(items, role) {
     let display = "";
 
     // Check no filtered results.  
@@ -248,12 +251,13 @@ function displayQAItems(items, role, faq) {
                 item.author + "<br/>" +
                 new Date(item.date).toDateString() + "<br/>" +
 
-                "<button name=\"delete\" id=\"item.id\" onClick=" + deleteQA(item.id,faq) + 
-                ">Delete</button>"; 
-                // "<form action=\"/home\" method=\"post\"><input type=\"submit\" " +
-                // "value=\"Delete\" name=\"delete\" id=" + item.id + 
-                // " onClick="+ "deleteQA(item.id, faq)" +  
-                // "></form>";
+                // "<button name=\"delete\" id=\"item.id\" onClick=" + 
+                // myfunction(item.id, faq); + 
+                // ">Delete</button>"; 
+                "<form name=\"deleteForm\" action=\"/home\" method=\"post\">" + 
+                    "<input type=\"submit\" value=\"Delete\" name=\"delete\" id=\"delete\">" + 
+                    "<input type=\"hidden\" value=" + item.id + " name=\"itemId\">" + 
+                "</form>";
 
             return itemContent;
         });
@@ -269,6 +273,11 @@ function displayQAItems(items, role, faq) {
     }
 }
 
+/**
+ * Method to delete QA from faq datastore
+ * @param {*} id : id to delete
+ * @param {*} faq : faq object containing QA information
+ */
 function deleteQA(id, faq) {
     let success = faq.deleteQA(id);
     if (success) {
