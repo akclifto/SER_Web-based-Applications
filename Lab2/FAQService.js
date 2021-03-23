@@ -136,8 +136,6 @@ function routePostPaths(req, res, faq) {
         // get user form data for posts
         processFormData(req, res, function (formData) {
 
-            console.log(formData);
-
             if (formData.search) {
                 homePage(req, res, formData, faq);
             }
@@ -190,10 +188,7 @@ function routePath(req, res, formData, faq) {
     else if (req.url === "/login") {
         loginPage(req, res);
     }
-    else if (req.url === "/edit") {
-        manageQA(req, res);
-    }
-    else if (req.url === "/add") {
+    else if (req.url === "/edit" || req.url === "/add") {
         manageQA(req, res);
     }
     else if (req.url === "/home") {
@@ -245,7 +240,10 @@ function displayQAItems(items, role) {
 
         let addToPage = items.map((item) => {
             let itemContent =
-                "<a href=\"/edit\"<b>" + item.question + "</b></a><br/>" +
+
+                "<button name=\"editQAButton\" onClick=\"window.location.href='/edit';\"" + 
+                "style=\"margin-left:0; padding:0; border: none; background: none; color:blue; text-align: left; font-size: 16px\">"
+                +item.question+"</button><br />" +
                 item.answer + "<br/>" +
                 "Tags: " + item.tags + "<br/>" +
                 item.author + "<br/>" +
