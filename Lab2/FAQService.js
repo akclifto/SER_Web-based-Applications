@@ -251,9 +251,6 @@ function displayQAItems(items, role) {
                 item.author + "<br/>" +
                 new Date(item.date).toDateString() + "<br/>" +
 
-                // "<button name=\"delete\" id=\"item.id\" onClick=" + 
-                // myfunction(item.id, faq); + 
-                // ">Delete</button>"; 
                 "<form name=\"deleteForm\" action=\"/home\" method=\"post\">" + 
                     "<input type=\"submit\" value=\"Delete\" name=\"delete\" id=\"delete\">" + 
                     "<input type=\"hidden\" value=" + item.id + " name=\"itemId\">" + 
