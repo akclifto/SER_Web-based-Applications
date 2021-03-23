@@ -604,6 +604,11 @@ function setPageHead(username, role) {
     return page;
 }
 
+/**
+ * Method to set the homepage content body.
+ * @param {*} username : username of user
+ * @returns content of the homepage body.
+ */
 function homepageContentBody(username) {
 
     let page =

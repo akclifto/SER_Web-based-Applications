@@ -21,13 +21,13 @@ class FakeDatabase {
     constructor() {
         this.db = [
             {
-                "username": "inst",
+                "username": "admin",
                 "password": "admin",
                 "role": "instructor",
             },
             {
                 "username": "stu",
-                "password": "dent",
+                "password": "stu",
                 "role": "student",
             }];
     }
