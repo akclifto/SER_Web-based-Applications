@@ -4,6 +4,11 @@
  * @email akclifto@asu.edu 
  * 
  */
+
+To run activity 1 test:  npm run act1
+To run activity 2 server:  npm run act2
+To run activity 3 server:  npm run start
+
 ----------------------------------------------------------------------------------
  Please let me know if you have any questions.
 
