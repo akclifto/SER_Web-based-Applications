@@ -185,10 +185,10 @@ function routePath(req, res, formData, faq) {
         loginPage(req, res);
     }
     else if (req.url === "/edit") {
-        editPage(req, res);
+        manageQA(req, res);
     }
     else if (req.url === "/add") {
-        addPage(req, res);
+        manageQA(req, res);
     }
     else if (req.url === "/home") {
         homePage(req, res, formData, faq);
@@ -431,44 +431,36 @@ function checkAuthorization(postData) {
  * @param {*} req : user request
  * @param {*} res : server response
  */
-function editPage(req, res) {
+function manageQA(req, res) {
 
     try {
         readFile('./Lab2/html/home.html', function (err, content) {
             res.writeHead(200, { "content-type": "text/html" });
 
             if (err) {
-                console.log("edit error: " + err);
+                console.log("manageQA error: " + err);
             }
             let username = findUsername(req);
+            let role = findRole(req);
+            let page = setPageHead(username, role);
 
-            let page =
-                "<p> Hello <b>" + username + "</b>, you are logged in as <b>instructor</b>:</p>" + 
-                
-                "<form action=\"/\" method=\"post\" style=\"text-align: end\">" +
-                "<input type=\"submit\" value=\"Logout\" name=\"logout\" id=\"logout\">" +
-                "</form>" +
-
-                "<p style=\"text-align:center\">In this form you can edit the answer and tags.</p>" +
-                "<p style=\"text-align:center\"><b>{question}</b></p>" +
-                "<br />" +
-
-                "<form action=\"/home\" method=\"post\" style=\"text-align:center\">" +
-                "<label name=\"answer\"> Answer:</label> <br />" +
-                "<textarea name=\"answerText\" id=\"answerText\" rows=\"10\" cols=\"50\">{answer}</textarea><br />" +
-
-                "<label name=\"tags\"> Tags:</label> <br />" +
-                "<textarea name=\"tagsText\" id=\"tagsText\" rows=\"10\" cols=\"50\">{tags}</textarea><br />" +
-
-                "<input type=\"submit\" value=\"Save Edit\" name=\"editSave\" >" +
-                "<a href=\"/home\"><input type=\"submit\" value=\"Cancel\" name=\"editCancel\"></a>" +
-                "</form>";
-
-            content = content.toString().replace("{content}", page);
-            console.log(content);
-            // TODO:  replace {question}, {answer}, {tags}
-            res.write(content);
-            res.end();
+            if (req.url === "/add") {
+                // add content page
+                let add = addContentPage();
+                page = page.concat(" ", add);
+                content = content.toString().replace("{content}", page);
+                content = content.toString().replace("{errorText}", "");
+                res.write(content);
+                res.end();
+            } else {
+                //edit page content
+                let edit = editContentPage();
+                page = page.concat(" ", edit);
+                content = content.toString().replace("{content}", page);
+                // TODO:  replace {question}, {answer}, {tags}
+                res.write(content);
+                res.end();
+            }
         });
     } catch (err) {
         console.log("editPage error", err);
@@ -476,31 +468,67 @@ function editPage(req, res) {
 }
 
 /**
- * Method to set the add QA page. Instructor's access only.
- * @param {*} req : user request
- * @param {*} res : server response
+ * Method to set the content for the /edit page. instructor access only.
+ * @returns content for the /edit page.
  */
-function addPage(req, res) {
+function editContentPage() {
+    let page =
+        "<p style=\"text-align:center\">In this form you can edit the answer and tags.</p>" +
+        "<p style=\"text-align:center\"><b>{question}</b></p>" +
+        "<br />" +
 
-    res.writeHead(200, { "content-type": "text/html" });
-    try {
-        readFile('./Lab2/html/add.html', function (err, content) {
+        "<form action=\"/home\" method=\"post\" style=\"text-align:center\">" +
+        "<label name=\"answer\"> Answer:</label> <br />" +
+        "<textarea name=\"answerText\" id=\"answerText\" rows=\"10\" cols=\"50\">{answer}</textarea><br />" +
 
-            if (err) {
-                console.log("add page error: " + err);
-            }
-            let username = req.headers.cookie;
-            username = username.split("=");
+        "<label name=\"tags\"> Tags:</label> <br />" +
+        "<textarea name=\"tagsText\" id=\"tagsText\" rows=\"10\" cols=\"50\">{tags}</textarea><br />" +
 
-            content = content.toString().replace("{username1}", username[1]);
-            content = content.toString().replace("{role}", "instructor");
-            content = content.toString().replace("{errorText}", "");
-            res.write(content);
-            res.end();
-        });
-    } catch (err) {
-        console.log("addPage error: ", err);
-    }
+        "<input type=\"submit\" value=\"Save Edit\" name=\"editSave\" >" +
+        "<a href=\"/home\"><input type=\"submit\" value=\"Cancel\" name=\"editCancel\"></a>" +
+        "</form>";
+    return page;
+}
+
+/**
+ * Method to set the content for the /add page. Instructor access only.
+ * @returns content for the /add page
+ */
+function addContentPage() {
+    let page =
+        "<p style=\"text-align:center\">Add a new Question:</p>" +
+        "<p style=\"text-align:center\"><b>Question:</b></p>" +
+
+        "<form action=\"/home\" method=\"post\" style=\"text-align:center\">" +
+        "<textarea name=\"questionText\" id=\"questionText\" " +
+        "placeholder=\"Enter question here...\" rows=\"10\" cols=\"50\"></textarea><br />" +
+
+        "<br />" +
+
+        "<label name=\"answer\"> Answer:</label> <br />" +
+        "<textarea name=\"answerText\" id=\"answerText\" rows=\"10\" cols=\"50\"" +
+        "placeholder=\"Enter answer here...\"></textarea><br />" +
+
+        "<label name=\"tags\"> Tags:</label> <br />" +
+        "<textarea name=\"tagsText\" id=\"tagsText\" rows=\"10\" cols=\"50\"" +
+        "placeholder=\"Enter tags...\"></textarea><br />" +
+
+        "<b>{errorText}</b> <br />" +
+
+        "<input type=\"submit\" value=\"Add QA\" name=\"addQASave\" >" +
+        "<a href=\"/home\"><input type=\"submit\" value=\"Cancel\" name=\"addQACancel\"></a>" +
+        "</form>";
+    return page;
+}
+
+function setPageHead(username, role) {
+    let page =
+        "<p> Hello <b>" + username + "</b>, you are logged in as <b>" + role + "</b>:</p>" +
+
+        "<form action=\"/\" method=\"post\" style=\"text-align: end\">" +
+        "<input type=\"submit\" value=\"Logout\" name=\"logout\" id=\"logout\">" +
+        "</form>";
+    return page;
 }
 
 /**
@@ -592,21 +620,29 @@ function addQASave(req, res, formData, faq) {
     } else {
         res.writeHead(200, { "content-type": "text/html" });
         try {
-            readFile('./Lab2/html/add.html', function (err, content) {
+            readFile('./Lab2/html/home.html', function (err, content) {
+                let page = "";
 
-                if (err) {
-                    console.log("add page error: " + err);
-                }
-                let username = req.headers.cookie;
-                username = username.split("=");
+                page = setPageHead(findUsername(req), findRole(req));
+                page = page.concat(" ", addContentPage());
+
                 const error = "One or more fields are missing. Please fill out all fields to add a question.";
-                content = content.toString().replace("{username1}", username[1]);
-                content = content.toString().replace("{role}", "instructor");
+                content = content.toString().replace("{content}", page);
                 content = content.toString().replace("{errorText}", error);
-                serverLog("Add QA unsuccessful due to missing form fields.");
                 res.write(content);
                 res.end();
             });
+            // readFile('./Lab2/html/add.html', function (err, content) {
+
+            //     if (err) {
+            //         console.log("add page error: " + err);
+            //     }
+            //     const error = "One or more fields are missing. Please fill out all fields to add a question.";
+            //     content = content.toString().replace("{errorText}", error);
+            //     serverLog("Add QA unsuccessful due to missing form fields.");
+            //     res.write(content);
+            //     res.end();
+            // });
         } catch (err) {
             console.log("addQASave error: ", err);
         }
