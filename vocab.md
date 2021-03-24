@@ -139,5 +139,8 @@ The request object wraps an HTTP request object with a convneience API.Ex, can g
 
 The response object wraps an HTTP response.  You set header with `res.set(header, val)`, and others. See slide 14 of 20 on `Module 3 - NodeMVCWithExpress` pdf.  
 
-### Video 3: Node MVC with Express - The View part of MVC
+### Video 3: Node MVC with Express - The View part of MVC with EJS and Pug
+
+View part is where we assemble the response payload (step 4 in the req/res process pattern). It is also corresponds to the presentation part of the SoC.  It is a 1:1 mapping.
+
 
