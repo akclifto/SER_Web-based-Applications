@@ -168,7 +168,60 @@ CONS:
 `The view: other techniques`:  
 
 - XML/XSLT - is computationally expensive
-- Browser-plugins / embedded viewers (flash, silverlight, applets, etc.).  These used to embed full UI state into DL'd object.  Evolved to accept the presentation info and dynamically render in the "player".  HTML5 is replacing it rapidly. 
+- Browser-plugins / embedded viewers (flash, silverlight, applets, etc.).  These used to embed full UI state into DL'd object.  Evolved to accept the presentation info and dynamically render in the "player".  HTML5 is replacing it rapidly.
 
 ### Video 4: Node MVC with Express - Middleware Concepts
+
+Middleware layer coordinates interaction with all the services of your model and biz logic.  Its a structual pattern thats ... IN THE MIDDLE between server stuff and model/logic/db stuff
+Examples:
+
+- MOM: messaging oriented middleware (message system)
+- distributed transactions between dbs
+- ESB: enterprise service bus
+
+common middleware libraries:
+
+- `json`: parse JSON request payloads, popular with REST APIs
+- `urlencoded` - parse `applicaiton/x-www-form-urlencoded` request payloads
+- `body-parser` - includes both json and urlencoded
+- `compress` - compress response data with gzip
+- `cookie-parser` - parses cookies
+- `express-session` - handles user sessions
+
+Node/express process pipeline:
+
+app.get() => `app.use() -- (next()) => app.use() -- (next()) =>` app.render()
+
+the `app.use()` calls get injected (Go4, interceptor/chain of responsibility pattern) and is considered the middleware. The `next()` call continues the pipeline.  The ordering of the pipeline depends on the order of routes set, and middleware up.  It's important where things go!
+
+This is why there are multi params on the callbacks in Express. Ex of middleware:
+
+```javascript
+// express_listen_middleware.js
+let app = require('express')();
+
+app.get('/', function (req, res,, next) {
+    res.send("Hello from express");
+    next(); // continuing the request pipeline
+});
+
+app.use(function(req,res, next) {
+    console.log("first app.use call");
+    next(); // continuing the request pipeline
+});
+
+app.use(function(req,res, next) {
+    console.log("second app.use call");
+    next(); // continuing the request pipeline
+});
+
+app.use(function(req,res, next) {
+    console.log("third app.use call");
+    // Notice no next() call here. That means we're done.
+    // now going on to render() or in this case, just to listen().
+});
+
+app.listen(8081);
+
+```
 
