@@ -133,3 +133,11 @@ app.get('/error', function (req, res) { //route 2
 ```
 
 `app.get('/')` is called a route.
+
+`Express req and res objects`  
+The request object wraps an HTTP request object with a convneience API.Ex, can get any header with `req.get(<header>)` or req.headers.  See `express_request.js` example.
+
+The response object wraps an HTTP response.  You set header with `res.set(header, val)`, and others. See slide 14 of 20 on `Module 3 - NodeMVCWithExpress` pdf.  
+
+### Video 3: Node MVC with Express - The View part of MVC
+
