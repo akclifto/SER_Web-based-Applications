@@ -143,4 +143,32 @@ The response object wraps an HTTP response.  You set header with `res.set(header
 
 View part is where we assemble the response payload (step 4 in the req/res process pattern). It is also corresponds to the presentation part of the SoC.  It is a 1:1 mapping.
 
+Theres a bunch of ways to render the view; the video focuses on templates.  see `express_template.js` example for ejs and pug usage.
+
+`Template engines` = mix and match static and dynamic content.
+
+- web UI devs would create the static parts of the page.  (as we know, web devs not do full stack, there's almost no separation between them and wep app devs.).
+- backend devs create dynamic parts (see not above about web devs)
+- UI devs owned the structure, or loayout of a page.
+  - holes left for dynamic devs to fill in
+  - result: box-ey layouts that you still see today.
+
+PROS:
+
+- still SoC
+- AJAX friendly
+- lets each dev role stick to what theyre good at doing
+- the UI now started with the markup, not the other way around.
+
+CONS:
+
+- not a lot of layout flexibility, not "responsive"
+- proprietary scripting languages. BOOOO.
+
+`The view: other techniques`:  
+
+- XML/XSLT - is computationally expensive
+- Browser-plugins / embedded viewers (flash, silverlight, applets, etc.).  These used to embed full UI state into DL'd object.  Evolved to accept the presentation info and dynamically render in the "player".  HTML5 is replacing it rapidly. 
+
+### Video 4: Node MVC with Express - Middleware Concepts
 
