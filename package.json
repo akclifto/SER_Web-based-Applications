@@ -13,7 +13,6 @@
     "yarn": "1.22.5"
   },
   "scripts": {
-    "pre-commit": "lint-staged",
     "act1": "cd Lab2/activity1/ && node FAQ00_test.js",
     "act2": "cd Lab2/activity2/ && node FAQService00.js",
     "start": "node Lab2/FAQService.js"
@@ -28,9 +27,5 @@
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1"
   },
-  "dependencies": {},
-  "lint-staged": {
-    "*.+(js|jsx)": ["eslint --fix", "git add"],
-    "*.+(json|css|md)": ["prettier --write", "git add"]
-  }
+  "dependencies": {}
 }
