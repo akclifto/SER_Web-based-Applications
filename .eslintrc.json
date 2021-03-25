@@ -21,6 +21,7 @@
         "prettier/prettier": ["error", {
             "endOfLine": "auto"
         }],
+        "linebreak-style": 0,
         "promise/always-return": "error",
         "promise/no-return-wrap": "error",
         "promise/param-names": "error",

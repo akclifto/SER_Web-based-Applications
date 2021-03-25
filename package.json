@@ -13,6 +13,7 @@
     "yarn": "1.22.5"
   },
   "scripts": {
+    "precommit": "echo something",
     "act1": "cd Lab2/activity1/ && node FAQ00_test.js",
     "act2": "cd Lab2/activity2/ && node FAQService00.js",
     "start": "node Lab2/FAQService.js",
