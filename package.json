@@ -30,6 +30,7 @@
   },
   "dependencies": {},
   "lint-staged": {
-    "*.js": ["eslint --fix", "git add"]
+    "*.+(js|jsx)": ["eslint --fix", "git add"],
+    "*.+(json|css|md)": ["prettier --write", "git add"]
   }
 }
