@@ -15,7 +15,9 @@
   "scripts": {
     "act1": "cd Lab2/activity1/ && node FAQ00_test.js",
     "act2": "cd Lab2/activity2/ && node FAQService00.js",
-    "start": "node Lab2/FAQService.js"
+    "start": "node Lab2/FAQService.js",
+    "lint": "eslint .",
+    "lintf": "eslint . --fix"
   },
   "devDependencies": {
     "eslint": "^7.22.0",

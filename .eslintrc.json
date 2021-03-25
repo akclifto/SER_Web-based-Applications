@@ -18,7 +18,9 @@
         "import/extensions": [".js", ".jsx"]
     },
     "rules": {
-        "prettier/prettier": "error",
+        "prettier/prettier": ["error", {
+            "endOfLine": "auto"
+        }],
         "promise/always-return": "error",
         "promise/no-return-wrap": "error",
         "promise/param-names": "error",
