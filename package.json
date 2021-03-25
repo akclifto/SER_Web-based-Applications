@@ -20,6 +20,7 @@
     "lint": "eslint .",
     "lintf": "eslint . --fix"
   },
+  "pre-commit": [ "precommit"],
   "devDependencies": {
     "eslint": "^7.22.0",
     "eslint-config-prettier": "^8.1.0",

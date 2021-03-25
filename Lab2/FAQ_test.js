@@ -6,6 +6,7 @@
  * @date 2021.03.13
  *
  */
+// eslint-disable-next-line node/no-missing-import
 import FAQ from "./FAQ00.js";
 import path from "path";
 const __dirname = path.resolve();
