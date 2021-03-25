@@ -2,6 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/vscode,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=vscode,node
 
+# my files
+/Examples/NodeHTTP/MicroBlog
+
 ### Node ###
 # Logs
 logs
@@ -55,6 +58,7 @@ typings/
 # Optional npm cache directory
 .npm
 .husky/
+
 
 # Optional eslint cache
 .eslintcache
