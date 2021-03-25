@@ -231,6 +231,10 @@ app.listen(8081);
 
 A promise represent thge eventual result of an async operation.  
 
+`promise.all()`: takes iterable and retuns a promise that resolves whal ALL of the promises in the iterable have resolved or rejects when the 1st promise rejects.  psuedo-parallelism.  
+
+`promise.race()`: takes an iterable and reutn a promise that resolves with the value of the FIRST PROMISE that resolved in the iterable, else rejects.
+
 ## Async Behavior
 
 Node/JS gives feeling of parallelism, but is not really concurrent.  It is logically concurrent (multiple call chains as part of one computation task executing at the same time). It is `non-determinism`.

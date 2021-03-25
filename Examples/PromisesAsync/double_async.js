@@ -18,18 +18,18 @@ async function addAsync(x) {
     return x + a + b + c;
 }
 
-// async function addAsyncParallel(x) {
-//     try {
-// 	const [val1, val2, val3] = await Promise.all([
-// 	    doubleAfter2Seconds(10),
-// 	    doubleAfter2Seconds(20),
-// 	    doubleAfter2Seconds(30)
-// 	]);
-// 	return x + val1 + val2 + val3;
-//     } catch (e) {
-// 	console.log(e);
-//     }
-// }
+async function addAsyncParallel(x) {
+    try {
+	const [val1, val2, val3] = await Promise.all([
+	    doubleAfter2Seconds(10),
+	    doubleAfter2Seconds(20),
+	    doubleAfter2Seconds(30)
+	]);
+	return x + val1 + val2 + val3;
+    } catch (e) {
+	console.log(e);
+    }
+}
 
 // Note we are tempted to do this as we have a simple return
 // statement with the sum in both of these - but it will not
@@ -46,10 +46,10 @@ addAsync(15).then((sum) => {
   console.log(sum);
 });
 
-// addAsyncParallel(20).then((sum) => {
-//   console.log(sum);
-// });
-// addAsyncParallel(25).then((sum) => {
-//   console.log(sum);
-// });
+addAsyncParallel(20).then((sum) => {
+  console.log(sum);
+});
+addAsyncParallel(25).then((sum) => {
+  console.log(sum); 
+});
 

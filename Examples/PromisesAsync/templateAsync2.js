@@ -19,6 +19,10 @@ function readFileAndReplace(output, file, replaceStr) {
 }
 
 // THIS DOES NOT WORK AS WE DESIRE, WHY???
+// var result is STATEFUL callback from above and specific to the different sections.  result can't be 
+// done in parallel for each piece in the template; the state gets lost in the promise.all()
+// block (bc promises can be resolved only once, then theyre immutable).  
+// Hence, there's nothing to replace the template, so we get the template back.  
 async function readReplaceWrapper(qparams, res) {
     try {
 	// qparams should be left=X banner=Y footer=Z and main=K
