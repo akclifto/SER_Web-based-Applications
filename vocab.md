@@ -46,6 +46,8 @@ Types:
 - Secure: only transmitted over HTTPS by indicating `secure flag`, helps against snooping or cookie stealing
 - HttpOnly: Prevents reading cookie values in JS by using `HttpOnly flag`, avoid malicious JS that compromise cookie info.
 
+[Back to Top](#Vocab-from-Videos)
+
 ## Module 3
 
 ### Video 1: ServerState18
@@ -242,4 +244,8 @@ A promise represent the eventual result of an async operation. Promises resolve 
 
 Node/JS gives feeling of parallelism, but is not really concurrent. It is logically concurrent (multiple call chains as part of one computation task executing at the same time). It is `non-determinism`.
 
+[Back to Top](#Vocab-from-Videos)
+
 ## Module 4
+
+[Back to Top](#Vocab-from-Videos)
