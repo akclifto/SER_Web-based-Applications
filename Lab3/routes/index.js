@@ -25,7 +25,7 @@ router.get("/", function (req, res, next) {
       res.render("index", {
         title: "Welcome to the Article Reviewer App",
         articleTitle: title,
-        articleBody: JSON.stringify(article),
+        articleBody: article.toString(),
       });
     }
   );
