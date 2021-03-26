@@ -1,5 +1,18 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to cool site for #{subTitle}
+  div(class="article")
+    //- Welcome message for the browser tab.
+    title 
+    p(class="article-body") 
+      h3=articleTitle
+    p=articleBody
+
+  //section for comments
+  //  contains 
+      AddComment button, 
+      DeleteComment button, 
+      Undo button, 
+      View User Activity button, and 
+      Reset button 
+
