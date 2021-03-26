@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
@@ -28,7 +29,6 @@ app.use(function (req, res, next) {
 });
 
 // error handler
-// eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
