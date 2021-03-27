@@ -13,7 +13,9 @@ const COMMENTS_JSON = "/resource/comments.json";
  */
 router.get("/", async function (req, res, next) {
   let article = await getArticle(res);
-  console.log(article);
+  let comments = await getComments(res);
+  console.log(comments);
+
   let title = "Sample of Article: ";
   //render the article to articleBody
   res.render("index", {
@@ -47,6 +49,27 @@ function getArticle(res) {
   });
 }
 
+function getComments(res) {
+  return new Promise(function (resolve, reject) {
+    try {
+      fs.readFile(FILE_DIR.concat(COMMENTS_JSON), "UTF8", function (err, data) {
+        if (err) {
+          errorLog("readFile", err);
+          let error = promiseReject(500, err.message);
+          // render the pug error template
+          reject(res.render("error", { error }));
+        }
+        //TODO FINISH THIS doesnt work yet
+        if (data !== "") {
+          let data = JSON.parse(data);
+          resolve(data.toString());
+        }
+      });
+    } catch (err) {
+      console.log("getArticle error: ", err);
+    }
+  });
+}
 
 /**
  * Method to handle promise rejection status and messages for error pug
