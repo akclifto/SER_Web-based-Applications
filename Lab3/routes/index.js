@@ -97,8 +97,6 @@ router.post("/add", async function (req, res, next) {
     );
     res.render("error", { error });
   } else {
-    // console.log(errorFlag);
-    // console.log(historyStack.length);
     // //add new comment to the stack
     historyStack.unshift({
       operation: req.body.addComment,
@@ -107,33 +105,14 @@ router.post("/add", async function (req, res, next) {
       ip: req._remoteAddress,
       userAgent: req.headers["user-agent"],
     });
-    console.log(historyStack);
+    // console.log(historyStack);
 
     //write to files and render the view
-    //comments json
-    fs.writeFileSync(
-      FILE_DIR.concat(COMMENTS_JSON),
-      JSON.stringify(historyStack),
-      "UTF8",
-      function (err) {
-        if (err) {
-          let error = promiseRejectError(500, err.message);
-          res.render("error", { error });
-        }
-      }
-    );
+    // comments json
+    writeToFile(res, COMMENTS_JSON, historyStack);
     // history json
-    fs.writeFileSync(
-      FILE_DIR.concat(HISTORY_JSON),
-      JSON.stringify(historyStack),
-      "UTF8",
-      function (err) {
-        if (err) {
-          let error = promiseRejectError(500, err.message);
-          res.render("error", { error });
-        }
-      }
-    );
+    writeToFile(res, HISTORY_JSON, historyStack);
+
     // render response view
     let title = "Comment Successfully Added";
     res.render("response", {
@@ -217,9 +196,7 @@ async function getStackHistory(res) {
     for (let item in history) {
       historyStack.unshift(history[item]);
     }
-    serverLog(
-      `HistoryStack pushed history, is length: " + ${historyStack.length}`
-    );
+    serverLog(`HistoryStack pushed history, is length: ${historyStack.length}`);
   }
 }
 
@@ -273,8 +250,28 @@ function resetActivity(res) {
   });
 }
 
-function writeToFile(file, data) {
-
+/**
+ * Method to write data to file
+ * @param {*} res : server response
+ * @param {*} file : file to write
+ * @param {*} data : data to write to file
+ */
+function writeToFile(res, file, data) {
+  try {
+    fs.writeFileSync(
+      FILE_DIR.concat(file),
+      JSON.stringify(data),
+      "UTF8",
+      function (err) {
+        if (err) {
+          let error = promiseRejectError(500, err.message);
+          res.render("error", { error });
+        }
+      }
+    );
+  } catch (err) {
+    errorLog("WriteToFile", err);
+  }
 }
 
 /**
