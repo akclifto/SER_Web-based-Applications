@@ -12,6 +12,13 @@ block content
     h3 User Activity
       // View User Activity button, and 
       // Reset button 
+      form()
+        br
+        input(type="submit" formaction="/view" formmethod="GET" name="userActivity" value="View User Activity")
+        input(type="submit" formaction="/reset" formmethod="GET" name="reset" value="Reset")
+        br
+      form
+        
 
   div(class="add-comments")
     h3 Add a Comment
@@ -19,12 +26,32 @@ block content
     // Comments: ____
     // AddComment button, 
     // Undo button, 
+    form()
+      p Comment Id: 
+        input(type="text" placeholder="Id (Integer Value)" name=commentId)
+        br
+      p Comments: 
+        input(type="textarea" placeholder="Leave Comments Here" name=commentText rows=10 cols=35)
+        br
+      input(type="submit" formaction="/add" formmethod="POST" name="addComment" value="Add Comment")
+      br
+      input(type="submit" formaction="/undo" formmethod="POST" name="undo" value="Undo")
+
 
   div(class="comments")
     h3 Comments
     // Ex [ID 1]: [First Comment]
+    ul 
+      each item in commentList 
+       p ID #{item.id}: #{item.comment}
+
 
   div(class="delete-comment")
     h3 Delete Specific Comment 
     // Question ID: ____ Delete Comment button
+    form()
+      p Question Id: 
+        input(type="text" placeholder="Question Id" name=commentId)
+        br
+      input(type="submit" formaction="/delete" formmethod="POST" name="delete" value="Delete Comment")
 

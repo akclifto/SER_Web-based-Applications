@@ -14,7 +14,6 @@ const COMMENTS_JSON = "/resource/comments.json";
 router.get("/", async function (req, res, next) {
   let article = await getArticle(res);
   let comments = await getComments(res);
-  console.log(comments);
 
   let title = "Sample of Article: ";
   //render the article to articleBody
