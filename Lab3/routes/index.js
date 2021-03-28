@@ -69,6 +69,13 @@ router.get("/view", async function (req, res, next) {
 //TODO
 router.get("/reset", async function (req, res, next) {
   let reset = await resetActivity(res);
+  if (reset) {
+    let title = "User Activity Reset Successfully";
+    res.render("response", { title });
+  } else {
+    let error = promiseRejectError(500, "User Activity could not be reset");
+    res.render("error", { error });
+  }
 });
 
 // TODO GETS for /reset
@@ -98,7 +105,7 @@ router.post("/add", async function (req, res, next) {
     res.render("error", { error });
   } else {
     // //add new comment to the stack
-    historyStack.unshift({
+    historyStack.push({
       operation: req.body.addComment,
       id: req.body.commentId,
       comment: req.body.commentText,
@@ -110,14 +117,13 @@ router.post("/add", async function (req, res, next) {
     //write to files and render the view
     // comments json
     writeToFile(res, COMMENTS_JSON, historyStack);
+    writeToFile(res, COMMENTS_JSON, historyStack);
     // history json
     writeToFile(res, HISTORY_JSON, historyStack);
 
     // render response view
     let title = "Comment Successfully Added";
-    res.render("response", {
-      title: title.toString(),
-    });
+    res.render("response", { title });
   }
 });
 
@@ -194,7 +200,7 @@ async function getStackHistory(res) {
     );
   } else {
     for (let item in history) {
-      historyStack.unshift(history[item]);
+      historyStack.push(history[item]);
     }
     serverLog(`HistoryStack pushed history, is length: ${historyStack.length}`);
   }
@@ -231,21 +237,12 @@ function getHistory(res) {
 function resetActivity(res) {
   return new Promise(function (resolve, reject) {
     try {
-      // fs.readFile(FILE_DIR.concat(HISTORY_JSON), "UTF8", function (err, data) {
-      //   if (err) {
-      //     errorLog("readFile", err);
-      //     let error = promiseRejectError(500, err.message);
-      //     reject(res.render("error", { error }));
-      //   }
-      //   let history = JSON.parse(data);
-      //   if (history.length === 0 || history === "") {
-      //     resolve("empty");
-      //   } else {
-      //     resolve(history);
-      //   }
-      // });
+      historyStack = [];
+      writeToFile(res, HISTORY_JSON, historyStack);
+      resolve(true);
     } catch (err) {
-      // errorLog("getHistory error: ", err);
+      errorLog("resetActivity", err);
+      reject(false);
     }
   });
 }
