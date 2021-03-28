@@ -4,5 +4,6 @@ block content
   span 
     h1 Uh Oh... Something went wrong: #{error.message} 
     h2 Status:  #{error.status}
-    pre #{error.stack}
+    //- Comment out this error.stack when all the errors are covered
+    pre #{error.stack} 
   a(href="/") Go Home
