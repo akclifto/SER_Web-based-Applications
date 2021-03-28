@@ -36,7 +36,7 @@ function getArticle(res) {
       fs.readFile(FILE_DIR.concat(ARTICLE_FILE), "UTF8", function (err, data) {
         if (err) {
           errorLog("readFile", err);
-          let error = promiseReject(500, err.message);
+          let error = promiseRejectError(500, err.message);
           // render the pug error template
           reject(res.render("error", { error }));
         } else {
@@ -44,29 +44,44 @@ function getArticle(res) {
         }
       });
     } catch (err) {
-      console.log("getArticle error: ", err);
+      errorLog("getArticle error: ", err);
     }
   });
 }
 
+/**
+ * Method to get comments. Reads comment file from resource folder.
+ * @param {*} res : server response
+ * @returns parsed json comments.
+ */
 function getComments(res) {
   return new Promise(function (resolve, reject) {
     try {
       fs.readFile(FILE_DIR.concat(COMMENTS_JSON), "UTF8", function (err, data) {
         if (err) {
           errorLog("readFile", err);
-          let error = promiseReject(500, err.message);
+          let error = promiseRejectError(500, err.message);
           // render the pug error template
           reject(res.render("error", { error }));
         }
-        //TODO FINISH THIS doesnt work yet
-        if (data !== "") {
-          let data = JSON.parse(data);
+        data = JSON.parse(data);
+
+        if (data === "") {
+          // set a blank initial comment.
+          let commentArray = [
+            {
+              id: "",
+              comment: "",
+            },
+          ];
+          resolve(commentArray);
+        } else {
+          console.log(data);
           resolve(data.toString());
         }
       });
     } catch (err) {
-      console.log("getArticle error: ", err);
+      errorLog("getArticle error: ", err);
     }
   });
 }
@@ -77,7 +92,7 @@ function getComments(res) {
  * @param {*} errorMessage : message of error
  * @returns : object containing error
  */
-function promiseReject(statusCode, errorMessage) {
+function promiseRejectError(statusCode, errorMessage) {
   let error = {
     status: statusCode,
     message: errorMessage,
