@@ -25,6 +25,12 @@ router.get("/", async function (req, res, next) {
   });
 });
 
+// TODO GETS for /view /reset
+// TODO POST REQUEST for /add /undo /delete
+router.post("/add", function (req, res, next) {
+  
+});
+
 /**
  * Method to get Article. Reads in article sample from resource folder.
  * @param {*} res : server response
@@ -67,7 +73,7 @@ function getComments(res) {
 
         let comments = JSON.parse(data);
         if (comments.length === 0 || comments === "") {
-          // set a blank initial comment.
+          // set an initial, blank comment.
           let commentArray = { id: "", comment: "" };
           comments.push(commentArray);
           resolve(comments);
@@ -106,7 +112,7 @@ function errorLog(location, err) {
 }
 
 /**
- * Method ot normalize server logs.
+ * Method to normalize server logs.
  * @param {*} message : message to log
  */
 function serverLog(message) {
