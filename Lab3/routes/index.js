@@ -8,11 +8,13 @@ const FILE_DIR = path.resolve();
 const ARTICLE_FILE = "/resource/article.txt";
 const COMMENTS_JSON = "/resource/comments.json";
 const HISTORY_JSON = "/resource/history.json";
+let historyStack = [];
 
 /**
  * GET '/' home page with async callback.
  */
 router.get("/", async function (req, res, next) {
+  getStackHistory(res);
   let article = await getArticle(res);
   let comments = await getComments(res);
 
@@ -38,6 +40,7 @@ router.get("/view", async function (req, res, next) {
     history = {
       item: "No User Activity",
     };
+    serverLog("No User Activity in History,");
     res.render("view", {
       title: activityTitle.toString(),
       historyList: history,
@@ -53,6 +56,7 @@ router.get("/view", async function (req, res, next) {
         ${history[item].userAgent}`
       );
     }
+    serverLog("Rendering User Activty with " + stack.length + " entries.");
     res.render("view", {
       title: activityTitle.toString(),
       historyList: stack,
@@ -60,16 +64,46 @@ router.get("/view", async function (req, res, next) {
   }
 });
 
+//TODO
+router.get("/reset", async function (req, res, next) {
+  let reset = await resetActivity(res);
+});
 
 // TODO GETS for /reset
 // TODO POST REQUEST for /add /undo /delete
 router.post("/add", async function (req, res, next) {
-  let comments = {
-    commentArray: [],
-  };
+  // check bad input
+  console.log("all req: ", req.body);
+  console.log("id: ", req.body.commentId);
+  console.log("text: ", req.body.commentText);
+  
+  if (req.body.commentId === undefined || req.body.commentText === "") {
+    let error = promiseRejectError(
+      406,
+      "CommentId and CommentText must be defined."
+    );
+    res.render("error", { error });
+  }
+  //check id duplication
+  // for (let item in historyStack) {
+  //   if (historyStack[item].id === req.body.commentId) {
+  //     let error = promiseRejectError(
+  //       409,
+  //       "Comment Id is duplication, please choose a different Comment Id."
+  //     );
+  //     res.render("error", { error });
+  //   }
+  // }
 
-  let history = await getHistory(req, res);
-  console.log(history);
+  // //add new comment to the stack
+  // historyStack.unshift({
+  //   operation: req.body.addComment,
+  //   id: req.body.commentId,
+  //   comment: req.body.commentText,
+  //   ip: req._remoteAddress,
+  //   userAgent: res.headers["user.agent"],
+  // });
+  // console.log(historyStack);
 });
 
 /**
@@ -130,12 +164,28 @@ function getComments(res) {
 }
 
 /**
+ * Method to set stack history.  Pushes to a history data structure
+ * that is used for add/delete/reset functionality.
+ * @param {*} res : server response
+ */
+async function getStackHistory(res) {
+  let history = await getHistory(res);
+  if (history.length === "empty") {
+    historyStack = [];
+  } else {
+    for (let item in history) {
+      historyStack.unshift(history[item]);
+    }
+    // console.log(historyStack);
+  }
+}
+
+/**
  * Method to get user activity history. Reads history file from resource folder
- * @param {*} req
- * @param {*} res
+ * @param {*} res : server response
  * @returns parsed history objects of user activity.
  */
-function getHistory(req, res) {
+function getHistory(res) {
   return new Promise(function (resolve, reject) {
     try {
       fs.readFile(FILE_DIR.concat(HISTORY_JSON), "UTF8", function (err, data) {
@@ -153,6 +203,29 @@ function getHistory(req, res) {
       });
     } catch (err) {
       errorLog("getHistory error: ", err);
+    }
+  });
+}
+
+//TODO RESET FUNCTION
+function resetActivity(res) {
+  return new Promise(function (resolve, reject) {
+    try {
+      // fs.readFile(FILE_DIR.concat(HISTORY_JSON), "UTF8", function (err, data) {
+      //   if (err) {
+      //     errorLog("readFile", err);
+      //     let error = promiseRejectError(500, err.message);
+      //     reject(res.render("error", { error }));
+      //   }
+      //   let history = JSON.parse(data);
+      //   if (history.length === 0 || history === "") {
+      //     resolve("empty");
+      //   } else {
+      //     resolve(history);
+      //   }
+      // });
+    } catch (err) {
+      // errorLog("getHistory error: ", err);
     }
   });
 }
