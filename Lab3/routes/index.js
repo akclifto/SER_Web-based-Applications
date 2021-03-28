@@ -22,6 +22,7 @@ router.get("/", async function (req, res, next) {
     title: "Welcome to the Article Reviewer App",
     articleTitle: title,
     articleBody: article.toString(),
+    commentList: comments,
   });
 });
 
@@ -64,20 +65,16 @@ function getComments(res) {
           // render the pug error template
           reject(res.render("error", { error }));
         }
-        data = JSON.parse(data);
 
-        if (data === "") {
+        let comments = JSON.parse(data);
+        if (comments.length === 0 || comments === "") {
           // set a blank initial comment.
-          let commentArray = [
-            {
-              id: "",
-              comment: "",
-            },
-          ];
-          resolve(commentArray);
+          let commentArray = { id: "", comment: "" };
+          comments.push(commentArray);
+          resolve(comments);
         } else {
-          console.log(data);
-          resolve(data.toString());
+          // console.log(data);
+          resolve(comments);
         }
       });
     } catch (err) {
