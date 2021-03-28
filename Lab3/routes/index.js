@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+const { FILE } = require("dns");
 let express = require("express");
 let fs = require("fs");
 let path = require("path");
@@ -15,6 +16,7 @@ let historyStack = [];
  */
 router.get("/", async function (req, res, next) {
   getStackHistory(res);
+
   let article = await getArticle(res);
   let comments = await getComments(res);
 
@@ -72,37 +74,72 @@ router.get("/reset", async function (req, res, next) {
 // TODO GETS for /reset
 // TODO POST REQUEST for /add /undo /delete
 router.post("/add", async function (req, res, next) {
+  //check id duplication
+  console.log(historyStack.length);
+  let errorFlag = false;
+  for (let item in historyStack) {
+    if (historyStack[item].id.toString() === req.body.commentId.toString()) {
+      errorFlag = true;
+    }
+  }
+
   // check bad input
-  // console.log("id: ", req.body.commentId);
-  // console.log("text: ", req.body.commentText);
   if (req.body.commentId === undefined || req.body.commentText === "") {
     let error = promiseRejectError(
       406,
       "CommentId and CommentText must be defined."
     );
     res.render("error", { error });
-  }
+  } else if (errorFlag) {
+    let error = promiseRejectError(
+      409,
+      "Comment Id is duplicated, please choose a different Comment Id."
+    );
+    res.render("error", { error });
+  } else {
+    // console.log(errorFlag);
+    // console.log(historyStack.length);
+    // //add new comment to the stack
+    historyStack.unshift({
+      operation: req.body.addComment,
+      id: req.body.commentId,
+      comment: req.body.commentText,
+      ip: req._remoteAddress,
+      userAgent: req.headers["user-agent"],
+    });
+    console.log(historyStack);
 
-  //check id duplication
-  for (let item in historyStack) {
-    if (historyStack[item].id.toString() === req.body.commentId.toString()) {
-      let error = promiseRejectError(
-        409,
-        "Comment Id is duplicated, please choose a different Comment Id."
-      );
-      res.render("error", { error });
-    }
+    //write to files and render the view
+    //comments json
+    fs.writeFileSync(
+      FILE_DIR.concat(COMMENTS_JSON),
+      JSON.stringify(historyStack),
+      "UTF8",
+      function (err) {
+        if (err) {
+          let error = promiseRejectError(500, err.message);
+          res.render("error", { error });
+        }
+      }
+    );
+    // history json
+    fs.writeFileSync(
+      FILE_DIR.concat(HISTORY_JSON),
+      JSON.stringify(historyStack),
+      "UTF8",
+      function (err) {
+        if (err) {
+          let error = promiseRejectError(500, err.message);
+          res.render("error", { error });
+        }
+      }
+    );
+    // render response view
+    let title = "Comment Successfully Added";
+    res.render("response", {
+      title: title.toString(),
+    });
   }
-  console.log(historyStack);
-  // //add new comment to the stack
-  historyStack.unshift({
-    operation: req.body.addComment,
-    id: req.body.commentId,
-    comment: req.body.commentText,
-    ip: req._remoteAddress,
-    userAgent: req.headers["user-agent"],
-  });
-  console.log(historyStack);
 });
 
 /**
@@ -171,11 +208,18 @@ async function getStackHistory(res) {
   let history = await getHistory(res);
   if (history.length === "empty") {
     historyStack = [];
+    serverLog("HistoryStack initialized");
+  } else if (historyStack.length > 0) {
+    serverLog(
+      `HistoryStack already initialized, has length: ${historyStack.length}`
+    );
   } else {
     for (let item in history) {
       historyStack.unshift(history[item]);
     }
-    // console.log(historyStack);
+    serverLog(
+      `HistoryStack pushed history, is length: " + ${historyStack.length}`
+    );
   }
 }
 
@@ -227,6 +271,10 @@ function resetActivity(res) {
       // errorLog("getHistory error: ", err);
     }
   });
+}
+
+function writeToFile(file, data) {
+
 }
 
 /**

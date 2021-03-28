@@ -11,3 +11,7 @@ a {
 .article {
   margin-top: 0;
 }
+
+.article-body {
+  text-align: justify;
+}
