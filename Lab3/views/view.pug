@@ -1,0 +1,9 @@
+extends layout 
+
+
+block content
+    h3= title
+    ul
+        each item in historyList
+            li #{item}
+    a(href="/") Go to Main Page

@@ -7,6 +7,7 @@ let router = express.Router();
 const FILE_DIR = path.resolve();
 const ARTICLE_FILE = "/resource/article.txt";
 const COMMENTS_JSON = "/resource/comments.json";
+const HISTORY_JSON = "/resource/history.json";
 
 /**
  * GET '/' home page with async callback.
@@ -25,10 +26,50 @@ router.get("/", async function (req, res, next) {
   });
 });
 
-// TODO GETS for /view /reset
+/**
+ * GET '/view' user activity page with async callback
+ */
+router.get("/view", async function (req, res, next) {
+  let history = await getHistory(req, res);
+  // console.log(history);
+  let activityTitle = "User Activity";
+
+  if (history === "empty") {
+    history = {
+      item: "No User Activity",
+    };
+    res.render("view", {
+      title: activityTitle.toString(),
+      historyList: history,
+    });
+  } else {
+    let stack = [];
+    for (let item in history) {
+      stack.push(
+        `${history[item].operation}, 
+        ${history[item].id}, 
+        ${history[item].comment}, 
+        ${history[item].ip}, 
+        ${history[item].userAgent}`
+      );
+    }
+    res.render("view", {
+      title: activityTitle.toString(),
+      historyList: stack,
+    });
+  }
+});
+
+
+// TODO GETS for /reset
 // TODO POST REQUEST for /add /undo /delete
-router.post("/add", function (req, res, next) {
-  
+router.post("/add", async function (req, res, next) {
+  let comments = {
+    commentArray: [],
+  };
+
+  let history = await getHistory(req, res);
+  console.log(history);
 });
 
 /**
@@ -84,6 +125,34 @@ function getComments(res) {
       });
     } catch (err) {
       errorLog("getArticle error: ", err);
+    }
+  });
+}
+
+/**
+ * Method to get user activity history. Reads history file from resource folder
+ * @param {*} req
+ * @param {*} res
+ * @returns parsed history objects of user activity.
+ */
+function getHistory(req, res) {
+  return new Promise(function (resolve, reject) {
+    try {
+      fs.readFile(FILE_DIR.concat(HISTORY_JSON), "UTF8", function (err, data) {
+        if (err) {
+          errorLog("readFile", err);
+          let error = promiseRejectError(500, err.message);
+          reject(res.render("error", { error }));
+        }
+        let history = JSON.parse(data);
+        if (history.length === 0 || history === "") {
+          resolve("empty");
+        } else {
+          resolve(history);
+        }
+      });
+    } catch (err) {
+      errorLog("getHistory error: ", err);
     }
   });
 }

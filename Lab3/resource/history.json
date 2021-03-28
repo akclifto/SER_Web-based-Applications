@@ -1,0 +1,16 @@
+[
+  {
+    "operation": "add",
+    "id": 1,
+    "comment": "First Comment",
+    "ip": "::1",
+    "userAgent": "Initialized example 1"
+  },
+  {
+    "operation": "add",
+    "id": 2,
+    "comment": "Second Comment",
+    "ip": "::1",
+    "userAgent": "Initialized example 2"
+  }
+]
