@@ -73,7 +73,6 @@ router.get("/reset", async function (req, res, next) {
 // TODO POST REQUEST for /add /undo /delete
 router.post("/add", async function (req, res, next) {
   // check bad input
-  console.log("all req: ", req.body);
   console.log("id: ", req.body.commentId);
   console.log("text: ", req.body.commentText);
   
@@ -85,15 +84,15 @@ router.post("/add", async function (req, res, next) {
     res.render("error", { error });
   }
   //check id duplication
-  // for (let item in historyStack) {
-  //   if (historyStack[item].id === req.body.commentId) {
-  //     let error = promiseRejectError(
-  //       409,
-  //       "Comment Id is duplication, please choose a different Comment Id."
-  //     );
-  //     res.render("error", { error });
-  //   }
-  // }
+  for (let item in historyStack) {
+    if (historyStack[item].id.toString() === req.body.commentId.toString()) {
+      let error = promiseRejectError(
+        409,
+        "Comment Id is duplicated, please choose a different Comment Id."
+      );
+      res.render("error", { error });
+    }
+  }
 
   // //add new comment to the stack
   // historyStack.unshift({
