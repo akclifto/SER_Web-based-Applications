@@ -73,9 +73,8 @@ router.get("/reset", async function (req, res, next) {
 // TODO POST REQUEST for /add /undo /delete
 router.post("/add", async function (req, res, next) {
   // check bad input
-  console.log("id: ", req.body.commentId);
-  console.log("text: ", req.body.commentText);
-  
+  // console.log("id: ", req.body.commentId);
+  // console.log("text: ", req.body.commentText);
   if (req.body.commentId === undefined || req.body.commentText === "") {
     let error = promiseRejectError(
       406,
@@ -83,6 +82,7 @@ router.post("/add", async function (req, res, next) {
     );
     res.render("error", { error });
   }
+
   //check id duplication
   for (let item in historyStack) {
     if (historyStack[item].id.toString() === req.body.commentId.toString()) {
@@ -93,16 +93,16 @@ router.post("/add", async function (req, res, next) {
       res.render("error", { error });
     }
   }
-
+  console.log(historyStack);
   // //add new comment to the stack
-  // historyStack.unshift({
-  //   operation: req.body.addComment,
-  //   id: req.body.commentId,
-  //   comment: req.body.commentText,
-  //   ip: req._remoteAddress,
-  //   userAgent: res.headers["user.agent"],
-  // });
-  // console.log(historyStack);
+  historyStack.unshift({
+    operation: req.body.addComment,
+    id: req.body.commentId,
+    comment: req.body.commentText,
+    ip: req._remoteAddress,
+    userAgent: req.headers["user-agent"],
+  });
+  console.log(historyStack);
 });
 
 /**
