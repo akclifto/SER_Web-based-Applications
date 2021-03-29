@@ -10,7 +10,7 @@ const ARTICLE_FILE = "/resource/article.txt";
 const COMMENTS_JSON = "/resource/comments.json";
 const HISTORY_JSON = "/resource/history.json";
 let activityStack = [];
-let lastDeleted = [];
+let undoStack = [];
 
 /**
  * GET '/' home page with async callback.
@@ -22,27 +22,20 @@ router.get("/", async function (req, res, next) {
   let comments = await getComments(res);
   let title = "Welcome to the Article Reviewer App";
   let articleTitle = "Sample of Article: ";
-
+  let message = "";
   //check for comments
   if (comments === "empty") {
-    let message = "No Comment History";
+    message = "No Comment History";
     comments = { emptyMessage: message };
-
-    res.render("index", {
-      title,
-      articleTitle,
-      articleBody: article.toString(),
-      commentList: comments,
-    });
-  } else {
-    //render the article to articleBody
-    res.render("index", {
-      title,
-      articleTitle,
-      articleBody: article.toString(),
-      commentList: comments,
-    });
   }
+  //render the article to articleBody
+  res.render("index", {
+    title,
+    articleTitle,
+    articleBody: article.toString(),
+    commentList: comments,
+    emptyMessage: message,
+  });
 });
 
 /**
@@ -222,7 +215,7 @@ function deleteFromComments(req, commentHistory) {
       serverLog(
         `Deleting comment from comments by id ${commentHistory[item].id}`
       );
-      lastDeleted.push(commentHistory[item]);
+      undoStack.push(commentHistory[item]);
       //push to activity stack
       activityStack.push({
         operation: req.body.delete,
