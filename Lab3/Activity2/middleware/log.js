@@ -1,5 +1,5 @@
 /**
- * A
+ * A logger to help with error and server messaging.
  */
 
 /**
