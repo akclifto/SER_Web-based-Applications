@@ -45,6 +45,9 @@ router.get("/", async function (req, res, next) {
   }
 });
 
+/**
+ * GET '/add' render error message.
+ */
 router.get("/add", function (req, res, next) {
   let msg =
     "You weren't supposed to do that ;) Go back to the main page and add comments using the fields.";
@@ -88,6 +91,9 @@ router.get("/view", async function (req, res, next) {
   }
 });
 
+/**
+ * GET '/reset' method to reset user activity.
+ */
 router.get("/reset", async function (req, res, next) {
   let reset = await resetActivity(res);
   if (reset) {
@@ -99,7 +105,11 @@ router.get("/reset", async function (req, res, next) {
   }
 });
 
-// TODO POST REQUEST for /undo /delete
+// TODO POST REQUEST for /undo
+
+/**
+ * POST '/add' method to add comment to history and activity.
+ */
 router.post("/add", async function (req, res, next) {
   //check id duplication
   let commentHistory = await getComments(res);
@@ -148,8 +158,7 @@ router.post("/add", async function (req, res, next) {
     });
     // console.log(activityStack);
 
-    //write to files and render the view
-    // history json
+    //write to files and render the view, history json
     writeToFile(res, HISTORY_JSON, activityStack);
     // comments json
     writeToFile(res, COMMENTS_JSON, commentHistory);
@@ -159,6 +168,81 @@ router.post("/add", async function (req, res, next) {
     res.render("response", { title });
   }
 });
+
+/**
+ * POST '/delete' method to delete a comment from history and activity.
+ */
+router.post("/delete", async function (req, res, next) {
+  let commentHistory = await getComments(res);
+  //delete by id from comments
+  let deleteFlag = deleteFromComments(req, commentHistory);
+  console.log(deleteFlag);
+  console.log(lastDeleted);
+
+  //delete by id from user activity
+  let actFlag = deleteFromActivity(req);
+  if (actFlag) {
+    writeToFile(res, HISTORY_JSON, activityStack);
+  }
+
+  if (deleteFlag) {
+    writeToFile(res, COMMENTS_JSON, commentHistory);
+    let title = "Operation delete complete";
+    res.render("response", { title });
+  } else {
+    let msg = `Id: ${req.body.deleteId} not found. Delete operation could not be completed.`;
+    let error = promiseRejectError(400, msg);
+    res.render("error", { error });
+  }
+});
+
+/**
+ * Helper method to delete from comments by id.
+ * @param {*} req : user request id number
+ * @param {*} commentHistory : List to search and delete.
+ * @returns true if deleteId, false otherwise
+ */
+function deleteFromComments(req, commentHistory) {
+  for (let item in commentHistory) {
+    if (commentHistory[item].id === req.body.deleteId) {
+      serverLog(
+        `Deleting comment from comments by id ${commentHistory[item].id}`
+      );
+      //save deleted in case of undo
+      lastDeleted.push(commentHistory[item]);
+      //delte comment
+      commentHistory.splice(commentHistory[item], 1);
+      return true;
+    } else {
+      serverLog(
+        `Comment by id ${req.body.deleteId} not found in comment history.`
+      );
+      return false;
+    }
+  }
+}
+
+/**
+ * Helper method to delete from comments by id from user activity stack.
+ * @param {*} req : user request id number
+ * @returns true if deleteId, false otherwise
+ */
+function deleteFromActivity(req) {
+  for (let item in activityStack) {
+    if (activityStack[item].id === req.body.deleteId) {
+      serverLog(
+        `Delete comment from user activity by id ${activityStack[item].id}`
+      );
+      activityStack.splice(activityStack.indexOf(item), 1);
+      return true;
+    } else {
+      serverLog(
+        `Comment by id ${req.body.deleteId} not found in user activity history.`
+      );
+      return false;
+    }
+  }
+}
 
 /**
  * Method to get Article. Reads in article sample from resource folder.

@@ -51,7 +51,7 @@ block content
     // Question ID: ____ Delete Comment button
     form()
       p Question Id: 
-        input(type="text" placeholder="Question Id" name=commentId)
+        input(required type="number" placeholder="Question Id" name="deleteId")
         br
       input(type="submit" formaction="/delete" formmethod="POST" name="delete" value="Delete Comment")
 
