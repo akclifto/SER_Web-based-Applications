@@ -110,8 +110,8 @@ router.get("/delete", function (req, res, next) {
 /**
  *
  */
-router.post("/undo", async function (req, res, next) {
-  console.log("act: ", activityStack.length);
+router.all("/undo", async function (req, res, next) {
+  // console.log("act: ", activityStack.length);
 
   try {
     let title = "Undo Operation Successful.";
@@ -134,14 +134,16 @@ router.post("/undo", async function (req, res, next) {
         userAgent: pop.userAgent,
       });
       writeToFile(res, COMMENTS_JSON, comments);
+      serverLog(`Deleted comment has been restored.`);
       renderResponse(res, title);
     } else {
       writeToFile(res, HISTORY_JSON, history);
       // pop comments
       let comments = await getComments(res);
-      console.log(comments);
+      // console.log(comments);
       pop = comments.pop();
       writeToFile(res, COMMENTS_JSON, comments);
+      serverLog(`A user comment has been undone.`);
       renderResponse(res, title);
     }
   } catch (err) {
@@ -212,7 +214,7 @@ router.post("/add", async function (req, res, next) {
 
     // render response view
     let title = "Comment Successfully Added";
-    res.render("response", { title });
+    renderResponse(res, title);
   }
 });
 
@@ -233,7 +235,7 @@ router.post("/delete", async function (req, res, next) {
   if (deleteFlag) {
     writeToFile(res, COMMENTS_JSON, commentHistory);
     let title = "Operation delete complete";
-    res.render("response", { title });
+    renderResponse(res, title);
   } else {
     let msg = `Id: ${req.body.deleteId} not found. Delete operation could not be completed.`;
     let error = setErrorMessage(400, msg);

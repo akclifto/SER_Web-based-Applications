@@ -30,6 +30,12 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
+// set cache to no-cache
+app.use(function (req, res, next) {
+  console.log("set cache to no-cache");
+  res.set("Cache-Control", "no-store, no-cache");
+});
+
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
