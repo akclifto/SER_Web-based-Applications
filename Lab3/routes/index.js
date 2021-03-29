@@ -109,10 +109,12 @@ router.get("/delete", function (req, res, next) {
 });
 
 /**
- * 
+ *
  */
-router.post("undo", function (req, res, next) {
-  // TODO POST REQUEST for /undo
+router.post("/undo", function (req, res, next) {
+  console.log("act: ", activityStack.length);
+  console.log("undo: ", undoStack);
+
 });
 
 /**
@@ -161,8 +163,11 @@ router.post("/add", async function (req, res, next) {
 
     // add comment to comment history
     commentHistory.push({
+      operation: req.body.addComment,
       id: req.body.commentId,
       operand: req.body.commentText,
+      ip: req._remoteAddress,
+      userAgent: req.headers["user-agent"],
     });
     // console.log(activityStack);
 
@@ -215,7 +220,15 @@ function deleteFromComments(req, commentHistory) {
       serverLog(
         `Deleting comment from comments by id ${commentHistory[item].id}`
       );
-      undoStack.push(commentHistory[item]);
+      // push to undo stack
+      undoStack.push({
+        operation: commentHistory[item].operation,
+        id: commentHistory[item].id,
+        operand: commentHistory[item].operand,
+        ip: commentHistory[item].ip,
+        userAgent: commentHistory[item].userAgent,
+      });
+
       //push to activity stack
       activityStack.push({
         operation: req.body.delete,
