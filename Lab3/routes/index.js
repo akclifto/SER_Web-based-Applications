@@ -114,22 +114,36 @@ router.post("/undo", async function (req, res, next) {
   console.log("act: ", activityStack.length);
 
   try {
+    let title = "Undo Operation Successful.";
     // pop history
     let history = await getHistory(res);
     // console.log(history);
     let pop = history.pop();
-    if (pop.operation === "Delete") {
-      //TODO
+    if (pop.operation === "Delete Comment") {
+      let comments = await getComments(res);
+      if (comments === "empty" || comments === undefined) {
+        comments = [];
+      }
+      comments.push(pop);
+
+      activityStack.push({
+        operation: "Add Comment",
+        id: pop.id,
+        operand: pop.operand,
+        ip: pop.ip,
+        userAgent: pop.userAgent,
+      });
+      writeToFile(res, COMMENTS_JSON, comments);
+      renderResponse(res, title);
+    } else {
+      writeToFile(res, HISTORY_JSON, history);
+      // pop comments
+      let comments = await getComments(res);
+      console.log(comments);
+      pop = comments.pop();
+      writeToFile(res, COMMENTS_JSON, comments);
+      renderResponse(res, title);
     }
-    writeToFile(res, HISTORY_JSON, history);
-    // pop comments
-    let comments = await getComments(res);
-    console.log(comments);
-    comments.pop();
-    writeToFile(res, COMMENTS_JSON, comments);
-    //render response
-    let title = "Undo Operation Successful.";
-    res.render("response", { title });
   } catch (err) {
     errorLog("router /undo", err);
     let error = setErrorMessage(500, err.message);
@@ -430,6 +444,10 @@ function writeToFile(res, file, data) {
   } catch (err) {
     errorLog("WriteToFile", err);
   }
+}
+
+function renderResponse(res, title) {
+  res.render("response", { title });
 }
 
 /**
