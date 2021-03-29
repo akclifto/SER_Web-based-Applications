@@ -371,7 +371,9 @@ function resetActivity(res) {
   return new Promise(function (resolve, reject) {
     try {
       activityStack = [];
+      //reset both of the files.
       writeToFile(res, HISTORY_JSON, activityStack);
+      writeToFile(res, COMMENTS_JSON, activityStack);
       resolve(true);
     } catch (err) {
       errorLog("resetActivity", err);
