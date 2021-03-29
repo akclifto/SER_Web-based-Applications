@@ -67,7 +67,7 @@ router.get("/view", async function (req, res, next) {
       stack.push(
         `${history[item].operation}, 
         ${history[item].id}, 
-        ${history[item].comment}, 
+        ${history[item].operand}, 
         ${history[item].ip}, 
         ${history[item].userAgent}`
       );
@@ -80,7 +80,6 @@ router.get("/view", async function (req, res, next) {
   }
 });
 
-//TODO
 router.get("/reset", async function (req, res, next) {
   let reset = await resetActivity(res);
   if (reset) {
@@ -92,7 +91,6 @@ router.get("/reset", async function (req, res, next) {
   }
 });
 
-// TODO GETS for /reset
 // TODO POST REQUEST for /add /undo /delete
 router.post("/add", async function (req, res, next) {
   //check id duplication
@@ -131,18 +129,15 @@ router.post("/add", async function (req, res, next) {
     activityStack.push({
       operation: req.body.addComment,
       id: req.body.commentId,
-      comment: req.body.commentText,
+      operand: req.body.commentText,
       ip: req._remoteAddress,
       userAgent: req.headers["user-agent"],
     });
 
     // add comment to comment history
     commentHistory.push({
-      operation: req.body.addComment,
       id: req.body.commentId,
-      comment: req.body.commentText,
-      ip: req._remoteAddress,
-      userAgent: req.headers["user-agent"],
+      operand: req.body.commentText,
     });
     // console.log(activityStack);
 
@@ -264,7 +259,11 @@ function getHistory(res) {
   });
 }
 
-//TODO RESET FUNCTION
+/**
+ * Method to reset User Activity
+ * @param {*} res : server response
+ * @returns true promise if reset was successful, false otherwise;
+ */
 function resetActivity(res) {
   return new Promise(function (resolve, reject) {
     try {
@@ -279,7 +278,7 @@ function resetActivity(res) {
 }
 
 /**
- * Method to write data to file
+ * Method to write data to file.
  * @param {*} res : server response
  * @param {*} file : file to write
  * @param {*} data : data to write to file
