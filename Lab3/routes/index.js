@@ -9,7 +9,7 @@ const FILE_DIR = path.resolve();
 const ARTICLE_FILE = "/resource/article.txt";
 const COMMENTS_JSON = "/resource/comments.json";
 const HISTORY_JSON = "/resource/history.json";
-let historyStack = [];
+let activityStack = [];
 
 /**
  * GET '/' home page with async callback.
@@ -19,22 +19,36 @@ router.get("/", async function (req, res, next) {
 
   let article = await getArticle(res);
   let comments = await getComments(res);
+  let title = "Welcome to the Article Reviewer App";
+  let articleTitle = "Sample of Article: ";
 
-  let title = "Sample of Article: ";
-  //render the article to articleBody
-  res.render("index", {
-    title: "Welcome to the Article Reviewer App",
-    articleTitle: title,
-    articleBody: article.toString(),
-    commentList: comments,
-  });
+  //check for comments
+  if (comments === "empty") {
+    let message = "No Comment History";
+    comments = { emptyMessage: message };
+
+    res.render("index", {
+      title,
+      articleTitle,
+      articleBody: article.toString(),
+      commentList: comments,
+    });
+  } else {
+    //render the article to articleBody
+    res.render("index", {
+      title,
+      articleTitle,
+      articleBody: article.toString(),
+      commentList: comments,
+    });
+  }
 });
 
 /**
  * GET '/view' user activity page with async callback
  */
 router.get("/view", async function (req, res, next) {
-  let history = await getHistory(req, res);
+  let history = await getHistory(res);
   // console.log(history);
   let activityTitle = "User Activity";
 
@@ -82,11 +96,20 @@ router.get("/reset", async function (req, res, next) {
 // TODO POST REQUEST for /add /undo /delete
 router.post("/add", async function (req, res, next) {
   //check id duplication
-  console.log(historyStack.length);
+  // console.log(activityStack.length);
+  let commentHistory = await getComments(res);
+  console.log(commentHistory);
+
+  if (commentHistory === "empty") {
+    commentHistory = [];
+  }
+
   let errorFlag = false;
-  for (let item in historyStack) {
-    if (historyStack[item].id.toString() === req.body.commentId.toString()) {
-      errorFlag = true;
+  if (commentHistory.length > 0) {
+    for (let item in commentHistory) {
+      if (commentHistory[item].id === req.body.commentId) {
+        errorFlag = true;
+      }
     }
   }
 
@@ -104,22 +127,30 @@ router.post("/add", async function (req, res, next) {
     );
     res.render("error", { error });
   } else {
-    // //add new comment to the stack
-    historyStack.push({
+    // //add new comment to the user activity history
+    activityStack.push({
       operation: req.body.addComment,
       id: req.body.commentId,
       comment: req.body.commentText,
       ip: req._remoteAddress,
       userAgent: req.headers["user-agent"],
     });
-    // console.log(historyStack);
+
+    // add comment to comment history
+    commentHistory.push({
+      operation: req.body.addComment,
+      id: req.body.commentId,
+      comment: req.body.commentText,
+      ip: req._remoteAddress,
+      userAgent: req.headers["user-agent"],
+    });
+    // console.log(activityStack);
 
     //write to files and render the view
-    // comments json
-    writeToFile(res, COMMENTS_JSON, historyStack);
-    writeToFile(res, COMMENTS_JSON, historyStack);
     // history json
-    writeToFile(res, HISTORY_JSON, historyStack);
+    writeToFile(res, HISTORY_JSON, activityStack);
+    // comments json
+    writeToFile(res, COMMENTS_JSON, commentHistory);
 
     // render response view
     let title = "Comment Successfully Added";
@@ -170,9 +201,7 @@ function getComments(res) {
         let comments = JSON.parse(data);
         if (comments.length === 0 || comments === "") {
           // set an initial, blank comment.
-          let commentArray = { id: "", comment: "" };
-          comments.push(commentArray);
-          resolve(comments);
+          resolve("empty");
         } else {
           // console.log(data);
           resolve(comments);
@@ -191,18 +220,20 @@ function getComments(res) {
  */
 async function getStackHistory(res) {
   let history = await getHistory(res);
-  if (history.length === "empty") {
-    historyStack = [];
-    serverLog("HistoryStack initialized");
-  } else if (historyStack.length > 0) {
+  if (history === "empty") {
+    activityStack = [];
+    serverLog("activityStack initialized");
+  } else if (activityStack.length > 0) {
     serverLog(
-      `HistoryStack already initialized, has length: ${historyStack.length}`
+      `activityStack already initialized, has length: ${activityStack.length}`
     );
   } else {
     for (let item in history) {
-      historyStack.push(history[item]);
+      activityStack.push(history[item]);
     }
-    serverLog(`HistoryStack pushed history, is length: ${historyStack.length}`);
+    serverLog(
+      `activityStack pushed history, is length: ${activityStack.length}`
+    );
   }
 }
 
@@ -237,8 +268,8 @@ function getHistory(res) {
 function resetActivity(res) {
   return new Promise(function (resolve, reject) {
     try {
-      historyStack = [];
-      writeToFile(res, HISTORY_JSON, historyStack);
+      activityStack = [];
+      writeToFile(res, HISTORY_JSON, activityStack);
       resolve(true);
     } catch (err) {
       errorLog("resetActivity", err);
