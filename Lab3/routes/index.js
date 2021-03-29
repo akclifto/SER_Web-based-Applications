@@ -214,6 +214,7 @@ router.post("/delete", async function (req, res, next) {
  * @returns true if deleteId, false otherwise
  */
 function deleteFromComments(req, commentHistory) {
+
   // console.log("before: ", commentHistory);
   for (let item in commentHistory) {
     if (commentHistory[item].id === req.body.deleteId) {
@@ -221,13 +222,8 @@ function deleteFromComments(req, commentHistory) {
         `Deleting comment from comments by id ${commentHistory[item].id}`
       );
       // push to undo stack
-      undoStack.push({
-        operation: commentHistory[item].operation,
-        id: commentHistory[item].id,
-        operand: commentHistory[item].operand,
-        ip: commentHistory[item].ip,
-        userAgent: commentHistory[item].userAgent,
-      });
+      undoStack.push(commentHistory[item]);
+      console.log(undoStack);
 
       //push to activity stack
       activityStack.push({
