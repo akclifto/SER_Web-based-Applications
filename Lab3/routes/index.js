@@ -51,7 +51,7 @@ router.get("/", async function (req, res, next) {
 router.get("/add", function (req, res, next) {
   let msg =
     "You weren't supposed to do that ;) Go back to the main page and add comments using the fields.";
-  let error = promiseRejectError(401, msg);
+  let error = setErrorMessage(401, msg);
   res.render("error", { error });
 });
 
@@ -100,12 +100,27 @@ router.get("/reset", async function (req, res, next) {
     let title = "User Activity Reset Successfully";
     res.render("response", { title });
   } else {
-    let error = promiseRejectError(500, "User Activity could not be reset");
+    let error = setErrorMessage(500, "User Activity could not be reset");
     res.render("error", { error });
   }
 });
 
-// TODO POST REQUEST for /undo
+/**
+ * GET '/delete renders error message
+ */
+router.get("/delete", function (req, res, next) {
+  let msg =
+    "You weren't supposed to do that ;) Go back to the main page and delete comments using the fields.";
+  let error = setErrorMessage(401, msg);
+  res.render("error", { error });
+});
+
+/**
+ * 
+ */
+router.post("undo", function (req, res, next) {
+  // TODO POST REQUEST for /undo
+});
 
 /**
  * POST '/add' method to add comment to history and activity.
@@ -130,13 +145,13 @@ router.post("/add", async function (req, res, next) {
 
   // check bad input
   if (req.body.commentId === undefined || req.body.commentText === "") {
-    let error = promiseRejectError(
+    let error = setErrorMessage(
       406,
       "CommentId and CommentText must be defined."
     );
     res.render("error", { error });
   } else if (errorFlag) {
-    let error = promiseRejectError(
+    let error = setErrorMessage(
       409,
       "Comment Id is duplicated, please choose a different Comment Id."
     );
@@ -189,7 +204,7 @@ router.post("/delete", async function (req, res, next) {
     res.render("response", { title });
   } else {
     let msg = `Id: ${req.body.deleteId} not found. Delete operation could not be completed.`;
-    let error = promiseRejectError(400, msg);
+    let error = setErrorMessage(400, msg);
     res.render("error", { error });
   }
 });
@@ -259,7 +274,7 @@ function getArticle(res) {
       fs.readFile(FILE_DIR.concat(ARTICLE_FILE), "UTF8", function (err, data) {
         if (err) {
           errorLog("readFile", err);
-          let error = promiseRejectError(500, err.message);
+          let error = setErrorMessage(500, err.message);
           // render the pug error template
           reject(res.render("error", { error }));
         } else {
@@ -283,7 +298,7 @@ function getComments(res) {
       fs.readFile(FILE_DIR.concat(COMMENTS_JSON), "UTF8", function (err, data) {
         if (err) {
           errorLog("readFile", err);
-          let error = promiseRejectError(500, err.message);
+          let error = setErrorMessage(500, err.message);
           // render the pug error template
           reject(res.render("error", { error }));
         }
@@ -338,7 +353,7 @@ function getHistory(res) {
       fs.readFile(FILE_DIR.concat(HISTORY_JSON), "UTF8", function (err, data) {
         if (err) {
           errorLog("readFile", err);
-          let error = promiseRejectError(500, err.message);
+          let error = setErrorMessage(500, err.message);
           reject(res.render("error", { error }));
         }
         let history = JSON.parse(data);
@@ -386,7 +401,7 @@ function writeToFile(res, file, data) {
       "UTF8",
       function (err) {
         if (err) {
-          let error = promiseRejectError(500, err.message);
+          let error = setErrorMessage(500, err.message);
           res.render("error", { error });
         }
       }
@@ -397,12 +412,12 @@ function writeToFile(res, file, data) {
 }
 
 /**
- * Method to handle promise rejection status and messages for error pug
+ * Method to handle error messaging for error pug
  * @param {*} statusCode : status code of error
  * @param {*} errorMessage : message of error
  * @returns : object containing error
  */
-function promiseRejectError(statusCode, errorMessage) {
+function setErrorMessage(statusCode, errorMessage) {
   let error = {
     status: statusCode,
     message: errorMessage,
