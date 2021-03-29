@@ -10,6 +10,7 @@ const ARTICLE_FILE = "/resource/article.txt";
 const COMMENTS_JSON = "/resource/comments.json";
 const HISTORY_JSON = "/resource/history.json";
 let activityStack = [];
+let lastDeleted = [];
 
 /**
  * GET '/' home page with async callback.
@@ -42,6 +43,13 @@ router.get("/", async function (req, res, next) {
       commentList: comments,
     });
   }
+});
+
+router.get("/add", function (req, res, next) {
+  let msg =
+    "You weren't supposed to do that ;) Go back to the main page and add comments using the fields.";
+  let error = promiseRejectError(401, msg);
+  res.render("error", { error });
 });
 
 /**
@@ -91,12 +99,11 @@ router.get("/reset", async function (req, res, next) {
   }
 });
 
-// TODO POST REQUEST for /add /undo /delete
+// TODO POST REQUEST for /undo /delete
 router.post("/add", async function (req, res, next) {
   //check id duplication
-  // console.log(activityStack.length);
   let commentHistory = await getComments(res);
-  console.log(commentHistory);
+  // console.log(commentHistory);
 
   if (commentHistory === "empty") {
     commentHistory = [];
