@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-const { FILE } = require("dns");
 let express = require("express");
 let fs = require("fs");
 let path = require("path");
@@ -20,6 +19,12 @@ router.get("/", async function (req, res, next) {
     subTitle,
     startMessage,
   });
+});
+
+router.get("/preferences", (req, res, next) => {
+  let qid = req.params.qid;
+  let title = "Select your display preferences.";
+  res.render("preferences", { title });
 });
 
 /**

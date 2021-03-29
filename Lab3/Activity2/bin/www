@@ -7,7 +7,7 @@
  * Module dependencies.
  */
 
-var app = require("../app");
+var app = require("../server");
 var debug = require("debug")("lab3:server");
 var http = require("http");
 

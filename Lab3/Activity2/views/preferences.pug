@@ -1,0 +1,17 @@
+extends layout 
+
+block content
+    h3= title
+
+    form(action="/question/" + (qid) method="POST")
+        input(required type="radio" name="display" value="Vertical") 
+        label(for="vertical") Vertical Display
+        br
+        input(type="radio" name="display" value="Horizontal") 
+        label(for="horizontal") Horizontal Display
+        br
+        br
+        input(type="submit" value="Save" name="savePrefs")
+        br
+        br
+    a(href="/") Go to Main Page

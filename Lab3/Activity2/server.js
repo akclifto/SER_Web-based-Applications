@@ -1,20 +1,22 @@
 /* eslint-disable no-unused-vars */
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+let createError = require("http-errors");
+let express = require("express");
+let path = require("path");
+let cookieParser = require("cookie-parser");
+let logger = require("morgan");
+const session = require("./middleware/session");
+let indexRouter = require("./routes/index");
+let questionRouter = require("./routes/question");
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-
-var app = express();
+let app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
 // the middleware
+app.use(session);
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,7 +25,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // add previous route-handling code
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/question", questionRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -34,6 +36,7 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
   console.log("set cache to no-cache");
   res.set("Cache-Control", "no-store, no-cache");
+  next();
 });
 
 // error handler
