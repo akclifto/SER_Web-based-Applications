@@ -176,8 +176,6 @@ router.post("/delete", async function (req, res, next) {
   let commentHistory = await getComments(res);
   //delete by id from comments
   let deleteFlag = deleteFromComments(req, commentHistory);
-  console.log(deleteFlag);
-  console.log(lastDeleted);
 
   //delete by id from user activity
   let actFlag = deleteFromActivity(req);
@@ -203,23 +201,29 @@ router.post("/delete", async function (req, res, next) {
  * @returns true if deleteId, false otherwise
  */
 function deleteFromComments(req, commentHistory) {
+  // console.log("before: ", commentHistory);
   for (let item in commentHistory) {
     if (commentHistory[item].id === req.body.deleteId) {
       serverLog(
         `Deleting comment from comments by id ${commentHistory[item].id}`
       );
-      //save deleted in case of undo
       lastDeleted.push(commentHistory[item]);
-      //delte comment
-      commentHistory.splice(commentHistory[item], 1);
+      //push to activity stack
+      activityStack.push({
+        operation: req.body.delete,
+        id: req.body.deleteId,
+        operand: commentHistory[item].operand,
+        ip: req._remoteAddress,
+        userAgent: req.headers["user-agent"],
+      });
+      //delete the comment from history
+      commentHistory.splice(item, 1);
       return true;
-    } else {
-      serverLog(
-        `Comment by id ${req.body.deleteId} not found in comment history.`
-      );
-      return false;
     }
   }
+  // console.log("after: ", commentHistory);
+  serverLog(`Comment by id ${req.body.deleteId} not found in comment history.`);
+  return false;
 }
 
 /**
@@ -233,15 +237,15 @@ function deleteFromActivity(req) {
       serverLog(
         `Delete comment from user activity by id ${activityStack[item].id}`
       );
-      activityStack.splice(activityStack.indexOf(item), 1);
+      // console.log("act stack index: ", activityStack[item]);
+      activityStack.splice(item, 1);
       return true;
-    } else {
-      serverLog(
-        `Comment by id ${req.body.deleteId} not found in user activity history.`
-      );
-      return false;
     }
   }
+  serverLog(
+    `Comment by id ${req.body.deleteId} not found in user activity history.`
+  );
+  return false;
 }
 
 /**
