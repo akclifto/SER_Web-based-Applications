@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
-let express = require("express");
-let fs = require("fs");
-let path = require("path");
-let router = express.Router();
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+const router = express.Router();
+const logger = require("../middleware/log");
 
 const FILE_DIR = path.resolve();
 
@@ -10,10 +11,10 @@ const FILE_DIR = path.resolve();
  * GET '/' landing page with async callback.
  */
 router.get("/", async function (req, res, next) {
-  //TODO
   const title = "Roommate Finder";
   const subTitle = "Welcome, Get Started Here!";
   const startMessage = "Put in your name, and click match:";
+
   res.render("index", {
     title,
     subTitle,
@@ -22,6 +23,7 @@ router.get("/", async function (req, res, next) {
 });
 
 router.get("/preferences", (req, res, next) => {
+  //TODO qid is undefined
   let qid = req.params.qid;
   let title = "Select your display preferences.";
   res.render("preferences", { title });
@@ -41,45 +43,14 @@ function writeToFile(res, file, data) {
       "UTF8",
       function (err) {
         if (err) {
-          let error = setErrorMessage(500, err.message);
+          let error = logger.setErrorMessage(500, err.message);
           res.render("error", { error });
         }
       }
     );
   } catch (err) {
-    errorLog("WriteToFile", err);
+    logger.errorLog("WriteToFile", err);
   }
-}
-
-/**
- * Method to handle error messaging for error pug
- * @param {*} statusCode : status code of error
- * @param {*} errorMessage : message of error
- * @returns : object containing error
- */
-function setErrorMessage(statusCode, errorMessage) {
-  let error = {
-    status: statusCode,
-    message: errorMessage,
-  };
-  return error;
-}
-
-/**
- * Method to normalize error logs from server.
- * @param {*} location : location of the error
- * @param {*} err : error message and stacktrace to log
- */
-function errorLog(location, err) {
-  console.log("ErrorLog: ", location, ": ", err);
-}
-
-/**
- * Method to normalize server logs.
- * @param {*} message : message to log
- */
-function serverLog(message) {
-  console.log("Server: ", message);
 }
 
 module.exports = router;
