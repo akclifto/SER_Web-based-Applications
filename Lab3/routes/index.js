@@ -10,7 +10,6 @@ const ARTICLE_FILE = "/resource/article.txt";
 const COMMENTS_JSON = "/resource/comments.json";
 const HISTORY_JSON = "/resource/history.json";
 let activityStack = [];
-let undoStack = [];
 
 /**
  * GET '/' home page with async callback.
@@ -111,10 +110,31 @@ router.get("/delete", function (req, res, next) {
 /**
  *
  */
-router.post("/undo", function (req, res, next) {
+router.post("/undo", async function (req, res, next) {
   console.log("act: ", activityStack.length);
-  console.log("undo: ", undoStack);
 
+  try {
+    // pop history
+    let history = await getHistory(res);
+    // console.log(history);
+    let pop = history.pop();
+    if (pop.operation === "Delete") {
+      //TODO
+    }
+    writeToFile(res, HISTORY_JSON, history);
+    // pop comments
+    let comments = await getComments(res);
+    console.log(comments);
+    comments.pop();
+    writeToFile(res, COMMENTS_JSON, comments);
+    //render response
+    let title = "Undo Operation Successful.";
+    res.render("response", { title });
+  } catch (err) {
+    errorLog("router /undo", err);
+    let error = setErrorMessage(500, err.message);
+    res.render("error", { error });
+  }
 });
 
 /**
@@ -214,16 +234,12 @@ router.post("/delete", async function (req, res, next) {
  * @returns true if deleteId, false otherwise
  */
 function deleteFromComments(req, commentHistory) {
-
   // console.log("before: ", commentHistory);
   for (let item in commentHistory) {
     if (commentHistory[item].id === req.body.deleteId) {
       serverLog(
         `Deleting comment from comments by id ${commentHistory[item].id}`
       );
-      // push to undo stack
-      undoStack.push(commentHistory[item]);
-      console.log(undoStack);
 
       //push to activity stack
       activityStack.push({
@@ -330,6 +346,7 @@ async function getStackHistory(res) {
   if (history === "empty") {
     activityStack = [];
     serverLog("activityStack initialized");
+    serverLog("undoStack initialized");
   } else if (activityStack.length > 0) {
     serverLog(
       `activityStack already initialized, has length: ${activityStack.length}`
