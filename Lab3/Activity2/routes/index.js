@@ -13,8 +13,8 @@ const FILE_DIR = path.resolve();
 router.get("/", async function (req, res, next) {
   //TODO
   const title = "Roommate Finder";
-  const subTitle = "Welcome, Get Starter Here";
-  const startMessage = "Enter your name, and click the button";
+  const subTitle = "Welcome, Get Started Here!";
+  const startMessage = "Put in your name, and click match:";
   res.render("index", {
     title,
     subTitle,

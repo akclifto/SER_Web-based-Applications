@@ -4,10 +4,9 @@ block content
   div(class="article")
     //- Welcome message for the browser tab.
     title 
-    h3=subTitle
+    h2=subTitle
     p=startMessage
     form()
-      br
       input(required type="text" name="username" placeholder="Enter Your Name")
-      input(type="submit" formaction="/question" formmethod="POST" name="beginMatch" value="Find a Roommate")
+      input(type="submit" formaction="/question/1" formmethod="POST" name="startMatch" value="Match")
       br
