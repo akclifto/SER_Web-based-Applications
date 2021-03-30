@@ -3,7 +3,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const router = express.Router();
-const logger = require("../middleware/log");
+const logger = require("../services/log");
 
 const FILE_DIR = path.resolve();
 
@@ -22,7 +22,7 @@ router.get("/", async function (req, res, next) {
   });
 });
 
-router.get("/preferences", (req, res, next) => {
+router.get("/preferences/", (req, res, next) => {
   //TODO qid is undefined
   let qid = req.params.qid;
   let title = "Select your display preferences.";
