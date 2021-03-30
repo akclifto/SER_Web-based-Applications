@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
-const mongo = require("../db/mongo");
+// const mongo = require("../db/mongo");
 
 const paths = require("../services/constants");
 const logger = require("../services/log");
@@ -30,26 +30,42 @@ router.all("/:qid", async (req, res, next) => {
     questions = { emptyMessage: message };
   }
   let prefs = getDisplayPrefs(req);
-  console.log(prefs);
+  // console.log(prefs);
+  let userPref = {
+    prefh: undefined,
+    prefv: true,
+  };
+  if (prefs === "horizontal") {
+    userPref.horizontal = true;
+    userPref.vertical = undefined;
+  }
 
   let qid = req.params.qid;
-  //prep parameters to MongoClient
-  // console.log(req.body.username);
-  let params = {
-    qid: qid,
-    username: req.body.username,
-    questions: questions,
-    prefs: prefs,
-  };
+  qid = parseInt(qid);
 
-  //set mongoclient
-  let payload = await mongo.connection(req, res, params);
+  //if last page
+  if(qid > questions.length)
+
+  // default rendering
   let render = {
-    title: "Questions",
+    title: "Question No.",
+    username: req.body.username,
     qid: qid,
+    question: questions[qid - 1].question,
+    options: questions[qid - 1].options,
+    prefv: userPref.vertical,
+    prefh: userPref.horizontal,
     //TODO
-  }
-  res.render("question", { title: "The question page" });
+  };
+  res.render("question", {
+    title: render.title,
+    username: render.username,
+    qid: render.qid,
+    question: render.question,
+    options: render.options,
+    prefv: render.prefv,
+    prefh: render.prefh,
+  });
 });
 
 /**

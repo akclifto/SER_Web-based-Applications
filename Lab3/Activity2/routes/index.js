@@ -4,6 +4,7 @@ const fs = require("fs");
 const router = express.Router();
 const logger = require("../services/log");
 const paths = require("../services/constants");
+const question = require("./question");
 
 /**
  * GET '/' landing page with async callback.
@@ -20,10 +21,9 @@ router.get("/", async function (req, res, next) {
 });
 
 router.get("/preferences/:qid", (req, res, next) => {
-  //TODO qid is undefined
   let qid = req.params.qid;
   let title = "Select your display preferences.";
-  res.render("preferences", { title });
+  res.render("preferences", { title, qid });
 });
 
 router.get("/match", (req, res, next) => {

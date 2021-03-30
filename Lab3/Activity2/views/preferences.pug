@@ -2,6 +2,7 @@ extends layout
 
 block content
     h3= title
+    h4 Question No. #{qid}
 
     form(action="/question/" + (qid) method="POST")
         input(required type="radio" name="display" value="vertical") 

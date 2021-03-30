@@ -1,14 +1,40 @@
 extends layout 
 
 block content
-    h3= title
+    h3 #{title} #{qid} 
+    div(class="question")
+        form()
+            p=question
+            if prefh
+                each item in options 
+                    //- add recurring answer
+                        if userAnswer && answer == item
+                        input(type="radio" name=item checked)
+                        | #{item}
+                        else
+                    input(type="radio" name="option" required)
+                    label(for="option") #{item}
+            else
+                each item in options 
+                    //- add recurring answer
+                        if userAnswer && answer == item
+                        input(type="radio" name=item checked)
+                        | #{item}
+                        else
+                    input(type="radio" name="option" required)
+                    label(for="option") #{item}
+                    br
+            br
+            br
+            if qid === 1
+                input(type="submit" formaction="/question/"+(qid + 1) name="next" value="Next")
+            else if qid === 
+            else 
+                input(type="submit" formaction="/question/"+(qid - 1) name="prev" value="Prev")
+                input(type="submit" formaction="/question/"+(qid + 1) name="next" value="Next")
+
     br
-    //- TODO FIX Buttons and add qid
-    form()
-        input(type="submit" formaction="/" name="prev" value="Prev")
-        input(type="submit" formaction="/" name="next" value="Next")
-    br
-    a(href="/preferences/:qid") Set User Preferences
+    a(href="/preferences/"+(qid)) Set User Preferences
     br
     br
     a(href="/") Go to Main Page
