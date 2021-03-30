@@ -29,6 +29,13 @@ router.get("/preferences", (req, res, next) => {
   res.render("preferences", { title });
 });
 
+router.get("/match", (req, res, next) => {
+  let title = "Matches";
+  let subTitle = "Here is a list of your potential roommate matches:"
+  let matches = [];
+  res.render("match", { title, subTitle, matches });
+});
+
 /**
  * Method to write data to file.
  * @param {*} res : server response
