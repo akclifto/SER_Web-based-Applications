@@ -8,13 +8,17 @@ const url = "mongodb://localhost:27017";
 const paths = require("../services/constants");
 const logger = require("../services/log");
 
-// router.all("/", (req, res, next) => {
-//   console.log("Hit the questions page");
-//
+/**
+ * GET '/' redirect to first question page
+ */
+router.all("/", (req, res, next) => {
+  logger.serverLog('redirect "/question" page to "question/1"');
+  res.redirect("/question/1");
+});
 
-//   next();
-// });
-
+/**
+ * GET '/:qid' by question id
+ */
 router.all("/:qid", async (req, res, next) => {
   logger.serverLog("Questions page, id: " + req.params.qid);
   let message = "";
@@ -25,16 +29,19 @@ router.all("/:qid", async (req, res, next) => {
     questions = { emptyMessage: message };
   }
   // console.log(questions);
-  let prefs = await getDisplayPrefs(req);
+  let prefs = getDisplayPrefs(req);
   console.log(prefs);
+
+  let qid = req.params.qid;
+  //set mongoclient
 
   res.render("question", { title: "The question page" });
 });
 
 /**
- * Method to get comments. Reads comment file from resource folder.
+ * Method to get questions. Reads question file from resource folder.
  * @param {*} res : server response
- * @returns parsed json comments.
+ * @returns parsed json questions.
  */
 function getQuestions(res) {
   return new Promise(function (resolve, reject) {
@@ -66,6 +73,11 @@ function getQuestions(res) {
   });
 }
 
+/**
+ * Method to user display preferences.
+ * @param {*} req : request object.
+ * @returns horizontal if user selected, vertical otherwise.
+ */
 function getDisplayPrefs(req) {
   // console.log(req.body.display);
   if (req.body.display === "horizontal") {
