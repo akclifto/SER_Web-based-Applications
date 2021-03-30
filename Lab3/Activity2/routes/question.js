@@ -32,17 +32,7 @@ router.all("/:qid", async (req, res, next) => {
     message = "No Questions found";
     questions = { emptyMessage: message };
   }
-  let prefs = getDisplayPrefs(req);
-  // console.log(prefs);
-  let userPref = {
-    prefh: undefined,
-    prefv: true,
-  };
-  if (prefs === "horizontal") {
-    userPref.horizontal = true;
-    userPref.vertical = undefined;
-  }
-
+  getDisplayPrefs(req);
   let qid = req.params.qid;
   qid = parseInt(qid);
 
@@ -51,14 +41,14 @@ router.all("/:qid", async (req, res, next) => {
     console.log("questions userAnswers: ", req.session.userAnswers);
     res.redirect("/match");
   } else {
+    // to use as db object if trying mongodb.
     let render = {
       title: "Question No.",
       username: req.session.username,
       qid: qid,
       question: questions[qid - 1].question,
       options: questions[qid - 1].options,
-      prefv: userPref.vertical,
-      prefh: userPref.horizontal,
+      prefh: req.session.pref,
     };
     // default rendering
     res.render("question", {
@@ -67,8 +57,7 @@ router.all("/:qid", async (req, res, next) => {
       qid: render.qid,
       question: render.question,
       options: render.options,
-      prefv: render.prefv,
-      prefh: render.prefh,
+      prefh: req.session.pref,
     });
   }
 });
@@ -81,9 +70,9 @@ router.all("/:qid", async (req, res, next) => {
 function getDisplayPrefs(req) {
   // console.log(req.body.display);
   if (req.body.display === "horizontal") {
-    return req.body.display;
+    req.session.pref = req.body.display;
   } else {
-    return "vertical";
+    req.session.pref = "vertical";
   }
 }
 

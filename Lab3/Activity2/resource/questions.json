@@ -19,7 +19,8 @@
         "qid": "3",
         "question": "How many roommates do you prefer",
         "options": [
-            "1 - 2",
+            "1",
+            "2",
             "3 or more"
         ]
     },

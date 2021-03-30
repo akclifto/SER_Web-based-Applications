@@ -5,7 +5,7 @@ const router = express.Router();
 const logger = require("../services/log");
 
 /**
- * GET '/' landing page with async callback.
+ * GET '/' landing page.
  */
 router.get("/", (req, res, next) => {
   //create a user answers file.
@@ -20,6 +20,9 @@ router.get("/", (req, res, next) => {
   });
 });
 
+/**
+ * GET '/preferences/:qid to handle display preference for given qid.
+ */
 router.get("/preferences/:qid", (req, res, next) => {
   let username = req.session.username;
   logger.serverLog(`Rendering preferences for user: ${username}`);
@@ -28,6 +31,9 @@ router.get("/preferences/:qid", (req, res, next) => {
   res.render("preferences", { title, qid, username });
 });
 
+/**
+ * GET '/match' page to display survey matches.
+ */
 router.get("/match", (req, res, next) => {
   let username = req.session.username;
   logger.serverLog(`Rendering matches for user: ${username}`);

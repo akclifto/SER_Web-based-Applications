@@ -6,7 +6,7 @@ block content
     div(class="question")
         form()
             p=question
-            if prefh
+            if prefh == "horizontal"
                 each item in options 
                     //- add recurring answer
                         if userAnswer && answer == item
