@@ -31,7 +31,7 @@ router.get("/preferences/", (req, res, next) => {
 
 router.get("/match", (req, res, next) => {
   let title = "Matches";
-  let subTitle = "Here is a list of your potential roommate matches:"
+  let subTitle = "Here is a list of your potential roommate matches: ";
   let matches = [];
   res.render("match", { title, subTitle, matches });
 });

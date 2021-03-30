@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const MongoClient = require("mongodb").MongoClient;
-const assert = require("assert");
 const url = "mongodb://localhost:27017";
 
 const paths = require("../services/constants");
@@ -17,10 +16,18 @@ const logger = require("../services/log");
 // });
 
 router.all("/:qid", async (req, res, next) => {
-  console.log("hit the id " + req.params.qid);
-
+  logger.serverLog("Questions page, id: " + req.params.qid);
+  let message = "";
   let questions = await getQuestions(res);
-  console.log(questions);
+  //check empty question list
+  if (questions === "empty") {
+    message = "No Questions found";
+    questions = { emptyMessage: message };
+  }
+  // console.log(questions);
+  let prefs = await getDisplayPrefs(req);
+  console.log(prefs);
+
   res.render("question", { title: "The question page" });
 });
 
@@ -43,13 +50,13 @@ function getQuestions(res) {
             reject(res.render("error", { error }));
           }
 
-          let comments = JSON.parse(data);
-          if (comments.length === 0 || comments === "") {
+          let questions = JSON.parse(data);
+          if (questions.length === 0 || questions === "") {
             // set an initial, blank comment.
             resolve("empty");
           } else {
             // console.log(data);
-            resolve(comments);
+            resolve(questions);
           }
         }
       );
@@ -57,6 +64,15 @@ function getQuestions(res) {
       logger.errorLog("getArticle error: ", err);
     }
   });
+}
+
+function getDisplayPrefs(req) {
+  // console.log(req.body.display);
+  if (req.body.display === "horizontal") {
+    return req.body.display;
+  } else {
+    return "vertical";
+  }
 }
 
 module.exports = router;
