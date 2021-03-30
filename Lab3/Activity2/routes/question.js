@@ -44,28 +44,35 @@ router.all("/:qid", async (req, res, next) => {
   qid = parseInt(qid);
 
   //if last page
-  if(qid > questions.length)
-
-  // default rendering
-  let render = {
-    title: "Question No.",
-    username: req.body.username,
-    qid: qid,
-    question: questions[qid - 1].question,
-    options: questions[qid - 1].options,
-    prefv: userPref.vertical,
-    prefh: userPref.horizontal,
-    //TODO
-  };
-  res.render("question", {
-    title: render.title,
-    username: render.username,
-    qid: render.qid,
-    question: render.question,
-    options: render.options,
-    prefv: render.prefv,
-    prefh: render.prefh,
-  });
+  console.log(questions.length);
+  console.log(qid);
+  // direct to matchs page
+  if (qid > questions.length) {
+    let user = {
+      username: req.body.username,
+    };
+    res.redirect("/match");
+  } else {
+    let render = {
+      title: "Question No.",
+      username: req.body.username,
+      qid: qid,
+      question: questions[qid - 1].question,
+      options: questions[qid - 1].options,
+      prefv: userPref.vertical,
+      prefh: userPref.horizontal,
+    };
+    // default rendering
+    res.render("question", {
+      title: render.title,
+      username: render.username,
+      qid: render.qid,
+      question: render.question,
+      options: render.options,
+      prefv: render.prefv,
+      prefh: render.prefh,
+    });
+  }
 });
 
 /**
