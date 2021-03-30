@@ -3,7 +3,12 @@ extends layout
 block content
     h3= title
     br
-    a(href="/preferences") Set User Preferences
+    //- TODO FIX Buttons and add qid
+    form()
+        input(type="submit" formaction="/" name="prev" value="Prev")
+        input(type="submit" formaction="/" name="next" value="Next")
+    br
+    a(href="/preferences/:qid") Set User Preferences
     br
     br
     a(href="/") Go to Main Page

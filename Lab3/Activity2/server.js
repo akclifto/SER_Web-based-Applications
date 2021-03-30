@@ -4,7 +4,8 @@ let express = require("express");
 let path = require("path");
 let cookieParser = require("cookie-parser");
 let logger = require("morgan");
-const session = require("./middleware/session");
+
+let session = require("./middleware/session");
 let indexRouter = require("./routes/index");
 let questionRouter = require("./routes/question");
 

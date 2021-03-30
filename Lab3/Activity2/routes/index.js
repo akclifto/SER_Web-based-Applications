@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-vars */
 const express = require("express");
 const fs = require("fs");
-const path = require("path");
 const router = express.Router();
 const logger = require("../services/log");
-
-const FILE_DIR = path.resolve();
+const paths = require("../services/constants");
 
 /**
  * GET '/' landing page with async callback.
@@ -14,7 +12,6 @@ router.get("/", async function (req, res, next) {
   const title = "Roommate Finder";
   const subTitle = "Welcome, Get Started Here!";
   const startMessage = "Put in your name, and click match:";
-
   res.render("index", {
     title,
     subTitle,
@@ -22,7 +19,7 @@ router.get("/", async function (req, res, next) {
   });
 });
 
-router.get("/preferences/", (req, res, next) => {
+router.get("/preferences/:qid", (req, res, next) => {
   //TODO qid is undefined
   let qid = req.params.qid;
   let title = "Select your display preferences.";
@@ -45,7 +42,7 @@ router.get("/match", (req, res, next) => {
 function writeToFile(res, file, data) {
   try {
     fs.writeFileSync(
-      FILE_DIR.concat(file),
+      paths.FILE_DIR.concat(file),
       JSON.stringify(data),
       "UTF8",
       function (err) {

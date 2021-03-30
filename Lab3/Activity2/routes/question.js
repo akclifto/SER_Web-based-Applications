@@ -2,8 +2,8 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
+let mongo = require("../db/mongo");
 const MongoClient = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017";
 
 const paths = require("../services/constants");
 const logger = require("../services/log");
@@ -21,19 +21,36 @@ router.all("/", (req, res, next) => {
  */
 router.all("/:qid", async (req, res, next) => {
   logger.serverLog("Questions page, id: " + req.params.qid);
+  req.session.userAnswers = [];
+  // console.log(req.session.userAnswers);
   let message = "";
   let questions = await getQuestions(res);
-  //check empty question list
+
   if (questions === "empty") {
     message = "No Questions found";
     questions = { emptyMessage: message };
   }
-  // console.log(questions);
   let prefs = getDisplayPrefs(req);
   console.log(prefs);
 
   let qid = req.params.qid;
   //set mongoclient
+  MongoClient.connect(
+    paths.MONGO_URL,
+    { useUnifiedTopology: true, useNewUrlParser: true },
+    function (err) {
+      try {
+        if (err) {
+          let error = logger.setErrorMessage(500, err);
+          logger.errorLog("MongoClient", error);
+        }
+        console.log("Mongo database client connected!");
+      } catch (err) {
+        logger.errorLog("MongoClient", err);
+      }
+    }
+    //TODO add
+  );
 
   res.render("question", { title: "The question page" });
 });
