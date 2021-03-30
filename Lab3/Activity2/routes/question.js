@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 // const mongo = require("../db/mongo");
-
+const fileService = require("../services/fileService");
 const paths = require("../services/constants");
 const logger = require("../services/log");
 
@@ -23,7 +23,7 @@ router.all("/:qid", async (req, res, next) => {
   req.session.userAnswers = [];
   // console.log(req.session.userAnswers);
   let message = "";
-  let questions = await getQuestions(res);
+  let questions = await fileService.getQuestions(res);
 
   if (questions === "empty") {
     message = "No Questions found";
@@ -74,41 +74,6 @@ router.all("/:qid", async (req, res, next) => {
     });
   }
 });
-
-/**
- * Method to get questions. Reads question file from resource folder.
- * @param {*} res : server response
- * @returns parsed json questions.
- */
-function getQuestions(res) {
-  return new Promise(function (resolve, reject) {
-    try {
-      fs.readFile(
-        paths.FILE_DIR.concat(paths.QUESTIONS_JSON),
-        "UTF8",
-        function (err, data) {
-          if (err) {
-            logger.errorLog("readFile", err);
-            let error = logger.setErrorMessage(500, err.message);
-            // render the pug error template
-            reject(res.render("error", { error }));
-          }
-
-          let questions = JSON.parse(data);
-          if (questions.length === 0 || questions === "") {
-            // set an initial, blank comment.
-            resolve("empty");
-          } else {
-            // console.log(data);
-            resolve(questions);
-          }
-        }
-      );
-    } catch (err) {
-      logger.errorLog("getArticle error: ", err);
-    }
-  });
-}
 
 /**
  * Method to user display preferences.
