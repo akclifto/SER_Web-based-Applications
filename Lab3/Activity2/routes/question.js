@@ -25,16 +25,26 @@ router.all("/:qid", async (req, res, next) => {
     req.session.username = req.body.username;
   }
   // console.log(req.session.userAnswers);
-  let message = "";
+  // TODO fix not working
   let questions = await fileService.getQuestions(res);
+  getDisplayPrefs(req);
+  let qid = req.params.qid;
+  qid = parseInt(qid);
+  //check query options for answers
+  if (req.query === undefined) {
+    logger.serverLog(`No query available`);
+  } else {
+    let flag = await saveAnswer(req, qid, questions);
+    if (!flag) {
+      logger.errorLog(`Question ${qid}`, "User Answer could not be saved.");
+    }
+  }
 
+  let message = "";
   if (questions === "empty") {
     message = "No Questions found";
     questions = { emptyMessage: message };
   }
-  getDisplayPrefs(req);
-  let qid = req.params.qid;
-  qid = parseInt(qid);
 
   //if last page, direct to match page
   if (qid > questions.length) {
@@ -74,6 +84,28 @@ function getDisplayPrefs(req) {
   } else {
     req.session.pref = "vertical";
   }
+}
+
+function saveAnswer(req, qid, questions) {
+  return new Promise(function (resolve, reject) {
+    try {
+      console.log(req.query.length);
+      // push answer to res.session.userAnswers
+      let answer = {
+        username: req.session.username,
+        qid: qid - 1,
+        question: questions[qid - 2].question,
+        answer: req.query.option,
+      };
+      req.session.userAnswers.push(answer);
+      console.log(req.session.userAnswers);
+
+      resolve(true);
+    } catch (err) {
+      logger.errorLog("saveAnswer", err);
+      reject(false);
+    }
+  });
 }
 
 module.exports = router;

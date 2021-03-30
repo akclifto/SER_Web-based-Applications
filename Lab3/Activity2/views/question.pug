@@ -13,7 +13,7 @@ block content
                         input(type="radio" name=item checked)
                         | #{item}
                         else
-                    input(type="radio" name="option" required)
+                    input(type="radio" name="option" value=item required)
                     label(for="option") #{item}
             else
                 each item in options 
@@ -22,7 +22,7 @@ block content
                         input(type="radio" name=item checked)
                         | #{item}
                         else
-                    input(type="radio" name="option" required)
+                    input(type="radio" name="option" value=item required)
                     label(for="option") #{item}
                     br
             br
