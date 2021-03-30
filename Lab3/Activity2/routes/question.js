@@ -33,9 +33,22 @@ router.all("/:qid", async (req, res, next) => {
   console.log(prefs);
 
   let qid = req.params.qid;
-  //set mongoclient
-  mongo.connection(req, res, "something");
+  //prep parameters to MongoClient
+  // console.log(req.body.username);
+  let params = {
+    qid: qid,
+    username: req.body.username,
+    questions: questions,
+    prefs: prefs,
+  };
 
+  //set mongoclient
+  let payload = await mongo.connection(req, res, params);
+  let render = {
+    title: "Questions",
+    qid: qid,
+    //TODO
+  }
   res.render("question", { title: "The question page" });
 });
 
