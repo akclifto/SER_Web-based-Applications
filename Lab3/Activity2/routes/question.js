@@ -20,7 +20,10 @@ router.all("/", (req, res, next) => {
  */
 router.all("/:qid", async (req, res, next) => {
   logger.serverLog("Questions page, id: " + req.params.qid);
-  req.session.userAnswers = [];
+  // add the username to the session.
+  if (req.session.username === undefined) {
+    req.session.username = req.body.username;
+  }
   // console.log(req.session.userAnswers);
   let message = "";
   let questions = await fileService.getQuestions(res);
@@ -43,19 +46,14 @@ router.all("/:qid", async (req, res, next) => {
   let qid = req.params.qid;
   qid = parseInt(qid);
 
-  //if last page
-  console.log(questions.length);
-  console.log(qid);
-  // direct to matchs page
+  //if last page, direct to match page
   if (qid > questions.length) {
-    let user = {
-      username: req.body.username,
-    };
+    console.log("questions userAnswers: ", req.session.userAnswers);
     res.redirect("/match");
   } else {
     let render = {
       title: "Question No.",
-      username: req.body.username,
+      username: req.session.username,
       qid: qid,
       question: questions[qid - 1].question,
       options: questions[qid - 1].options,

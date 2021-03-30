@@ -7,7 +7,9 @@ const logger = require("../services/log");
 /**
  * GET '/' landing page with async callback.
  */
-router.get("/", async function (req, res, next) {
+router.get("/", (req, res, next) => {
+  //create a user answers file.
+  req.session.userAnswers = [];
   const title = "Roommate Finder";
   const subTitle = "Welcome, Get Started Here!";
   const startMessage = "Put in your name, and click match:";
@@ -19,16 +21,20 @@ router.get("/", async function (req, res, next) {
 });
 
 router.get("/preferences/:qid", (req, res, next) => {
+  let username = req.session.username;
+  logger.serverLog(`Rendering preferences for user: ${username}`);
   let qid = req.params.qid;
   let title = "Select your display preferences.";
-  res.render("preferences", { title, qid });
+  res.render("preferences", { title, qid, username });
 });
 
 router.get("/match", (req, res, next) => {
+  let username = req.session.username;
+  logger.serverLog(`Rendering matches for user: ${username}`);
   let title = "Matches";
   let subTitle = "Here is a list of your potential roommate matches: ";
   let matches = [];
-  res.render("match", { title, subTitle, matches });
+  res.render("match", { title, subTitle, matches, username });
 });
 
 module.exports = router;
