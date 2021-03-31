@@ -49,13 +49,13 @@ router.all("/:qid", async (req, res, next) => {
       res.redirect("/match");
     } else {
       // to use as db object if trying mongodb.
-      let answer = "";
-      console.log("userAnswers length: ", req.session.userAnswers.length);
-      if (req.session.userAnswers.length > 0) {
-        console.log("in if log qid: ", qid);
-        console.log("in if log: ", req.session.userAnswers[qid - 1].answer);
-        answer = req.session.userAnswers[qid - 1].answer;
-      }
+      // let answer = "";
+      // console.log("userAnswers length: ", req.session.userAnswers.length);
+      // if (req.session.userAnswers.length > 0) {
+      //   console.log("in if log qid: ", qid);
+      //   console.log("in if log: ", req.session.userAnswers[qid - 1]);
+      //   answer = req.session.userAnswers[qid - 1];
+      // }
       let render = {
         title: "Question No.",
         username: req.session.username,
@@ -64,7 +64,7 @@ router.all("/:qid", async (req, res, next) => {
         question: questions[qid - 1].question,
         options: questions[qid - 1].options,
         prefh: req.session.pref,
-        answer: answer,
+        // answer: answer,
       };
       // default rendering
       res.render("question", {
@@ -75,7 +75,7 @@ router.all("/:qid", async (req, res, next) => {
         question: render.question,
         options: render.options,
         prefh: render.prefh,
-        userAnswer: render.answer,
+        // userAnswer: render.answer,
       });
     }
   } catch (err) {
@@ -117,7 +117,6 @@ function checkAnswer(req, qid) {
             `There was previous user answer match, replacing user answer for id: ${qid}`
           );
           req.session.userAnswers.splice(item, 1);
-          resolve(true);
         }
       }
       resolve(true);
@@ -137,6 +136,7 @@ function checkAnswer(req, qid) {
  */
 async function saveAnswer(req, qid, questions) {
   //check prev query
+  // console.log("prev value: ", req.query.prev);
   if (req.query.prev !== undefined) {
     logger.serverLog("Skipping check validation, prev selected.");
     return new Promise(function (resolve, reject) {
@@ -149,7 +149,7 @@ async function saveAnswer(req, qid, questions) {
         };
         // push answer to res.session.userAnswers
         req.session.userAnswers.push(answer);
-        // console.log(req.session.userAnswers);
+        // console.log("saved user answers: ", req.session.userAnswers);
         resolve(true);
       } catch (err) {
         logger.errorLog("saveAnswer", err);
@@ -164,12 +164,12 @@ async function saveAnswer(req, qid, questions) {
           let answer = {
             username: req.session.username,
             qid: qid - 1,
-            question: questions[qid - 1].question,
+            question: questions[qid - 2].question,
             answer: req.query.option,
           };
           // push answer to res.session.userAnswers
           req.session.userAnswers.push(answer);
-          console.log(req.session.userAnswers);
+          // console.log("saved user answers: ", req.session.userAnswers);
           resolve(true);
         } catch (err) {
           logger.errorLog("saveAnswer", err);
