@@ -42,19 +42,39 @@ router.get("/match", async (req, res, next) => {
   // console.log(userAnswers);
   try {
     const allAnswers = await fileService.getAnswers(res);
-    let matches = await getMatchResults(username, userAnswers, allAnswers);
-    console.log("promise matches: ", matches);
-
+    let match = await getMatchResults(username, userAnswers, allAnswers);
+    console.log("promise matches: ", match);
+    let matches = [];
+    let user = 0;
+    for (let i in match) {
+      let entry = {
+        username: Object.keys(match)[user],
+        count: match[i],
+      };
+      matches.push(entry);
+      user++;
+    }
+    let message = "";
+    if (matches.length === 0) {
+      message = "You have no matches at this time. :(";
+    }
     logger.serverLog(`Rendering matches for user: ${username}`);
     let title = "Matches";
     let subTitle = "Here is a list of your potential roommate matches: ";
-    res.render("match", { title, subTitle, matches, username });
+    res.render("match", { title, subTitle, matches, username, message });
   } catch (err) {
     let error = logger.setErrorMessage(500, err.message);
     res.render("error", { error });
   }
 });
 
+/**
+ * Function to get Match results after user survey answered.
+ * @param {*} username : name of user
+ * @param {*} userAnswers : user answers
+ * @param {*} allAnswers : all answers in system
+ * @returns promise with matches and count.
+ */
 function getMatchResults(username, userAnswers, allAnswers) {
   return new Promise((resolve, reject) => {
     try {
@@ -83,14 +103,6 @@ function getMatchResults(username, userAnswers, allAnswers) {
       logger.errorLog("getMatchResults", err);
       reject(false);
     }
-
-    // console.log(answers);
-    // read in answer file
-    // for each
-    // check user answers and against all asnwers in file
-    // if user answer equals answer in answer file and username != userAnswers username
-    // then save answer username, count + 1.
-    //
   });
 }
 
