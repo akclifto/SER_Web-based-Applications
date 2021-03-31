@@ -18,12 +18,17 @@ block content
             else
                 each item in options 
                     //- add recurring answer
-                        if userAnswer && answer == item
-                        input(type="radio" name=item checked)
-                        | #{item}
-                        else
-                    input(type="radio" name="option" value=item required)
-                    label(for="option") #{item}
+                    | user answer : #{userAnswer}
+                    br
+                    | item : #{item}
+                    br
+                    br 
+                    if userAnswer && userAnswer == item
+                        input(type="radio" name="option" value=item checked)
+                        label(for="option") #{item}
+                    else
+                        input(type="radio" name="option" value=item required)
+                        label(for="option") #{item}
                     br
             br
             br

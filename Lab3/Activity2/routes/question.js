@@ -24,22 +24,17 @@ router.all("/:qid", async (req, res, next) => {
   if (req.session.username === undefined) {
     req.session.username = req.body.username;
   }
-  // console.log(req.session.userAnswers);
-  // TODO fix not working
   let questions = await fileService.getQuestions(res);
   getDisplayPrefs(req);
   let qid = req.params.qid;
   qid = parseInt(qid);
   //check query options for answers
-  console.log(req.query);
   if (req.query.option !== undefined) {
     let flag = await saveAnswer(req, qid, questions);
     if (!flag) {
       logger.errorLog(`Question ${qid}`, "User Answer could not be saved.");
     }
   }
-  //TODO check next and prev values before saving
-
   let message = "";
   if (questions === "empty") {
     message = "No Questions found";
@@ -48,10 +43,18 @@ router.all("/:qid", async (req, res, next) => {
 
   //if last page, direct to match page
   if (qid > questions.length) {
+    //TODO write answers to json file.
     console.log("questions userAnswers: ", req.session.userAnswers);
     res.redirect("/match");
   } else {
     // to use as db object if trying mongodb.
+    let answer = "";
+    console.log("userAnswers: ", req.session.userAnswers);
+    if (qid === 1 && req.session.userAnswer !== undefined) {
+      console.log("in if log qid: ", qid);
+      console.log("in if log: ", req.session.userAnswers[qid - 1].answer);
+      answer = req.session.userAnswers[qid - 1].answer;
+    }
     let render = {
       title: "Question No.",
       username: req.session.username,
@@ -59,6 +62,7 @@ router.all("/:qid", async (req, res, next) => {
       question: questions[qid - 1].question,
       options: questions[qid - 1].options,
       prefh: req.session.pref,
+      answer: answer,
     };
     // default rendering
     res.render("question", {
@@ -67,7 +71,8 @@ router.all("/:qid", async (req, res, next) => {
       qid: render.qid,
       question: render.question,
       options: render.options,
-      prefh: req.session.pref,
+      prefh: render.prefh,
+      userAnswer: render.answer,
     });
   }
 });
@@ -121,31 +126,26 @@ function checkAnswer(req, qid) {
  * @returns Promise true if save was successful, false otherwise.
  */
 async function saveAnswer(req, qid, questions) {
-  // console.log(req.query);
-  // console.log(req.session.userAnswers);
   //check prev query
   if (req.query.prev !== undefined) {
-    // console.log(req.query);
-    let flag = await checkAnswer(req, qid);
-    if (flag) {
-      return new Promise(function (resolve, reject) {
-        try {
-          let answer = {
-            username: req.session.username,
-            qid: qid,
-            question: questions[qid - 1].question,
-            answer: req.query.option,
-          };
-          // push answer to res.session.userAnswers
-          req.session.userAnswers.push(answer);
-          console.log(req.session.userAnswers);
-          resolve(true);
-        } catch (err) {
-          logger.errorLog("saveAnswer", err);
-          reject(false);
-        }
-      });
-    }
+    logger.serverLog("Skipping check validation, prev selected.");
+    return new Promise(function (resolve, reject) {
+      try {
+        let answer = {
+          username: req.session.username,
+          qid: qid + 1,
+          question: questions[qid].question,
+          answer: req.query.option,
+        };
+        // push answer to res.session.userAnswers
+        req.session.userAnswers.push(answer);
+        // console.log(req.session.userAnswers);
+        resolve(true);
+      } catch (err) {
+        logger.errorLog("saveAnswer", err);
+        reject(false);
+      }
+    });
   } else {
     let flag = await checkAnswer(req, qid - 1);
     if (flag) {
@@ -154,7 +154,7 @@ async function saveAnswer(req, qid, questions) {
           let answer = {
             username: req.session.username,
             qid: qid - 1,
-            question: questions[qid - 2].question,
+            question: questions[qid - 1].question,
             answer: req.query.option,
           };
           // push answer to res.session.userAnswers
