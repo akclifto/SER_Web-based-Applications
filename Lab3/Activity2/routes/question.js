@@ -49,13 +49,18 @@ router.all("/:qid", async (req, res, next) => {
       res.redirect("/match");
     } else {
       // to use as db object if trying mongodb.
-      // let answer = "";
-      // console.log("userAnswers length: ", req.session.userAnswers.length);
-      // if (req.session.userAnswers.length > 0) {
-      //   console.log("in if log qid: ", qid);
-      //   console.log("in if log: ", req.session.userAnswers[qid - 1]);
-      //   answer = req.session.userAnswers[qid - 1];
-      // }
+      let answer = "";
+      if (req.session.userAnswers.length > 0) {
+        if (qid === 1 || req.query.prev !== undefined) {
+          answer = req.session.userAnswers[qid - 1].answer;
+        } else {
+          for (let item in req.session.userAnswers) {
+            if (qid === req.session.userAnswers[item].qid) {
+              answer = req.session.userAnswers[item].answer;
+            }
+          }
+        }
+      }
       let render = {
         title: "Question No.",
         username: req.session.username,
@@ -64,7 +69,7 @@ router.all("/:qid", async (req, res, next) => {
         question: questions[qid - 1].question,
         options: questions[qid - 1].options,
         prefh: req.session.pref,
-        // answer: answer,
+        answer: answer,
       };
       // default rendering
       res.render("question", {
@@ -75,7 +80,7 @@ router.all("/:qid", async (req, res, next) => {
         question: render.question,
         options: render.options,
         prefh: render.prefh,
-        // userAnswer: render.answer,
+        userAnswer: render.answer,
       });
     }
   } catch (err) {
