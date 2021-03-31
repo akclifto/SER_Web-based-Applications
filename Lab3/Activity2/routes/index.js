@@ -10,7 +10,7 @@ const fileService = require("../services/fileService");
  */
 router.get("/", (req, res, next) => {
   //create a user answers file.
-  req.session.redirect = false;
+  // req.session.redirect = false;
   req.session.userAnswers = [];
   const title = "Roommate Finder";
   const subTitle = "Welcome, Get Started Here!";
@@ -64,6 +64,8 @@ router.get("/match", async (req, res, next) => {
     logger.serverLog(`Rendering matches for user: ${username}`);
     let title = "Matches";
     let subTitle = "Here is a list of your potential roommate matches: ";
+    // end session here.
+    req.session.destroy();
     res.render("match", { title, subTitle, matches, username, message });
   } catch (err) {
     let error = logger.setErrorMessage(500, err.message);
