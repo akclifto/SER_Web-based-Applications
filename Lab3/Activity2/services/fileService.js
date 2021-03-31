@@ -70,7 +70,38 @@ function getQuestions(res) {
   });
 }
 
+function getAnswers(res) {
+  return new Promise(function (resolve, reject) {
+    try {
+      fs.readFile(
+        paths.FILE_DIR.concat(paths.ANSWERS_JSON),
+        "UTF8",
+        function (err, data) {
+          if (err) {
+            logger.errorLog("readFile", err);
+            let error = logger.setErrorMessage(500, err.message);
+            // render the pug error template
+            reject(res.render("error", { error }));
+          }
+
+          let answers = JSON.parse(data);
+          if (answers.length === 0 || answers === "") {
+            // set an initial, blank comment.
+            resolve("empty");
+          } else {
+            // console.log(data);
+            resolve(answers);
+          }
+        }
+      );
+    } catch (err) {
+      logger.errorLog("getArticle error: ", err);
+    }
+  });
+}
+
 module.exports = {
   writeToFile,
   getQuestions,
+  getAnswers,
 };

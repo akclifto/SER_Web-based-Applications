@@ -6,6 +6,7 @@ const fs = require("fs");
 const fileService = require("../services/fileService");
 const paths = require("../services/constants");
 const logger = require("../services/log");
+const { all } = require(".");
 
 /**
  * GET '/' redirect to first question page
@@ -44,16 +45,37 @@ router.all("/:qid", async (req, res, next) => {
 
     //if last page, direct to match page
     if (qid > questions.length) {
-      //TODO write answers to json file.
+      let allAnswers = await fileService.getAnswers(res);
+      if (allAnswers === "empty") {
+        allAnswers = [];
+      }
+      //check dup usernames
+      for (let item in allAnswers) {
+        if (
+          req.session.username.toString() ===
+          allAnswers[item].username.toString()
+        ) {
+          logger.serverLog(
+            `User ${res.session.username} already answered match question, replacing answer...`
+          );
+          allAnswers.splice(item, 1);
+        }
+      }
+      // add userAnswers to allAnswers
+      for (let i in req.session.userAnswers) {
+        allAnswers.push(req.session.userAnswers[i]);
+      }
+      console.log(allAnswers);
       let flag = await fileService.writeToFile(
         res,
         paths.ANSWERS_JSON,
-        req.session.userAnswers
+        allAnswers
       );
       if (flag) {
         logger.serverLog(
           `User ${req.session.username}'s answers saved to file`
         );
+        // go to match page
         res.redirect("/match");
       } else {
         let error = logger.setErrorMessage(

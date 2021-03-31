@@ -34,13 +34,32 @@ router.get("/preferences/:qid", (req, res, next) => {
 /**
  * GET '/match' page to display survey matches.
  */
-router.get("/match", (req, res, next) => {
-  let username = req.session.username;
-  logger.serverLog(`Rendering matches for user: ${username}`);
-  let title = "Matches";
-  let subTitle = "Here is a list of your potential roommate matches: ";
-  let matches = [];
-  res.render("match", { title, subTitle, matches, username });
+router.get("/match", async (req, res, next) => {
+  const username = req.session.username;
+  const userAnswers = req.session.userAnswers;
+  try {
+    let matches = await getMatchResults(userAnswers, username);
+    console.log(matches);
+    logger.serverLog(`Rendering matches for user: ${username}`);
+    let title = "Matches";
+    let subTitle = "Here is a list of your potential roommate matches: ";
+    res.render("match", { title, subTitle, matches, username });
+  } catch (err) {
+    let error = logger.setErrorMessage(500, err.message);
+    res.render("error", { error });
+  }
 });
+
+function getMatchResults(answers, username) {
+  return new Promise((resolve, reject) => {
+    console.log(answers);
+    // read in answer file
+    // for each
+    // check user answers and against all asnwers in file
+    // if user answer equals answer in answer file and username != userAnswers username
+    // then save answer username, count + 1.
+    //
+  });
+}
 
 module.exports = router;
