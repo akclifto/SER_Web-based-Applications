@@ -86,15 +86,21 @@ function getDisplayPrefs(req) {
   }
 }
 
+/**
+ * Method to check and replace duplicate answers.
+ * @param {*} req : request object
+ * @param {*} qid : question id
+ * @returns promise true if splice or no dups, false otherwise
+ */
 function checkAnswer(req, qid) {
   return new Promise(function (resolve, reject) {
     try {
       for (let item in req.session.userAnswers) {
-        console.log(
-          `qid: ${qid} answer id:${req.session.userAnswers[item].qid}`
-        );
+        // console.log(
+        //   `qid: ${qid} answer id:${req.session.userAnswers[item].qid}`
+        // );
         if (qid === req.session.userAnswers[item].qid) {
-          console.log("there was a match");
+          console.log("There was a match, splicing user answers.");
           req.session.userAnswers.splice(item, 1);
           resolve(true);
         }
@@ -108,7 +114,7 @@ function checkAnswer(req, qid) {
 }
 
 /**
- * Method to push answers to stack, check and replace duplicate answers.
+ * Method to push answers to the userAnswers session object.
  * @param {*} req : request object.
  * @param {*} qid : question id.
  * @param {*} questions : questions objects
@@ -116,10 +122,10 @@ function checkAnswer(req, qid) {
  */
 async function saveAnswer(req, qid, questions) {
   // console.log(req.query);
-  console.log(req.session.userAnswers);
+  // console.log(req.session.userAnswers);
   //check prev query
   if (req.query.prev !== undefined) {
-    console.log(req.query);
+    // console.log(req.query);
     let flag = await checkAnswer(req, qid);
     if (flag) {
       return new Promise(function (resolve, reject) {
