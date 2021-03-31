@@ -31,8 +31,7 @@ router.all("/:qid", async (req, res, next) => {
   let qid = req.params.qid;
   qid = parseInt(qid);
   //check query options for answers
-  console.log(req.query.option);
-  console.log(req.session.userAnswers);
+
   if (req.query.option !== undefined) {
     let flag = await saveAnswer(req, qid, questions);
     if (!flag) {
@@ -86,26 +85,40 @@ function getDisplayPrefs(req) {
   }
 }
 
+/**
+ * Method to push answers to stack, check and replace duplicate answers.
+ * @param {*} req : request object.
+ * @param {*} qid : question id.
+ * @param {*} questions : questions objects
+ * @returns Promise true if save was successful, false otherwise.
+ */
 function saveAnswer(req, qid, questions) {
-  // return new Promise(function (resolve, reject) {
-  //   try {
-  //     console.log(req.query.length);
-  //     // push answer to res.session.userAnswers
-  //     let answer = {
-  //       username: req.session.username,
-  //       qid: qid - 1,
-  //       question: questions[qid - 2].question,
-  //       answer: req.query.option,
-  //     };
-  //     req.session.userAnswers.push(answer);
-  //     console.log(req.session.userAnswers);
-
-  //     resolve(true);
-  //   } catch (err) {
-  //     logger.errorLog("saveAnswer", err);
-  //     reject(false);
-  //   }
-  // });
+  console.log(req.query.option);
+  console.log(req.session.userAnswers);
+  return new Promise(function (resolve, reject) {
+    try {
+      //check dup entries, splice and replace with new answer
+      for (let item in questions) {
+        if (qid === questions[item.qid]) {
+          questions.splice(item, 1);
+        }
+      }
+      console.log(req.query.length);
+      // push answer to res.session.userAnswers
+      let answer = {
+        username: req.session.username,
+        qid: qid - 1,
+        question: questions[qid - 2].question,
+        answer: req.query.option,
+      };
+      req.session.userAnswers.push(answer);
+      console.log(req.session.userAnswers);
+      resolve(true);
+    } catch (err) {
+      logger.errorLog("saveAnswer", err);
+      reject(false);
+    }
+  });
 }
 
 module.exports = router;
