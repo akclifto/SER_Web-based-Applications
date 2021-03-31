@@ -14,21 +14,25 @@ const logger = require("./log");
  * @param {*} data : data to write to file
  */
 function writeToFile(res, file, data) {
-  try {
-    fs.writeFileSync(
-      paths.FILE_DIR.concat(file),
-      JSON.stringify(data),
-      "UTF8",
-      function (err) {
-        if (err) {
-          let error = logger.setErrorMessage(500, err.message);
-          res.render("error", { error });
+  return new Promise((resolve, reject) => {
+    try {
+      fs.writeFileSync(
+        paths.FILE_DIR.concat(file),
+        JSON.stringify(data),
+        "UTF8",
+        function (err) {
+          if (err) {
+            let error = logger.setErrorMessage(500, err.message);
+            res.render("error", { error });
+          }
         }
-      }
-    );
-  } catch (err) {
-    logger.errorLog("WriteToFile", err);
-  }
+      );
+      resolve(true);
+    } catch (err) {
+      logger.errorLog("WriteToFile", err);
+      reject(false);
+    }
+  });
 }
 
 /**

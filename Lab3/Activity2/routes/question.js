@@ -45,8 +45,23 @@ router.all("/:qid", async (req, res, next) => {
     //if last page, direct to match page
     if (qid > questions.length) {
       //TODO write answers to json file.
-      console.log("questions userAnswers: ", req.session.userAnswers);
-      res.redirect("/match");
+      let flag = await fileService.writeToFile(
+        res,
+        paths.ANSWERS_JSON,
+        req.session.userAnswers
+      );
+      if (flag) {
+        logger.serverLog(
+          `User ${req.session.username}'s answers saved to file`
+        );
+        res.redirect("/match");
+      } else {
+        let error = logger.setErrorMessage(
+          500,
+          `User ${req.session.username}'s answer's could not be saved.`
+        );
+        res.render("error", { error });
+      }
     } else {
       // to use as db object if trying mongodb.
       let answer = "";
@@ -173,6 +188,7 @@ async function saveAnswer(req, qid, questions) {
             answer: req.query.option,
           };
           // push answer to res.session.userAnswers
+          console.log(req.session.userAnswers.length);
           req.session.userAnswers.push(answer);
           // console.log("saved user answers: ", req.session.userAnswers);
           resolve(true);
