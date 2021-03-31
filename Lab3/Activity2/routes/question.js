@@ -31,9 +31,9 @@ router.all("/:qid", async (req, res, next) => {
   let qid = req.params.qid;
   qid = parseInt(qid);
   //check query options for answers
-  if (req.query === undefined) {
-    logger.serverLog(`No query available`);
-  } else {
+  console.log(req.query.option);
+  console.log(req.session.userAnswers);
+  if (req.query.option !== undefined) {
     let flag = await saveAnswer(req, qid, questions);
     if (!flag) {
       logger.errorLog(`Question ${qid}`, "User Answer could not be saved.");
@@ -87,25 +87,25 @@ function getDisplayPrefs(req) {
 }
 
 function saveAnswer(req, qid, questions) {
-  return new Promise(function (resolve, reject) {
-    try {
-      console.log(req.query.length);
-      // push answer to res.session.userAnswers
-      let answer = {
-        username: req.session.username,
-        qid: qid - 1,
-        question: questions[qid - 2].question,
-        answer: req.query.option,
-      };
-      req.session.userAnswers.push(answer);
-      console.log(req.session.userAnswers);
+  // return new Promise(function (resolve, reject) {
+  //   try {
+  //     console.log(req.query.length);
+  //     // push answer to res.session.userAnswers
+  //     let answer = {
+  //       username: req.session.username,
+  //       qid: qid - 1,
+  //       question: questions[qid - 2].question,
+  //       answer: req.query.option,
+  //     };
+  //     req.session.userAnswers.push(answer);
+  //     console.log(req.session.userAnswers);
 
-      resolve(true);
-    } catch (err) {
-      logger.errorLog("saveAnswer", err);
-      reject(false);
-    }
-  });
+  //     resolve(true);
+  //   } catch (err) {
+  //     logger.errorLog("saveAnswer", err);
+  //     reject(false);
+  //   }
+  // });
 }
 
 module.exports = router;
