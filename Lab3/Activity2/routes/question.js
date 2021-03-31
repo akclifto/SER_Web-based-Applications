@@ -50,22 +50,30 @@ router.all("/:qid", async (req, res, next) => {
         allAnswers = [];
       }
       //check dup usernames
-      for (let item in allAnswers) {
+      let count = 0;
+      let dupFlag = false;
+      while (count < allAnswers.length) {
+        console.log(count);
         if (
-          req.session.username.toString() ===
-          allAnswers[item].username.toString()
+          req.session.username.toString().trim() ===
+          allAnswers[count].username.toString().trim()
         ) {
-          logger.serverLog(
-            `User ${res.session.username} already answered match question, replacing answer...`
-          );
-          allAnswers.splice(item, 1);
+          flag = true;
+          allAnswers.splice(count, 1);
         }
+        if (dupFlag) {
+          if (count === 0) {
+            count = 0;
+          } else {
+            count -= 1;
+          }
+        }
+        count += 1;
       }
-      // add userAnswers to allAnswers
       for (let i in req.session.userAnswers) {
         allAnswers.push(req.session.userAnswers[i]);
       }
-      console.log(allAnswers);
+      // console.log(allAnswers);
       let flag = await fileService.writeToFile(
         res,
         paths.ANSWERS_JSON,
