@@ -21,6 +21,8 @@ router.all("/", (req, res, next) => {
  */
 router.all("/:qid", async (req, res, next) => {
   logger.serverLog("Questions page, id: " + req.params.qid);
+  // console.log(req.session.redirect);
+  // setTimedRedirect(req, res);
   // add the username to the session.
   try {
     if (req.session.username === undefined) {
@@ -223,6 +225,20 @@ async function saveAnswer(req, qid, questions) {
       });
     }
   }
+}
+
+function setTimedRedirect(req, res) {
+  const redirectTime = 3000;
+  setTimeout(() => {
+    console.log("time going off.");
+    setRedirect(req, res);
+  }, redirectTime);
+}
+
+function setRedirect(req, res) {
+  req.session.redirect = true;
+  console.log("redirect ", req.session.redirect);
+  res.redirect("/");
 }
 
 module.exports = router;

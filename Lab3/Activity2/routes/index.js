@@ -10,6 +10,7 @@ const fileService = require("../services/fileService");
  */
 router.get("/", (req, res, next) => {
   //create a user answers file.
+  req.session.redirect = true;
   req.session.userAnswers = [];
   const title = "Roommate Finder";
   const subTitle = "Welcome, Get Started Here!";
