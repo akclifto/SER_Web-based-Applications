@@ -41,7 +41,10 @@ router.get("/match", async (req, res, next) => {
   const userAnswers = req.session.userAnswers;
   // console.log(userAnswers);
   try {
-    const allAnswers = await fileService.getAnswers(res);
+    let allAnswers = await fileService.getAnswers(res);
+    if (allAnswers === "empty") {
+      allAnswers = [];
+    }
     let match = await getMatchResults(username, userAnswers, allAnswers);
     console.log("promise matches: ", match);
     let matches = [];
@@ -56,7 +59,7 @@ router.get("/match", async (req, res, next) => {
     }
     let message = "";
     if (matches.length === 0) {
-      message = "You have no matches at this time. :(";
+      message = "You have no matches at this time :(";
     }
     logger.serverLog(`Rendering matches for user: ${username}`);
     let title = "Matches";
@@ -78,11 +81,8 @@ router.get("/match", async (req, res, next) => {
 function getMatchResults(username, userAnswers, allAnswers) {
   return new Promise((resolve, reject) => {
     try {
-      // console.log("user answers: ", userAnswers);
       let matches = {};
-      console.log(allAnswers.length);
       for (let i = 0; i < allAnswers.length; i++) {
-        // console.log("loop answers: ", userAnswers[i]);
         for (let j = 0; j < userAnswers.length; j++) {
           if (
             userAnswers[j].qid === allAnswers[i].qid &&

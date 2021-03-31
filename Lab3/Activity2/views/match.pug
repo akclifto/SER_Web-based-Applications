@@ -4,12 +4,13 @@ block content
     h4 User: #{username}
     h3=title
     p=subTitle
+
+    strong #{message}
     br
-    message
     each item in matches 
         li
             strong User: #{item.username}
             |, Match count: #{item.count}
         br
-
+    br
     a(href="/") Go to Main Page
