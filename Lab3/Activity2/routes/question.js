@@ -21,59 +21,67 @@ router.all("/", (req, res, next) => {
 router.all("/:qid", async (req, res, next) => {
   logger.serverLog("Questions page, id: " + req.params.qid);
   // add the username to the session.
-  if (req.session.username === undefined) {
-    req.session.username = req.body.username;
-  }
-  let questions = await fileService.getQuestions(res);
-  getDisplayPrefs(req);
-  let qid = req.params.qid;
-  qid = parseInt(qid);
-  //check query options for answers
-  if (req.query.option !== undefined) {
-    let flag = await saveAnswer(req, qid, questions);
-    if (!flag) {
-      logger.errorLog(`Question ${qid}`, "User Answer could not be saved.");
+  try {
+    if (req.session.username === undefined) {
+      req.session.username = req.body.username;
     }
-  }
-  let message = "";
-  if (questions === "empty") {
-    message = "No Questions found";
-    questions = { emptyMessage: message };
-  }
+    let questions = await fileService.getQuestions(res);
+    getDisplayPrefs(req);
+    let qid = req.params.qid;
+    qid = parseInt(qid);
+    //check query options for answers
+    if (req.query.option !== undefined) {
+      let flag = await saveAnswer(req, qid, questions);
+      if (!flag) {
+        logger.errorLog(`Question ${qid}`, "User Answer could not be saved.");
+      }
+    }
+    let message = "";
+    if (questions === "empty") {
+      message = "No Questions found";
+      questions = { emptyMessage: message };
+    }
 
-  //if last page, direct to match page
-  if (qid > questions.length) {
-    //TODO write answers to json file.
-    console.log("questions userAnswers: ", req.session.userAnswers);
-    res.redirect("/match");
-  } else {
-    // to use as db object if trying mongodb.
-    let answer = "";
-    console.log("userAnswers: ", req.session.userAnswers);
-    if (qid === 1 && req.session.userAnswer !== undefined) {
-      console.log("in if log qid: ", qid);
-      console.log("in if log: ", req.session.userAnswers[qid - 1].answer);
-      answer = req.session.userAnswers[qid - 1].answer;
+    //if last page, direct to match page
+    if (qid > questions.length) {
+      //TODO write answers to json file.
+      console.log("questions userAnswers: ", req.session.userAnswers);
+      res.redirect("/match");
+    } else {
+      // to use as db object if trying mongodb.
+      let answer = "";
+      console.log("userAnswers length: ", req.session.userAnswers.length);
+      if (req.session.userAnswers.length > 0) {
+        console.log("in if log qid: ", qid);
+        console.log("in if log: ", req.session.userAnswers[qid - 1].answer);
+        answer = req.session.userAnswers[qid - 1].answer;
+      }
+      let render = {
+        title: "Question No.",
+        username: req.session.username,
+        emptyMessage: message,
+        qid: qid,
+        question: questions[qid - 1].question,
+        options: questions[qid - 1].options,
+        prefh: req.session.pref,
+        answer: answer,
+      };
+      // default rendering
+      res.render("question", {
+        title: render.title,
+        emptyMessage: render.emptyMessage,
+        username: render.username,
+        qid: render.qid,
+        question: render.question,
+        options: render.options,
+        prefh: render.prefh,
+        userAnswer: render.answer,
+      });
     }
-    let render = {
-      title: "Question No.",
-      username: req.session.username,
-      qid: qid,
-      question: questions[qid - 1].question,
-      options: questions[qid - 1].options,
-      prefh: req.session.pref,
-      answer: answer,
-    };
-    // default rendering
-    res.render("question", {
-      title: render.title,
-      username: render.username,
-      qid: render.qid,
-      question: render.question,
-      options: render.options,
-      prefh: render.prefh,
-      userAnswer: render.answer,
-    });
+  } catch (err) {
+    logger.errorLog("question/:qid", err);
+    let error = logger.setErrorMessage(500, err);
+    res.render("error", { error });
   }
 });
 
@@ -105,7 +113,9 @@ function checkAnswer(req, qid) {
         //   `qid: ${qid} answer id:${req.session.userAnswers[item].qid}`
         // );
         if (qid === req.session.userAnswers[item].qid) {
-          console.log("There was a match, splicing user answers.");
+          logger.serverLog(
+            `There was previous user answer match, replacing user answer for id: ${qid}`
+          );
           req.session.userAnswers.splice(item, 1);
           resolve(true);
         }
