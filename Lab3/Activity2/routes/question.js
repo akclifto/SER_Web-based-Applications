@@ -33,6 +33,7 @@ router.all("/:qid", async (req, res, next) => {
   //check query options for answers
 
   if (req.query.option !== undefined) {
+    //TODO check next and prev values before saving
     let flag = await saveAnswer(req, qid, questions);
     if (!flag) {
       logger.errorLog(`Question ${qid}`, "User Answer could not be saved.");
@@ -98,8 +99,10 @@ function saveAnswer(req, qid, questions) {
   return new Promise(function (resolve, reject) {
     try {
       //check dup entries, splice and replace with new answer
+      console.log(qid - 1);
       for (let item in questions) {
-        if (qid === questions[item.qid]) {
+        // console.log(questions[item].qid - 1);
+        if (qid - 1 === questions[item].qid - 1) {
           questions.splice(item, 1);
         }
       }
