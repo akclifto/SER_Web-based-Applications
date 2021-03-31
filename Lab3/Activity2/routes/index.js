@@ -4,7 +4,6 @@ const router = express.Router();
 
 const logger = require("../services/log");
 const fileService = require("../services/fileService");
-const { match } = require("assert");
 
 /**
  * GET '/' landing page.
