@@ -58,12 +58,15 @@ router.all("/:qid", async (req, res, next) => {
           req.session.username.toString().trim() ===
           allAnswers[count].username.toString().trim()
         ) {
-          flag = true;
+          dupFlag = true;
           allAnswers.splice(count, 1);
         }
         if (dupFlag) {
+          logger.serverLog(
+            `User ${req.session.username} answer duplicates found. Replacing...`
+          );
           if (count === 0) {
-            count = 0;
+            count = -1;
           } else {
             count -= 1;
           }

@@ -52,7 +52,7 @@ router.get("/match", async (req, res, next) => {
 
 function getMatchResults(answers, username) {
   return new Promise((resolve, reject) => {
-    console.log(answers);
+    // console.log(answers);
     // read in answer file
     // for each
     // check user answers and against all asnwers in file
