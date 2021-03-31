@@ -8,21 +8,21 @@ block content
             p=question
             if prefh == "horizontal"
                 each item in options 
-                    //- add recurring answer
-                        if userAnswer && answer == item
-                        input(type="radio" name=item checked)
-                        | #{item}
-                        else
-                    input(type="radio" name="option" value=item required)
-                    label(for="option") #{item}
+                    //- add revisited user answer
+                    if userAnswer && userAnswer == item
+                        input(type="radio" name="option" value=item checked)
+                        label(for="option") #{item}
+                    else
+                        input(type="radio" name="option" value=item required)
+                        label(for="option") #{item}
             else
                 each item in options 
-                    //- add recurring answer
-                    | user answer : #{userAnswer}
-                    br
-                    | item : #{item}
-                    br
-                    br 
+                    //- add revisited user answer
+                    //- | user answer : #{userAnswer}
+                    //- br
+                    //- | item : #{item}
+                    //- br
+                    //- br 
                     if userAnswer && userAnswer == item
                         input(type="radio" name="option" value=item checked)
                         label(for="option") #{item}
