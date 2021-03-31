@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const paths = require("./constants");
-const logger = require("../services/log");
+const logger = require("./log");
 
 /**
  * File Service to manage reading and writing files.

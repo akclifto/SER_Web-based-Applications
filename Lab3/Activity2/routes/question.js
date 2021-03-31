@@ -31,14 +31,14 @@ router.all("/:qid", async (req, res, next) => {
   let qid = req.params.qid;
   qid = parseInt(qid);
   //check query options for answers
-
+  console.log(req.query);
   if (req.query.option !== undefined) {
-    //TODO check next and prev values before saving
     let flag = await saveAnswer(req, qid, questions);
     if (!flag) {
       logger.errorLog(`Question ${qid}`, "User Answer could not be saved.");
     }
   }
+  //TODO check next and prev values before saving
 
   let message = "";
   if (questions === "empty") {
@@ -86,6 +86,27 @@ function getDisplayPrefs(req) {
   }
 }
 
+function checkAnswer(req, qid) {
+  return new Promise(function (resolve, reject) {
+    try {
+      for (let item in req.session.userAnswers) {
+        console.log(
+          `qid: ${qid} answer id:${req.session.userAnswers[item].qid}`
+        );
+        if (qid === req.session.userAnswers[item].qid) {
+          console.log("there was a match");
+          req.session.userAnswers.splice(item, 1);
+          resolve(true);
+        }
+      }
+      resolve(true);
+    } catch (err) {
+      logger.errorLog("saveAnswer", err);
+      reject(false);
+    }
+  });
+}
+
 /**
  * Method to push answers to stack, check and replace duplicate answers.
  * @param {*} req : request object.
@@ -93,35 +114,54 @@ function getDisplayPrefs(req) {
  * @param {*} questions : questions objects
  * @returns Promise true if save was successful, false otherwise.
  */
-function saveAnswer(req, qid, questions) {
-  console.log(req.query.option);
+async function saveAnswer(req, qid, questions) {
+  // console.log(req.query);
   console.log(req.session.userAnswers);
-  return new Promise(function (resolve, reject) {
-    try {
-      //check dup entries, splice and replace with new answer
-      console.log(qid - 1);
-      for (let item in questions) {
-        // console.log(questions[item].qid - 1);
-        if (qid - 1 === questions[item].qid - 1) {
-          questions.splice(item, 1);
+  //check prev query
+  if (req.query.prev !== undefined) {
+    console.log(req.query);
+    let flag = await checkAnswer(req, qid);
+    if (flag) {
+      return new Promise(function (resolve, reject) {
+        try {
+          let answer = {
+            username: req.session.username,
+            qid: qid,
+            question: questions[qid - 1].question,
+            answer: req.query.option,
+          };
+          // push answer to res.session.userAnswers
+          req.session.userAnswers.push(answer);
+          console.log(req.session.userAnswers);
+          resolve(true);
+        } catch (err) {
+          logger.errorLog("saveAnswer", err);
+          reject(false);
         }
-      }
-      console.log(req.query.length);
-      // push answer to res.session.userAnswers
-      let answer = {
-        username: req.session.username,
-        qid: qid - 1,
-        question: questions[qid - 2].question,
-        answer: req.query.option,
-      };
-      req.session.userAnswers.push(answer);
-      console.log(req.session.userAnswers);
-      resolve(true);
-    } catch (err) {
-      logger.errorLog("saveAnswer", err);
-      reject(false);
+      });
     }
-  });
+  } else {
+    let flag = await checkAnswer(req, qid - 1);
+    if (flag) {
+      return new Promise(function (resolve, reject) {
+        try {
+          let answer = {
+            username: req.session.username,
+            qid: qid - 1,
+            question: questions[qid - 2].question,
+            answer: req.query.option,
+          };
+          // push answer to res.session.userAnswers
+          req.session.userAnswers.push(answer);
+          console.log(req.session.userAnswers);
+          resolve(true);
+        } catch (err) {
+          logger.errorLog("saveAnswer", err);
+          reject(false);
+        }
+      });
+    }
+  }
 }
 
 module.exports = router;
