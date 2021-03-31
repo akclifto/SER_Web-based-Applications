@@ -38,7 +38,7 @@ function writeToFile(res, file, data) {
 /**
  * Method to get questions. Reads question file from resource folder.
  * @param {*} res : server response
- * @returns parsed json questions.
+ * @returns parsed json questions in Promise, rejects otherwise.
  */
 function getQuestions(res) {
   return new Promise(function (resolve, reject) {
@@ -70,6 +70,11 @@ function getQuestions(res) {
   });
 }
 
+/**
+ * Method to get Answer from file. Reads file from resource folder.
+ * @param {*} res : server response
+ * @returns parsed json answers in Promise, rejects otherwise.
+ */
 function getAnswers(res) {
   return new Promise(function (resolve, reject) {
     try {

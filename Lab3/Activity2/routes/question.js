@@ -52,26 +52,19 @@ router.all("/:qid", async (req, res, next) => {
       //check dup usernames
       let count = 0;
       let dupFlag = false;
-      while (count < allAnswers.length) {
-        console.log(count);
-        if (
-          req.session.username.toString().trim() ===
-          allAnswers[count].username.toString().trim()
-        ) {
-          dupFlag = true;
-          allAnswers.splice(count, 1);
-        }
-        if (dupFlag) {
+      for (let i = 0; i < allAnswers.length; i++) {
+        console.log(allAnswers[i].username);
+        if (req.session.username === allAnswers[i].username) {
           logger.serverLog(
             `User ${req.session.username} answer duplicates found. Replacing...`
           );
-          if (count === 0) {
-            count = -1;
-          } else {
-            count -= 1;
-          }
+          dupFlag = true;
+          allAnswers.splice(i, 1);
         }
-        count += 1;
+        if (dupFlag) {
+          i -= 1;
+          dupFlag = false;
+        }
       }
       for (let i in req.session.userAnswers) {
         allAnswers.push(req.session.userAnswers[i]);
@@ -221,7 +214,7 @@ async function saveAnswer(req, qid, questions) {
             answer: req.query.option,
           };
           // push answer to res.session.userAnswers
-          console.log(req.session.userAnswers.length);
+          // console.log(req.session.userAnswers.length);
           req.session.userAnswers.push(answer);
           // console.log("saved user answers: ", req.session.userAnswers);
           resolve(true);

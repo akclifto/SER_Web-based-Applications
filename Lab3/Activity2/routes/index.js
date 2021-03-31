@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 
 const logger = require("../services/log");
+const fileService = require("../services/fileService");
+const { match } = require("assert");
 
 /**
  * GET '/' landing page.
@@ -38,7 +40,8 @@ router.get("/match", async (req, res, next) => {
   const username = req.session.username;
   const userAnswers = req.session.userAnswers;
   try {
-    let matches = await getMatchResults(userAnswers, username);
+    const allAnswers = await fileService.getAnswers(res);
+    let matches = await getMatchResults(username, userAnswers, allAnswers);
     console.log(matches);
     logger.serverLog(`Rendering matches for user: ${username}`);
     let title = "Matches";
@@ -50,8 +53,26 @@ router.get("/match", async (req, res, next) => {
   }
 });
 
-function getMatchResults(answers, username) {
+function getMatchResults(username, userAnswers, allAnswers) {
   return new Promise((resolve, reject) => {
+    console.log("user answers: ", userAnswers);
+    let matches = {};
+    for (let i = 0; i < allAnswers.length; i += 1) {
+      if (
+        userAnswers[i].qid === allAnswers[i].qid &&
+        userAnswers[i].answer === allAnswers[i].answer &&
+        // eslint-disable-next-line prettier/prettier
+        username.toString().trim() !== allAnswers[i].username.toString().trim()
+      ) {
+        if (matches[allAnswers[i].username]) {
+          matches[allAnswers[i].username]++;
+        } else {
+          matches[allAnswers[i].username] = 1;
+        }
+      }
+    }
+    console.log(matches);
+
     // console.log(answers);
     // read in answer file
     // for each

@@ -1,86 +1,74 @@
 [
     {
-        "username": "adad",
+        "username": "akclifto",
         "qid": 1,
         "question": "Do you smoke?",
-        "answer": "No"
-    },
-    {
-        "username": "adad",
-        "qid": 2,
-        "question": "Do you drink more than three times a week?",
         "answer": "Yes"
     },
     {
-        "username": "adad",
+        "username": "akclifto",
+        "qid": 2,
+        "question": "Do you drink more than three times a week?",
+        "answer": "No"
+    },
+    {
+        "username": "akclifto",
         "qid": 3,
         "question": "How many roommates do you prefer",
-        "answer": "2"
+        "answer": "1"
     },
     {
         "username": "adad",
-        "qid": 4,
-        "question": "Which do you do more?",
-        "answer": "Eat out"
-    },
-    {
-        "username": "adad",
-        "qid": 5,
-        "question": "Will you share household supplies (toiletries, cleaning supplies, etc.)",
-        "answer": "Yes"
-    },
-    {
-        "username": "adad",
-        "qid": 6,
-        "question": "Are you a part or full-time student?",
-        "answer": "No"
-    },
-    {
-        "username": "adad",
-        "qid": 7,
-        "question": "Do you own a car?",
-        "answer": "Yes"
-    },
-    {
-        "username": "stu",
         "qid": 1,
         "question": "Do you smoke?",
-        "answer": "No"
-    },
-    {
-        "username": "stu",
-        "qid": 2,
-        "question": "Do you drink more than three times a week?",
         "answer": "Yes"
     },
     {
-        "username": "stu",
+        "username": "adad",
+        "qid": 2,
+        "question": "Do you drink more than three times a week?",
+        "answer": "No"
+    },
+    {
+        "username": "adad",
         "qid": 3,
         "question": "How many roommates do you prefer",
         "answer": "1"
     },
     {
         "username": "stu",
-        "qid": 4,
-        "question": "Which do you do more?",
-        "answer": "Eat out"
-    },
-    {
-        "username": "stu",
-        "qid": 5,
-        "question": "Will you share household supplies (toiletries, cleaning supplies, etc.)",
-        "answer": "Yes"
-    },
-    {
-        "username": "stu",
-        "qid": 6,
-        "question": "Are you a part or full-time student?",
+        "qid": 1,
+        "question": "Do you smoke?",
         "answer": "No"
     },
     {
         "username": "stu",
-        "qid": 7,
-        "question": "Do you own a car?",
+        "qid": 2,
+        "question": "Do you drink more than three times a week?",
         "answer": "Yes"
+    },
+    {
+        "username": "stu",
+        "qid": 3,
+        "question": "How many roommates do you prefer",
+        "answer": "2"
+    },
+    {
+        "username": "admim",
+        "qid": 1,
+        "question": "Do you smoke?",
+        "answer": "Yes"
+    },
+    {
+        "username": "admim",
+        "qid": 2,
+        "question": "Do you drink more than three times a week?",
+        "answer": "No"
+    },
+    {
+        "username": "admim",
+        "qid": 3,
+        "question": "How many roommates do you prefer",
+        "answer": "1"
     }
 ]
