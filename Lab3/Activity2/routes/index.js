@@ -39,10 +39,12 @@ router.get("/preferences/:qid", (req, res, next) => {
 router.get("/match", async (req, res, next) => {
   const username = req.session.username;
   const userAnswers = req.session.userAnswers;
+  // console.log(userAnswers);
   try {
     const allAnswers = await fileService.getAnswers(res);
     let matches = await getMatchResults(username, userAnswers, allAnswers);
-    console.log(matches);
+    console.log("promise matches: ", matches);
+
     logger.serverLog(`Rendering matches for user: ${username}`);
     let title = "Matches";
     let subTitle = "Here is a list of your potential roommate matches: ";
@@ -55,23 +57,32 @@ router.get("/match", async (req, res, next) => {
 
 function getMatchResults(username, userAnswers, allAnswers) {
   return new Promise((resolve, reject) => {
-    console.log("user answers: ", userAnswers);
-    let matches = {};
-    for (let i = 0; i < allAnswers.length; i += 1) {
-      if (
-        userAnswers[i].qid === allAnswers[i].qid &&
-        userAnswers[i].answer === allAnswers[i].answer &&
-        // eslint-disable-next-line prettier/prettier
-        username.toString().trim() !== allAnswers[i].username.toString().trim()
-      ) {
-        if (matches[allAnswers[i].username]) {
-          matches[allAnswers[i].username]++;
-        } else {
-          matches[allAnswers[i].username] = 1;
+    try {
+      // console.log("user answers: ", userAnswers);
+      let matches = {};
+      console.log(allAnswers.length);
+      for (let i = 0; i < allAnswers.length; i++) {
+        // console.log("loop answers: ", userAnswers[i]);
+        for (let j = 0; j < userAnswers.length; j++) {
+          if (
+            userAnswers[j].qid === allAnswers[i].qid &&
+            userAnswers[j].answer === allAnswers[i].answer &&
+            username !== allAnswers[i].username
+          ) {
+            if (matches[allAnswers[i].username]) {
+              matches[allAnswers[i].username]++;
+            } else {
+              matches[allAnswers[i].username] = 1;
+            }
+          }
         }
       }
+      // console.log("tallyMatch func: ", matches);
+      resolve(matches);
+    } catch (err) {
+      logger.errorLog("getMatchResults", err);
+      reject(false);
     }
-    console.log(matches);
 
     // console.log(answers);
     // read in answer file

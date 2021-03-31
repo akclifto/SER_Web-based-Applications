@@ -53,7 +53,6 @@ router.all("/:qid", async (req, res, next) => {
       let count = 0;
       let dupFlag = false;
       for (let i = 0; i < allAnswers.length; i++) {
-        console.log(allAnswers[i].username);
         if (req.session.username === allAnswers[i].username) {
           logger.serverLog(
             `User ${req.session.username} answer duplicates found. Replacing...`
@@ -69,7 +68,6 @@ router.all("/:qid", async (req, res, next) => {
       for (let i in req.session.userAnswers) {
         allAnswers.push(req.session.userAnswers[i]);
       }
-      // console.log(allAnswers);
       let flag = await fileService.writeToFile(
         res,
         paths.ANSWERS_JSON,
