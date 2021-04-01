@@ -1,0 +1,18 @@
+extends layout 
+
+block content
+    title 
+    h2=subTitle
+    p=startMessage
+    br
+    form()
+        input(required type="text" name="userLogin" placeholder="Username")
+        |  Username
+        br
+        input(required type="password" name="userPassword" placeholder="Password") 
+        |  Password
+        br
+        br
+        input(type="submit" formaction="/admin" formmethod="POST" name="login" value="Login")
+    br
+    a(href="/") Go to Main Page
