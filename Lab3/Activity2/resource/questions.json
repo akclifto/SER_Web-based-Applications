@@ -64,5 +64,13 @@
             "Cats",
             "Neither"
         ]
+    },
+    {
+        "qid": 9,
+        "question": "Do you like coding?",
+        "options": [
+            "Yes",
+            "No"
+        ]
     }
 ]

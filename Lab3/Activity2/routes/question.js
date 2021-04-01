@@ -7,7 +7,7 @@ const paths = require("../services/constants");
 const logger = require("../services/log");
 
 /**
- * GET '/' redirect to first question page
+ * ALL '/' redirect to first question page
  */
 router.all("/", (req, res, next) => {
   logger.serverLog('redirect "/question" page to "question/1"');
@@ -15,7 +15,7 @@ router.all("/", (req, res, next) => {
 });
 
 /**
- * GET '/:qid' by question id
+ * ALL '/:qid' by question id
  */
 router.all("/:qid", async (req, res, next) => {
   logger.serverLog("Questions page, id: " + req.params.qid);
@@ -225,14 +225,24 @@ async function saveAnswer(req, qid, questions) {
   }
 }
 
+/**
+ * Method to set redirect timer
+ * @param {*} req : request object
+ * @param {*} res : server response
+ */
 function setTimedRedirect(req, res) {
-  const redirectTime = 3000;
+  const redirectTime = 30000;
   setTimeout(() => {
     console.log("time going off.");
     setRedirect(req, res);
   }, redirectTime);
 }
 
+/**
+ * Method to redirect page after timer expires.
+ * @param {*} req : request object
+ * @param {*} res : server response
+ */
 function setRedirect(req, res) {
   req.session.redirect = true;
   console.log("redirect ", req.session.redirect);

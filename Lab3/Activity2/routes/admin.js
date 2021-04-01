@@ -7,6 +7,9 @@ const logger = require("../services/log");
 const paths = require("../services/constants");
 const fileService = require("../services/fileService");
 
+/**
+ * ALL '/admin' to handle admin login
+ */
 router.all("/", function (req, res, next) {
   let title = "Admin Login";
   let subTitle = "Login Page";
@@ -14,6 +17,9 @@ router.all("/", function (req, res, next) {
   res.render("admin", { title, subTitle, startMessage });
 });
 
+/**
+ * POST '/manage' to handle landing page for admin.
+ */
 router.post("/manage", async (req, res, next) => {
   // console.log(req.body);
   try {
@@ -40,15 +46,18 @@ router.post("/manage", async (req, res, next) => {
   }
 });
 
+/**
+ * POST '/manage/q pages to handle adding a question to the match survey.
+ */
 router.post("/manage/q", async (req, res, next) => {
   // add a question using the text inputs
-  console.log(req.body);
+  // console.log(req.body);
   let options;
   let questions = await fileService.getQuestions(res);
   try {
     let question = req.body.questionText;
     let options = await getQuestionOptions(req.body.optionText);
-    console.log(options);
+    // console.log(options);
     let qid = 0;
     questions.forEach((q) => {
       if (q.qid > qid) {
@@ -56,7 +65,7 @@ router.post("/manage/q", async (req, res, next) => {
       }
     });
     qid = parseInt(qid) + 1;
-    console.log(qid);
+    // console.log(qid);
     const newQuestion = {
       qid: qid,
       question: question,
@@ -101,6 +110,11 @@ router.post("/manage/q", async (req, res, next) => {
   }
 });
 
+/**
+ * Method to parse answer options from addQuestion form.
+ * @param {*} options : options to parse
+ * @returns : Promise of parsed options, reject false otherwise.
+ */
 function getQuestionOptions(options) {
   return new Promise((resolve, reject) => {
     let opts = options.split(",");

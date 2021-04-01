@@ -4,12 +4,12 @@ block content
   title 
   h3=subTitle
   h4=questionTitle
+  //- questions list and answer options
   each item in questions
-    li=item.question
-      p Answer Options: [  
-        each opt in item.options
-          |  #{opt}, 
-        | ]
+    li #{item.question}  [  
+      each opt in item.options
+        |  #{opt}, 
+      | ]
   br
   h4 Add a new question:
   form()

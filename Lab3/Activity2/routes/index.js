@@ -6,7 +6,7 @@ const logger = require("../services/log");
 const fileService = require("../services/fileService");
 
 /**
- * ALL '/' landing page.
+ * ALL '/' The landing page.
  */
 router.all("/", (req, res, next) => {
   //create a user answers file.

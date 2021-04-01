@@ -3,6 +3,9 @@ let session = require("express-session");
 // const paths = require("../services/constants");
 // https://meghagarwal.medium.com/storing-sessions-with-connect-mongo-in-mongodb-64d74e3bbd9c
 
+/**
+ * Export session information using express-session
+ */
 module.exports = session({
   secret: "admin secret",
   resave: false,
