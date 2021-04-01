@@ -299,6 +299,13 @@ async function saveAnswer(req, qid, questions) {
   }
 }
 
+/**
+ * Async method to check for returning user, to fulfill activity 2, C5 constraint.
+ * @param {*} req : request object
+ * @param {*} res : server response
+ * @param {*} qid : question id
+ * @returns promise of prepopulated answer for user if found, false otherwise.
+ */
 async function checkReturningUser(req, res, qid) {
   try {
     let answers = await fileService.getAnswers(res);
