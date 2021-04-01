@@ -1,1 +1,68 @@
-[{"qid":1,"question":"Do you smoke?","options":["Yes","No"]},{"qid":2,"question":"Do you drink more than three times a week?","options":["Yes","No"]},{"qid":3,"question":"How many roommates do you prefer","options":["1","2","3 or more"]},{"qid":4,"question":"Which do you do more?","options":["Cook","Eat out"]},{"qid":5,"question":"Will you share household supplies (toiletries, cleaning supplies, etc.)","options":["Yes","No"]},{"qid":6,"question":"Are you a part or full-time student?","options":["Yes","No"]},{"qid":7,"question":"Do you own a car?","options":["Yes","No"]},{"qid":8,"question":"Which pet do you prefer?","options":["Dogs","Cats","Neither"]}]
+[
+    {
+        "qid": 1,
+        "question": "Do you smoke?",
+        "options": [
+            "Yes",
+            "No"
+        ]
+    },
+    {
+        "qid": 2,
+        "question": "Do you drink more than three times a week?",
+        "options": [
+            "Yes",
+            "No"
+        ]
+    },
+    {
+        "qid": 3,
+        "question": "How many roommates do you prefer",
+        "options": [
+            "1",
+            "2",
+            "3 or more"
+        ]
+    },
+    {
+        "qid": 4,
+        "question": "Which do you do more?",
+        "options": [
+            "Cook",
+            "Eat out"
+        ]
+    },
+    {
+        "qid": 5,
+        "question": "Will you share household supplies (toiletries, cleaning supplies, etc.)",
+        "options": [
+            "Yes",
+            "No"
+        ]
+    },
+    {
+        "qid": 6,
+        "question": "Are you a part or full-time student?",
+        "options": [
+            "Yes",
+            "No"
+        ]
+    },
+    {
+        "qid": 7,
+        "question": "Do you own a car?",
+        "options": [
+            "Yes",
+            "No"
+        ]
+    },
+    {
+        "qid": 8,
+        "question": "Which pet do you prefer?",
+        "options": [
+            "Dogs",
+            "Cats",
+            "Neither"
+        ]
+    }
+]

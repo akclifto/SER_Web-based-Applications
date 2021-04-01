@@ -6,6 +6,10 @@ block content
   h4=questionTitle
   each item in questions
     li=item.question
+      p Answer Options: [  
+        each opt in item.options
+          |  #{opt}, 
+        | ]
   br
   h4 Add a new question:
   form()
