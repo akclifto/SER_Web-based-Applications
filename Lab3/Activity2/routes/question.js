@@ -85,6 +85,7 @@ router.all("/:qid", async (req, res, next) => {
         message = "No Questions found";
         questions = { emptyMessage: message };
       }
+      /* SAVE ANSWER */
       //if last page, direct to match page
       if (qid > questions.length) {
         let allAnswers = await fileService.getAnswers(res);
@@ -92,7 +93,6 @@ router.all("/:qid", async (req, res, next) => {
           allAnswers = [];
         }
         //check dup usernames
-        let count = 0;
         let dupFlag = false;
         for (let i = 0; i < allAnswers.length; i++) {
           if (req.session.username === allAnswers[i].username) {
@@ -129,7 +129,14 @@ router.all("/:qid", async (req, res, next) => {
           res.render("error", { error });
         }
       } else {
-        // to use as db object if trying mongodb.
+        // check returning user and pre-populatea answers
+        let prepop = await checkReturningUser(req, res, qid);
+        if (prepop !== false) {
+          console.log(prepop);
+        } else {
+          console.log("no prepop");
+        }
+
         let answer = "";
         if (req.session.userAnswers.length > 0) {
           if (qid === 1 || req.query.prev !== undefined) {
@@ -142,6 +149,7 @@ router.all("/:qid", async (req, res, next) => {
             }
           }
         }
+        // to use as db object if trying mongodb.
         let render = {
           title: "Question No.",
           username: req.session.username,
@@ -265,6 +273,26 @@ async function saveAnswer(req, qid, questions) {
         }
       });
     }
+  }
+}
+
+async function checkReturningUser(req, res, qid) {
+  try {
+    let answers = await fileService.getAnswers(res);
+    let username = req.session.username;
+    let prepop = [];
+    return new Promise((resolve, reject) => {
+      answers.forEach((ans) => {
+        if (username === ans.username && qid === ans.qid) {
+          prepop.push(ans);
+          console.log(prepop);
+          resolve(prepop);
+        }
+      });
+      reject(false);
+    });
+  } catch (err) {
+    logger.errorLog("checkReturningUser", err);
   }
 }
 
