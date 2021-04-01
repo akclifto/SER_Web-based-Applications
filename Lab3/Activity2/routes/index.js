@@ -6,9 +6,9 @@ const logger = require("../services/log");
 const fileService = require("../services/fileService");
 
 /**
- * GET '/' landing page.
+ * ALL '/' landing page.
  */
-router.get("/", (req, res, next) => {
+router.all("/", (req, res, next) => {
   //create a user answers file.
   // req.session.redirect = false;
   req.session.userAnswers = [];

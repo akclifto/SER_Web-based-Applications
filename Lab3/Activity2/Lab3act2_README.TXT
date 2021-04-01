@@ -12,6 +12,10 @@ To start lab, navigate to the "Activity2" folder, then run in CLI:
 
 `npm run start` or `npm run dev`
 
+To login to the admin page, credentials:
+    username : admin
+    password : admin
+    
 The lab runs on port 8088 per submission instructions 4.  See package.json for configuration.
 
 Notes:

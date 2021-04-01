@@ -20,3 +20,7 @@ a {
   color:darkred;
   font-weight: bold;
 }
+
+.q-form {
+  width: 300px;
+}
