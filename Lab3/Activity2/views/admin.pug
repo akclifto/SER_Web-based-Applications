@@ -12,7 +12,9 @@ block content
         input(required type="password" name="userPassword" placeholder="Password") 
         |  Password
         br
+        div(class="login-error")
+            errorMessage
         br
-        input(type="submit" formaction="/admin" formmethod="POST" name="login" value="Login")
+        input(type="submit" formaction="/admin/manage" formmethod="POST" name="login" value="Login")
     br
     a(href="/") Go to Main Page

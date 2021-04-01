@@ -15,3 +15,8 @@ a {
 .article-body {
   text-align: justify;
 }
+
+.login-error {
+  color:darkred;
+  font-weight: bold;
+}
