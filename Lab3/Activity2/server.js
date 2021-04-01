@@ -8,6 +8,7 @@ let logger = require("morgan");
 let session = require("./middleware/session");
 let indexRouter = require("./routes/index");
 let questionRouter = require("./routes/question");
+let adminRouter = require("./routes/admin");
 
 let app = express();
 
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // add previous route-handling code
 app.use("/", indexRouter);
 app.use("/question", questionRouter);
+app.use("/admin", adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

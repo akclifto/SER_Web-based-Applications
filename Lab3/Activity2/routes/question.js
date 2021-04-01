@@ -1,12 +1,10 @@
 /* eslint-disable no-unused-vars */
 const express = require("express");
 const router = express.Router();
-const fs = require("fs");
 // const mongo = require("../db/mongo");
 const fileService = require("../services/fileService");
 const paths = require("../services/constants");
 const logger = require("../services/log");
-const { all } = require(".");
 
 /**
  * GET '/' redirect to first question page
