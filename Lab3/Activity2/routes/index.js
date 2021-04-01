@@ -46,7 +46,7 @@ router.get("/match", async (req, res, next) => {
       allAnswers = [];
     }
     let match = await getMatchResults(username, userAnswers, allAnswers);
-    console.log("promise matches: ", match);
+    // console.log("promise matches: ", match);
     let matches = [];
     let user = 0;
     for (let i in match) {

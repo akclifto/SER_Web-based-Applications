@@ -8,12 +8,16 @@ block content
     li=item.question
   br
   h4 Add a new question:
-  form(class="q-form")
-    input(required type="textarea" placeholder="Add a new question" name="questionText" rows=10 cols=35)
+  form()
+    input(required type="textarea" placeholder="Add a new question" name="questionText" rows=10 cols=35 id="q-form")
     br
-    input(required type="text" placeholder="Question choices (separate choice with commas)" name="optionText")
+    input(required type="text" placeholder="Question choices (separate choice with commas)" name="optionText" id="q-form")
     br
-    input(type="submit" formaction="/manage" formmethod="POST" name="addQuestion" value="Add Question")
+    br
+    input(type="submit" formaction="/admin/manage/q" formmethod="POST" name="addQuestion" value="Add Question")
+    br
+    p(class="error-text") #{errorMessage}
+      
   br
 
   form()

@@ -8,8 +8,8 @@ function authenticate(username, password) {
   return new Promise(function (resolve, reject) {
     try {
       fakeDB.db.forEach(function (item) {
-        console.log(username + " " + password);
-        console.log(item.username + " " + item.password);
+        // console.log(username + " " + password);
+        // console.log(item.username + " " + item.password);
         if (username === item.username && password === item.password) {
           logger.serverLog(`User/password match found for ${username}`);
           resolve(true);
