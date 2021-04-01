@@ -13,7 +13,7 @@ const fileService = require("../services/fileService");
 router.all("/", function (req, res, next) {
   let title = "Admin Login";
   let subTitle = "Login Page";
-  let startMessage = "Please login for to manage site:";
+  let startMessage = "Please login to manage site:";
   res.render("admin", { title, subTitle, startMessage });
 });
 
@@ -39,7 +39,7 @@ router.post("/manage", async (req, res, next) => {
     );
     const title = "Admin Login";
     const subTitle = "Login Page";
-    const startMessage = "Please login for to manage site:";
+    const startMessage = "Please login to manage site:";
     const errorMessage =
       "Invalid username/password combination, please try again.";
     res.render("admin", { title, subTitle, startMessage, errorMessage });

@@ -6,12 +6,15 @@ const fileService = require("../services/fileService");
 const paths = require("../services/constants");
 const logger = require("../services/log");
 
+let redirect = false;
+let redirectStart = false;
+
 /**
  * ALL '/' redirect to first question page
  */
 router.all("/", (req, res, next) => {
   logger.serverLog('redirect "/question" page to "question/1"');
-  res.redirect("/question/1");
+  res.redirect(308, "/question/1");
 });
 
 /**
@@ -19,113 +22,125 @@ router.all("/", (req, res, next) => {
  */
 router.all("/:qid", async (req, res, next) => {
   logger.serverLog("Questions page, id: " + req.params.qid);
-  // console.log(req.session.redirect);
-  // setTimedRedirect(req, res);
-  // add the username to the session.
-  try {
-    if (req.session.username === undefined) {
-      req.session.username = req.body.username;
-    }
-    let questions = await fileService.getQuestions(res);
-    getDisplayPrefs(req);
-    let qid = req.params.qid;
-    qid = parseInt(qid);
-    //check query options for answers
-    if (req.query.option !== undefined) {
-      let flag = await saveAnswer(req, qid, questions);
-      if (!flag) {
-        logger.errorLog(`Question ${qid}`, "User Answer could not be saved.");
+  if (redirect) {
+    logger.serverLog(
+      `Session timed out, ending session for user: ${req.session.username}`
+    );
+    redirect = false;
+    redirectStart = false;
+    logger.serverLog(
+      `Resetting redirects, redirect starter status: ${redirectStart}, redirect active status: ${redirect}`
+    );
+    req.session.destroy();
+    res.redirect(307, "/");
+  } else {
+    //set redirect timeout
+    setTimedRedirect();
+    // add the username to the session.
+    try {
+      if (req.session.username === undefined) {
+        req.session.username = req.body.username;
       }
-    }
-    let message = "";
-    if (questions === "empty") {
-      message = "No Questions found";
-      questions = { emptyMessage: message };
-    }
-
-    //if last page, direct to match page
-    if (qid > questions.length) {
-      let allAnswers = await fileService.getAnswers(res);
-      if (allAnswers === "empty") {
-        allAnswers = [];
+      let questions = await fileService.getQuestions(res);
+      getDisplayPrefs(req);
+      let qid = req.params.qid;
+      qid = parseInt(qid);
+      //check query options for answers
+      if (req.query.option !== undefined) {
+        let flag = await saveAnswer(req, qid, questions);
+        if (!flag) {
+          logger.errorLog(`Question ${qid}`, "User Answer could not be saved.");
+        }
       }
-      //check dup usernames
-      let count = 0;
-      let dupFlag = false;
-      for (let i = 0; i < allAnswers.length; i++) {
-        if (req.session.username === allAnswers[i].username) {
+      let message = "";
+      if (questions === "empty") {
+        message = "No Questions found";
+        questions = { emptyMessage: message };
+      }
+      //if last page, direct to match page
+      if (qid > questions.length) {
+        let allAnswers = await fileService.getAnswers(res);
+        if (allAnswers === "empty") {
+          allAnswers = [];
+        }
+        //check dup usernames
+        let count = 0;
+        let dupFlag = false;
+        for (let i = 0; i < allAnswers.length; i++) {
+          if (req.session.username === allAnswers[i].username) {
+            logger.serverLog(
+              `User ${req.session.username} answer duplicates found. Replacing...`
+            );
+            dupFlag = true;
+            allAnswers.splice(i, 1);
+          }
+          if (dupFlag) {
+            i -= 1;
+            dupFlag = false;
+          }
+        }
+        for (let i in req.session.userAnswers) {
+          allAnswers.push(req.session.userAnswers[i]);
+        }
+        let flag = await fileService.writeToFile(
+          res,
+          paths.ANSWERS_JSON,
+          allAnswers
+        );
+        if (flag) {
           logger.serverLog(
-            `User ${req.session.username} answer duplicates found. Replacing...`
+            `User ${req.session.username}'s answers saved to file`
           );
-          dupFlag = true;
-          allAnswers.splice(i, 1);
-        }
-        if (dupFlag) {
-          i -= 1;
-          dupFlag = false;
-        }
-      }
-      for (let i in req.session.userAnswers) {
-        allAnswers.push(req.session.userAnswers[i]);
-      }
-      let flag = await fileService.writeToFile(
-        res,
-        paths.ANSWERS_JSON,
-        allAnswers
-      );
-      if (flag) {
-        logger.serverLog(
-          `User ${req.session.username}'s answers saved to file`
-        );
-        // go to match page
-        res.redirect("/match");
-      } else {
-        let error = logger.setErrorMessage(
-          500,
-          `User ${req.session.username}'s answer's could not be saved.`
-        );
-        res.render("error", { error });
-      }
-    } else {
-      // to use as db object if trying mongodb.
-      let answer = "";
-      if (req.session.userAnswers.length > 0) {
-        if (qid === 1 || req.query.prev !== undefined) {
-          answer = req.session.userAnswers[qid - 1].answer;
+          // go to match page
+          res.redirect("/match");
         } else {
-          for (let item in req.session.userAnswers) {
-            if (qid === req.session.userAnswers[item].qid) {
-              answer = req.session.userAnswers[item].answer;
+          let error = logger.setErrorMessage(
+            500,
+            `User ${req.session.username}'s answer's could not be saved.`
+          );
+          res.render("error", { error });
+        }
+      } else {
+        // to use as db object if trying mongodb.
+        let answer = "";
+        if (req.session.userAnswers.length > 0) {
+          if (qid === 1 || req.query.prev !== undefined) {
+            answer = req.session.userAnswers[qid - 1].answer;
+          } else {
+            for (let item in req.session.userAnswers) {
+              if (qid === req.session.userAnswers[item].qid) {
+                answer = req.session.userAnswers[item].answer;
+              }
             }
           }
         }
+        let render = {
+          title: "Question No.",
+          username: req.session.username,
+          emptyMessage: message,
+          qid: qid,
+          question: questions[qid - 1].question,
+          options: questions[qid - 1].options,
+          prefh: req.session.pref,
+          answer: answer,
+        };
+        // default rendering
+        res.render("question", {
+          title: render.title,
+          emptyMessage: render.emptyMessage,
+          username: render.username,
+          qid: render.qid,
+          question: render.question,
+          options: render.options,
+          prefh: render.prefh,
+          userAnswer: render.answer,
+        });
       }
-      let render = {
-        title: "Question No.",
-        username: req.session.username,
-        emptyMessage: message,
-        qid: qid,
-        question: questions[qid - 1].question,
-        options: questions[qid - 1].options,
-        prefh: req.session.pref,
-        answer: answer,
-      };
-      // default rendering
-      res.render("question", {
-        title: render.title,
-        emptyMessage: render.emptyMessage,
-        username: render.username,
-        qid: render.qid,
-        question: render.question,
-        options: render.options,
-        prefh: render.prefh,
-        userAnswer: render.answer,
-      });
+    } catch (err) {
+      logger.errorLog("question/:qid", err);
+      let error = logger.setErrorMessage(500, err);
+      res.render("error", { error });
     }
-  } catch (err) {
-    logger.errorLog("question/:qid", err);
-    let error = logger.setErrorMessage(500, err);
-    res.render("error", { error });
   }
 });
 
@@ -230,23 +245,27 @@ async function saveAnswer(req, qid, questions) {
  * @param {*} req : request object
  * @param {*} res : server response
  */
-function setTimedRedirect(req, res) {
+function setTimedRedirect() {
   const redirectTime = 30000;
-  setTimeout(() => {
-    console.log("time going off.");
-    setRedirect(req, res);
-  }, redirectTime);
+  if (redirectStart) {
+    // do nothing
+    logger.serverLog(`Redirect timeout is active, status: ${redirectStart}`);
+  } else {
+    redirectStart = true;
+    logger.serverLog(`Redirect timeout set, status: ${redirectStart}`);
+    setTimeout(() => {
+      // console.log("time going off.");
+      setRedirect();
+    }, redirectTime);
+  }
 }
 
 /**
  * Method to redirect page after timer expires.
  * @param {*} req : request object
- * @param {*} res : server response
  */
-function setRedirect(req, res) {
-  req.session.redirect = true;
-  console.log("redirect ", req.session.redirect);
-  res.redirect("/");
+function setRedirect() {
+  redirect = true;
 }
 
 module.exports = router;

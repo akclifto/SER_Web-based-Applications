@@ -30,7 +30,6 @@
     "prettier": "^2.2.1"
   },
   "dependencies": {
-    "connect-mongo": "^3.2.0"
   },
   "lint-staged": {
     "*.+(js|jsx)": [

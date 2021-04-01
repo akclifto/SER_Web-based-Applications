@@ -6,6 +6,7 @@ block content
     title 
     h2=subTitle
     p=startMessage
+    p(class="error-text")=redirectMessage
     form()
       input(required type="text" name="username" placeholder="Enter Your Name")
       input(type="submit" formaction="/question/1" formmethod="POST" name="startMatch" value="Match")

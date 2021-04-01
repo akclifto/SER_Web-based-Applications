@@ -10,15 +10,19 @@ const fileService = require("../services/fileService");
  */
 router.all("/", (req, res, next) => {
   //create a user answers file.
-  // req.session.redirect = false;
   req.session.userAnswers = [];
   const title = "Roommate Finder";
   const subTitle = "Welcome, Get Started Here!";
   const startMessage = "Put in your name, and click match:";
+  let redirectMessage = "";
+  if (req.statusCode === 304) {
+    redirectMessage = "Session has been timed out";
+  }
   res.render("index", {
     title,
     subTitle,
     startMessage,
+    redirectMessage,
   });
 });
 
