@@ -6,6 +6,7 @@ const auth = require("../middleware/authenticate");
 const logger = require("../services/log");
 const paths = require("../services/constants");
 const fileService = require("../services/fileService");
+const session = require("express-session");
 
 /**
  * ALL '/admin' to handle admin login
@@ -44,6 +45,28 @@ router.post("/manage", async (req, res, next) => {
       "Invalid username/password combination, please try again.";
     res.render("admin", { title, subTitle, startMessage, errorMessage });
   }
+});
+
+/**
+ * GET '/manage' handle unauthorized.
+ */
+router.get("/manage", (req, res) => {
+  let error = logger.setErrorMessage(
+    401,
+    "Access unauthorized. Please login to manage site."
+  );
+  res.render("error", { error });
+});
+
+/**
+ * GET '/manage/q' handle unauthorized.
+ */
+router.get("/manage/q", (req, res) => {
+  let error = logger.setErrorMessage(
+    401,
+    "Access unauthorized. Please login to manage site."
+  );
+  res.render("error", { error });
 });
 
 /**
@@ -108,6 +131,16 @@ router.post("/manage/q", async (req, res, next) => {
       logger.errorLog("manage/q", err);
     }
   }
+});
+
+/**
+ * ALL '/admin' to handle admin logout
+ */
+router.all("/logout", (req, res) => {
+  // console.log(req.session.adminPriv);
+  logger.serverLog(`Logging out admin user...`);
+  req.session.adminPriv = false;
+  res.redirect("/");
 });
 
 /**

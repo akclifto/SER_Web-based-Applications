@@ -22,7 +22,7 @@ Notes:
 Activity 2 ----------------
 
 Async EC is implemented.
-R6 setTimeout function is present but doesn't function correctly. 
+R6 setTimeout set to 30 seconds one-shot, then redirects to landing page if expires.  Server (console) logs track timer.
 C5 no login functionality for users. Asked questions in slack chat, awaiting response.
 
 Activity 3 and EC----------
