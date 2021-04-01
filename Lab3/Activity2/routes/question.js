@@ -6,8 +6,10 @@ const fileService = require("../services/fileService");
 const paths = require("../services/constants");
 const logger = require("../services/log");
 
+//timeout vars
 let redirect = false;
 let redirectStart = false;
+let timeout;
 
 /**
  * ALL '/' redirect to first question page
@@ -18,11 +20,37 @@ router.all("/", (req, res, next) => {
 });
 
 /**
+ * GET 'reset/a' to handle a stop mid survey. Resets timeouts and sends
+ * user to landing page.
+ */
+router.get("/reset/a", (req, res, next) => {
+  logger.serverLog(
+    "Resetting timers and ending session, redirect to main page."
+  );
+  redirect = false;
+  redirectStart = false;
+  clearTimeout(timeout);
+  req.session.destroy();
+  res.redirect("/");
+});
+
+/**
  * ALL '/:qid' by question id
  */
 router.all("/:qid", async (req, res, next) => {
-  logger.serverLog("Questions page, id: " + req.params.qid);
-  if (redirect) {
+  if (req.url === "/reset") {
+    res.redirect("/question/reset/a");
+  }
+  // logger.serverLog("Questions page, id: " + req.params.qid);
+  // console.log(req.session.adminPriv);
+  else if (req.session.adminPriv) {
+    const adminPriv = true;
+    let error = logger.setErrorMessage(
+      403,
+      "Site administrators cannot take the match survey.  Please logout first."
+    );
+    res.render("error", { error, adminPriv });
+  } else if (redirect) {
     logger.serverLog(
       `Session timed out, ending session for user: ${req.session.username}`
     );
@@ -246,14 +274,14 @@ async function saveAnswer(req, qid, questions) {
  * @param {*} res : server response
  */
 function setTimedRedirect() {
-  const redirectTime = 30000;
+  const redirectTime = 30000; //30 seconds
   if (redirectStart) {
     // do nothing
     logger.serverLog(`Redirect timeout is active, status: ${redirectStart}`);
   } else {
     redirectStart = true;
     logger.serverLog(`Redirect timeout set, status: ${redirectStart}`);
-    setTimeout(() => {
+    timeout = setTimeout(() => {
       // console.log("time going off.");
       setRedirect();
     }, redirectTime);

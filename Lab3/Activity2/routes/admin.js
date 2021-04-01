@@ -6,7 +6,6 @@ const auth = require("../middleware/authenticate");
 const logger = require("../services/log");
 const paths = require("../services/constants");
 const fileService = require("../services/fileService");
-const session = require("express-session");
 
 /**
  * ALL '/admin' to handle admin login

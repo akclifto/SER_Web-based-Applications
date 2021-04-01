@@ -6,4 +6,9 @@ block content
     h2 Status:  #{error.status}
     //- Comment out this error.stack before submit
     pre #{error.stack} 
-  a(href="/") Go Home
+
+  if adminPriv
+    form()
+      input(type="submit" formaction="/admin/logout" formmethod="POST" name="logout" value="Logout")
+  br
+  a(href="/question/reset" method="post") Go Home
