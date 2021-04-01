@@ -23,7 +23,6 @@
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
-    "assert": "^2.0.0",
     "nodemon": "^2.0.7"
   }
 }

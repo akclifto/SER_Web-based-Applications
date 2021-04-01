@@ -23,8 +23,7 @@ Notes:
 Activity 2 ----------------
 
 Async EC is implemented.
-R6 setTimeout set to 30 seconds one-shot, then redirects to landing page if expires.  Server (console) logs track timer.
-C5 no login functionality for users. Asked questions in slack chat, awaiting response.
+R6 setTimeout set to 30 seconds one-shot after starting the survey, then redirects to landing page if expires.  Server (console) logs track timer.
 
 Activity 3 and EC----------
 Async EC is implemented.
