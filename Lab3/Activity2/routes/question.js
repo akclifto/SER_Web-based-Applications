@@ -14,9 +14,13 @@ let timeout;
 /**
  * ALL '/' redirect to first question page
  */
-router.all("/", (req, res, next) => {
+router.get("/", (req, res, next) => {
   logger.serverLog('redirect "/question" page to "question/1"');
-  res.redirect(308, "/question/1");
+  let error = logger.setErrorMessage(
+    401,
+    "Please enter username before taking the match survey"
+  );
+  res.render("error", { error });
 });
 
 /**
@@ -130,21 +134,26 @@ router.all("/:qid", async (req, res, next) => {
         }
       } else {
         // check returning user and pre-populatea answers
-        let prepop = await checkReturningUser(req, res, qid);
-        if (prepop !== false) {
-          console.log(prepop);
-        } else {
-          console.log("no prepop");
+        let prepop = [];
+        try {
+          prepop = await checkReturningUser(req, res, qid);
+        } catch (err) {
+          logger.serverLog(`No Prepop, promise returned: ${err}`);
         }
-
         let answer = "";
-        if (req.session.userAnswers.length > 0) {
-          if (qid === 1 || req.query.prev !== undefined) {
-            answer = req.session.userAnswers[qid - 1].answer;
-          } else {
-            for (let item in req.session.userAnswers) {
-              if (qid === req.session.userAnswers[item].qid) {
-                answer = req.session.userAnswers[item].answer;
+        // console.log(prepop);
+        if (prepop.length !== 0) {
+          answer = prepop[0].answer;
+        } else {
+          // if no prepop, collect user answer
+          if (req.session.userAnswers.length > 0) {
+            if (qid === 1 || req.query.prev !== undefined) {
+              answer = req.session.userAnswers[qid - 1].answer;
+            } else {
+              for (let item in req.session.userAnswers) {
+                if (qid === req.session.userAnswers[item].qid) {
+                  answer = req.session.userAnswers[item].answer;
+                }
               }
             }
           }
@@ -285,7 +294,7 @@ async function checkReturningUser(req, res, qid) {
       answers.forEach((ans) => {
         if (username === ans.username && qid === ans.qid) {
           prepop.push(ans);
-          console.log(prepop);
+          // console.log(prepop);
           resolve(prepop);
         }
       });
