@@ -18,7 +18,7 @@ router.get("/", (req, res, next) => {
   logger.serverLog('redirect "/question" page to "question/1"');
   let error = logger.setErrorMessage(
     401,
-    "Please enter username before taking the match survey"
+    "Please enter a username before taking the match survey"
   );
   res.render("error", { error });
 });
@@ -72,6 +72,17 @@ router.all("/:qid", async (req, res, next) => {
     try {
       if (req.session.username === undefined) {
         req.session.username = req.body.username;
+        try {
+          if (req.session.username === undefined) {
+            let error = logger.setErrorMessage(
+              401,
+              "Please enter a username before taking the match survey"
+            );
+            res.render("error", { error });
+          }
+        } catch (err) {
+          logger.errorLog("undefined user", err.message);
+        }
       }
       let questions = await fileService.getQuestions(res);
       getDisplayPrefs(req);
@@ -143,6 +154,9 @@ router.all("/:qid", async (req, res, next) => {
         let answer = "";
         // console.log(prepop);
         if (prepop.length !== 0) {
+          logger.serverLog(
+            `Answer prepopulated for user ${req.session.username}`
+          );
           answer = prepop[0].answer;
         } else {
           // if no prepop, collect user answer
