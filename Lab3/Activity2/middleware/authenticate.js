@@ -1,10 +1,11 @@
 let fakeDB = require("../db/fakedb");
 
 const logger = require("../services/log");
+fakeDB = new fakeDB();
 
 function authenticate(username, password) {
-  fakeDB = new fakeDB();
-  console.log(fakeDB.db);
+  console.log(username + " " + password);
+    console.log(fakeDB.db);
   return new Promise(function (resolve, reject) {
     fakeDB.db.forEach(function (item) {
       if (
