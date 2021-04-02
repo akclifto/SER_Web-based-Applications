@@ -248,4 +248,15 @@ Node/JS gives feeling of parallelism, but is not really concurrent. It is logica
 
 ## Module 4
 
+### Video 1: Web Arch revisited. See
+
+Read the first ten pages of the "required reading on module 4 video 1 page.
+
+(70s) Thin Client. Mainframe was primary computing works for all aspecits.  
+(80s - early 90s) Fat Client. Model was the PC revolution.  People doing business and production on PCs, not big mainframe computers.
+(early 2000s) - html markup make browser Thin Client again, servers did all the work.
+(modern) - browsers becoming Fat Client since they do so much work, and servers moved to cloud-computing, api-driven.
+
+Think of single page applications as "desktop coding model"
+
 [Back to Top](#Vocab-from-Videos)
