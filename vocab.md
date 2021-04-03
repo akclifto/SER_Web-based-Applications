@@ -250,7 +250,7 @@ Node/JS gives feeling of parallelism, but is not really concurrent. It is logica
 
 ### Video 1: Web Arch revisited. See
 
-Read the first ten pages of the "required reading on module 4 video 1 page.
+`Read the first ten pages of the "required reading on module 4 video 1 page.`
 
 (70s) Thin Client. Mainframe was primary computing works for all aspecits.  
 (80s - early 90s) Fat Client. Model was the PC revolution.  People doing business and production on PCs, not big mainframe computers.
@@ -258,5 +258,13 @@ Read the first ten pages of the "required reading on module 4 video 1 page.
 (modern) - browsers becoming Fat Client since they do so much work, and servers moved to cloud-computing, api-driven.
 
 Think of single page applications as "desktop coding model"
+
+### Video 2: JS and the DOM
+
+The value inside of a node when looking at the DOM is called the content-model.
+
+The DOM is everything going on inside the browser, but the browser itself has its own object model called `window`.
+
+`Look at the required tutorial on w3schools <https://www.w3schools.com/js/js_htmldom.asp>`
 
 [Back to Top](#Vocab-from-Videos)
