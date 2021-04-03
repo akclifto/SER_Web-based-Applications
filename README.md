@@ -6,6 +6,8 @@ SER421: Web-based Applications Assignment Overview
 
 - [Lab 1](#Lab-1)
 - [Lab 2](#Lab-2)
+- [Lab 3](#Lab-3)
+- [Lab 4](#Lab-4)
 
 ## Lab 1
 
@@ -216,5 +218,37 @@ When logged in as an instructor, the /edit page is not accessible from entering 
 - `serverLog(message)`: Method to normalize server console logs.
 
 Please let me know if you have any issues or questions.  Thanks.  
+
+[Back to Top](#Contents)
+
+## Lab 3
+
+### Activity 1: Article Review System
+
+Utilized node Express backend and Pug to render pages.
+
+To start lab, navigate to the "activity1" folder, then run in CLI:
+
+`npm run start` or `npm run dev`
+
+All requirements from Lab should be met.
+
+### Activity 2 and 3: Roommate Finder with Admin Functionality
+
+Builds on what was learned from activity 1, utilized Express and Pug.  
+
+To start lab, navigate to the "activity2" folder, then run in CLI:
+
+`npm run start` or `npm run dev`
+
+To login to the admin page, credentials:
+    username === password
+    Ex: username=`admin` password=`admin`
+
+All requirements from Lab should be met. Extra credit async/await behavior implemented.  Extra credit add a database (mongodb) attempted, but ultimately discarded due to time constraints.  
+
+[Back to Top](#Contents)
+
+## Lab 4
 
 [Back to Top](#Contents)
