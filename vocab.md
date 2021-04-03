@@ -267,8 +267,4 @@ The DOM is everything going on inside the browser, but the browser itself has it
 
 `Look at the required tutorial on w3schools <https://www.w3schools.com/js/js_htmldom.asp>`
 
-### Video 3: JS DOM Events
-
-
-
 [Back to Top](#Vocab-from-Videos)
