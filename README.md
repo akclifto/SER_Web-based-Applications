@@ -235,7 +235,7 @@ All requirements from Lab should be met.
 
 ### Activity 2 and 3: Roommate Finder with Admin Functionality
 
-Builds on what was learned from activity 1, utilized Express and Pug.  
+Builds on what was learned from activity 1, utilized Express, Express-session,  and Pug.  
 
 To start lab, navigate to the "activity2" folder, then run in CLI:
 
