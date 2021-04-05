@@ -1,7 +1,7 @@
 {
-  "name": "akclifto_lab2",
+  "name": "akclifto_ser421",
   "version": "1.0.0",
-  "description": "Lab 2 SER421",
+  "description": "SER421",
   "main": "Lab2/FAQ00_test.js",
   "repository": "https://github.com/akclifto/SER-421.git",
   "author": "akclifto <akclifto@asu.edu>",
@@ -29,8 +29,7 @@
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "lint-staged": {
     "*.+(js|jsx)": [
       "eslint --fix",
