@@ -267,4 +267,9 @@ The DOM is everything going on inside the browser, but the browser itself has it
 
 `Look at the required tutorial on w3schools <https://www.w3schools.com/js/js_htmldom.asp>`
 
+### Video 5-6: CSS and Responsive Web Design (RWD)
+
+CSS rendering cycle can be computationally expensive for RWD.  @media ... example
+Adaptive rendering creates a bunch of fixed templates at different sizes and applies whichever may best fit the screen.
+
 [Back to Top](#Vocab-from-Videos)
