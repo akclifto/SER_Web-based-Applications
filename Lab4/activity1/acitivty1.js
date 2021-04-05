@@ -9,7 +9,7 @@
 //  Now, for this activity, write DOM expressions that do the following (write these in a activity1.js file):
 
 //  1. (3) Output to the console the <ol> element encompassing the results of the search
-document.getElementsByTagName("ol"); // for all <ol> results.
+document.getElementsByTagName("ol"); // for all <ol> results of the search.
 document.getElementsByTagName("ol").namedItem("b_results"); // for just the "results" list (no maps or photos)
 
 //  2. (4) Output to the console the code for the "onload" event on the <body> element
@@ -25,6 +25,6 @@ document.getElementsByTagName("h2").length;
 document.getElementById("sb_form_q").value;
 
 //  6. (4) Make the "Add Bing New Tab Extension" text in the upper right corner result go away
-// There is no "Add Bing New Tab Extension" text, so I removed my account name and reward score with the follow two remove() calls.
+// There is no "Add Bing New Tab Extension" text, so I removed my account name and reward score with the following two remove() calls:
 document.getElementById("id_n").remove();
 document.getElementById("id_rh").remove();
