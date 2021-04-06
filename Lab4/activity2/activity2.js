@@ -48,9 +48,24 @@ function displayGreeting(username) {
 
 function setReviewContent() {
   document.getElementById("review-movie").innerHTML = critic.movie;
-  document.getElementById("review-body").innerHTML = critic.review;
+  critic.review.forEach(mapReviews);
 }
 
+function mapReviews(item, index) {
+  document.getElementById("review-body").innerHTML += "<li>" + item;
+}
+
+function handleUserComments() {
+  let comments = document.getElementById("user-comments").value;
+  //TODO parse comments
+  console.log(comments);
+}
+
+function parseComments(comments) {
+    
+}
+
+// dictionary
 let dict = {
   dictionary_name: "default",
   entries: [
@@ -125,6 +140,9 @@ let dict = {
 
 let critic = {
   movie: "The Room (2003)",
-  review:
-    "I've never in my life been more entertained by a film that has absolutely NO redeeming qualities.  The sense of alienation emanating from this film places the audience extremely far from being able to relate to what's happening on screen which leaves a lot of room for uncontrollable laughter given the right circumstances. The camera work and production techniques would not be out of place in many daytime soap operas, nor would the script and plot, but there is an undefinable quality which separates this movie from the sense mediocrity often found in such shows and instead casts it deep into the abyss of tragically bad film making where it will be forever trapped along with Wiseau's artistic integrity. This really is a new frontier. It is truly awful, but I cannot recommend it enough.",
+  review: [
+    "I've never in my life been more entertained by a film that has absolutely NO redeeming qualities.  The sense of alienation emanating from this film places the audience extremely far from being able to relate to what's happening on screen which leaves a lot of room for uncontrollable laughter given the right circumstances. The camera work and production techniques would not be out of place in many daytime soap operas, nor would the script and plot, but there is an undefinable quality which separates this movie from the sense mediocrity often found in such shows and instead casts it deep into the abyss of tragically bad film making where it will be forever trapped along with Wiseau's artistic integrity. This really is a new frontier. It is truly awful, but I cannot recommend it enough. - IMDB",
+    "That’s the trick to making a cult film. It can’t just be bad, it has to be memorably so, and “The Room” is. Fans shout at the screen, wait for the aged pug dog’s first appearance and throw spoons. - Movie Nation",
+    "Steadily grows more outrageous in its awfulness, generating countless laugh-out-loud moments. - Rotten Tomatoes",
+  ],
 };
