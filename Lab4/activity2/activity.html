@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta description="Lab 4 akclifto (akclifto@asu.edu)">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta description="Lab 4 akclifto (akclifto@asu.edu)" />
     <title>Lab 4 Activity 2</title>
-</head>
+  </head>
 
-<body>
-    Please enter your name: 
-    <input id="username" type="text"/>
-    <button id="submitUsername" onClick="getUsername()">Submit</button>
+  <body>
+    Please enter your name:
+    <input id="username" type="text" />
+    <button id="submitUsername" onClick="handleUsername()">Submit</button>
     <p id="welcome"></p>
+    
     <h3>Critic Review</h3>
-    <div id="review-body">{review body goes heres}</div>
-    <br /> <br /> 
+    <div id="review-movie"></div>
+        <p id="review-body"></p>
+    
+    <br /> <br />
     Please give your comments:
-    <br /> 
+    <br />
+    
     <textarea id="user-comments" type="textarea" rows="10" cols="60"></textarea>
-    <br/>
+    <br />
     <button id="submit">Submit Review</button>
 
     <script src="./activity2.js" type="text/javascript"></script>
-</body>
-
+  </body>
 </html>
