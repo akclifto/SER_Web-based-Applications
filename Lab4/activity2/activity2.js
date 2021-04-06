@@ -58,11 +58,25 @@ function mapReviews(item, index) {
 function handleUserComments() {
   let comments = document.getElementById("user-comments").value;
   //TODO parse comments
-  console.log(comments);
+  let parsed = parseComments(comments);
+//   console.log(parsed);
+  censorship(parsed);
+//   console.log(parsed);
 }
 
-function parseComments(comments) {
-    
+//TODO redo, should be simpler than this.
+function parseComments(userComments) {
+  let clean = userComments.trim();
+  let comments = clean.split(" ");
+  let parsed = {};
+
+  return parsed;
+}
+
+//TODO does not read past first entries,
+function censorship(parsed) {
+
+  console.log("This comment has been censored:", parsed[0]);
 }
 
 // dictionary
