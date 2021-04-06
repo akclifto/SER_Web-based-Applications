@@ -86,16 +86,38 @@ function parseComments(userComments) {
 }
 
 /**
- * Potato censhorship algorithm O(n^3)
+ * Potato censhorship algorithm
  * @param {*} parsed : comments to check against bad words dict and replace.
  */
 function censorship(parsed) {
   let censored = [];
+  let checkGoods = [];
+  let goodWord = "";
+
   for (let p in parsed) {
     for (let i in dict.entries) {
       for (let d in dict.entries[i].key) {
         if (parsed[p].includes(dict.entries[i].key[d])) {
-          let goodWord = replaceWord(i);
+          let goodIdx = replaceWord(i);
+          if (checkGoods.length === 0) {
+            checkGoods.push(goodIdx);
+          } else {
+            if (checkGoods.length === 1) {
+              while (goodIdx === checkGoods[checkGoods.length - 1]) {
+                goodIdx = replaceWord(i);
+              }
+              checkGoods.push(goodIdx);
+            } else {
+              while (
+                goodIdx === checkGoods[checkGoods.length - 1] ||
+                goodIdx === checkGoods[checkGoods.length - 2]
+              ) {
+                goodIdx = replaceWord(i);
+              }
+              checkGoods.push(goodIdx);
+            }
+            goodWord = dict.entries[i].answer[goodIdx];
+          }
           console.log(
             parsed[p] + " is a bad word and will be replaced with " + goodWord
           );
@@ -128,8 +150,11 @@ function reconstructComment(parsed) {
  * @returns random good word replacement.
  */
 function replaceWord(entryIndex) {
-  let word = Math.floor(Math.random() * dict.entries[entryIndex].answer.length);
-  return dict.entries[entryIndex].answer[word];
+  return Math.floor(Math.random() * dict.entries[entryIndex].answer.length);
+}
+
+function getGoodDict(entryIndex) {
+  return dict.entries[entryIndex].answer;
 }
 
 // dictionary
