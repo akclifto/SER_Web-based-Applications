@@ -5,10 +5,12 @@
  * @email (akclifto@asu.edu)
  *
  */
+let holdUser = "";
 
 function handleUsername() {
   let username = document.getElementById("username").value.trim();
   if (username.length > 0 && username !== " ") {
+    holdUser = username;
     document.cookie = "user=" + username + ";";
     setCookie(username);
     // cookies don't work
@@ -42,6 +44,10 @@ function getCookie(cname) {
   return "";
 }
 
+/**
+ * Diplay greeting
+ * @param {*} username : name of user
+ */
 function displayGreeting(username) {
   // TODO cookies don't work,
   //if return "Welcome back <username>! Please enter your comments about the movie."
@@ -49,6 +55,9 @@ function displayGreeting(username) {
   document.getElementById("welcome").innerHTML = greeting;
 }
 
+/**
+ * Set movie critic review content
+ */
 function setReviewContent() {
   document.getElementById("review-movie").innerHTML = critic.movie;
   critic.review.forEach((item, index) => {
@@ -56,14 +65,32 @@ function setReviewContent() {
   });
 }
 
+/**
+ * Handles user comments functionality, checks comments, parses, censors bad words.
+ */
 function handleUserComments() {
+  if (holdUser === "") {
+    alert("Please enter your username before commenting.");
+    return;
+  }
   let comments = document.getElementById("user-comments").value;
   //TODO parse comments
   let parsed = parseComments(comments);
-  parsed = censorship(parsed);
+  console.log(parsed);
+  if (parsed[0] === undefined) {
+    alert("No comments to submit. Please try again.");
+    return;
+  } else {
+    parsed = censorship(parsed);
+  }
   console.log(parsed);
 }
 
+/**
+ * Use regex expressions to parse comments
+ * @param {*} userComments : The user comments to parse
+ * @returns parsed comments;
+ */
 function parseComments(userComments) {
   // regex: replace any char that is not a word or space char with empty space, /[^\w\s]/ , " "
   // regex: replace up to multiple new lines with empty space, global match /\n+/g , " "
