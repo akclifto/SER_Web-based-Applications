@@ -245,6 +245,9 @@ function getGoodDict(entryIndex) {
  */
 function handleIdleTimeout() {
   // console.log(idleTimeout);
+  // re: Req R4 description, setTimeout() implements a one-shot timer,
+  // setInterval continues the alerts until the user is no longer idle.
+  // therefore, using setInterval and not setTimeout.
   window.setInterval(() => {
     if (idleTimeout === true) {
       // console.log("timer going off");
@@ -254,7 +257,7 @@ function handleIdleTimeout() {
       let message = idleMessage.pop();
       alert(message);
     }
-  }, 3000);
+  }, 30000);
 }
 
 /**
