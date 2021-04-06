@@ -101,6 +101,7 @@ function censorship(parsed) {
           let goodIdx = replaceWord(i);
           if (checkGoods.length === 0) {
             checkGoods.push(goodIdx);
+            goodWord = dict.entries[i].answer[goodIdx];
           } else {
             if (checkGoods.length === 1) {
               while (goodIdx === checkGoods[checkGoods.length - 1]) {
