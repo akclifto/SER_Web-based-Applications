@@ -60,16 +60,15 @@ function handleUserComments() {
   let comments = document.getElementById("user-comments").value;
   //TODO parse comments
   let parsed = parseComments(comments);
-  //   console.log(parsed);
-  censorship(parsed);
-  //   console.log(parsed);
+  parsed = censorship(parsed);
+  console.log(parsed);
 }
 
 function parseComments(userComments) {
   // regex: replace any char that is not a word or space char with empty space, /[^\w\s]/ , " "
   // regex: replace up to multiple new lines with empty space, global match /\n+/g , " "
-  console.log("Cleaning up comments");
   let clean = userComments.replace(/\n+/g, " ");
+  console.log("Cleaning up comments...");
   // trim whatever is left
   clean.trim();
   let comments = clean.split(" ");
@@ -77,26 +76,60 @@ function parseComments(userComments) {
 
   for (let c in comments) {
     if (comments[c] === "" || comments[c] === " ") {
-      console.log("Skipping empty space.");
+      console.log("Skipping empty space...");
     } else {
       parsedComments[c] = comments[c];
     }
   }
-  console.log(parsedComments);
+  // console.log(parsedComments);
   return parsedComments;
 }
 
-//TODO does not read past first entries,
+/**
+ * Potato censhorship algorithm O(n^3)
+ * @param {*} parsed : comments to check against bad words dict and replace.
+ */
 function censorship(parsed) {
-
-  for(let p in parsed) {
-    console.log("parsed: ", parsed[p]);
-    dict.entries.forEach((d) => {
-      console.log("dict: ", d);
-    });
+  let censored = [];
+  for (let p in parsed) {
+    for (let i in dict.entries) {
+      for (let d in dict.entries[i].key) {
+        if (parsed[p].includes(dict.entries[i].key[d])) {
+          let goodWord = replaceWord(i);
+          console.log(
+            parsed[p] + " is a bad word and will be replaced with " + goodWord
+          );
+          parsed[p] = goodWord;
+        }
+      }
+    }
   }
+  censored = reconstructComment(parsed);
+  console.log("This comment has been censored to the following: ", censored);
+  return censored;
+}
 
-  console.log("This comment has been censored:", parsed[0]);
+/**
+ * Method to put parsed user comment back together as a string.
+ * @param {*} parsed : object to reconstruct
+ * @returns string of reconstructed comment.
+ */
+function reconstructComment(parsed) {
+  let str = "";
+  for (let i in parsed) {
+    str += parsed[i].concat(" ");
+  }
+  return str;
+}
+
+/**
+ * Replace bad word with random word at correct entry index.
+ * @param {*} entryIndex : dict.entries index
+ * @returns random good word replacement.
+ */
+function replaceWord(entryIndex) {
+  let word = Math.floor(Math.random() * dict.entries[entryIndex].answer.length);
+  return dict.entries[entryIndex].answer[word];
 }
 
 // dictionary
