@@ -40,6 +40,7 @@ let dict = {
 }
 
 let holdUser = "";
+let returningUser = false;
 let userSubmitted = false;
 let idleTimeout = true;
 let idleMessage = getIdleMessages();
@@ -51,11 +52,8 @@ function handleUsername() {
   let username = document.getElementById("username").value.trim();
   if (username.length > 0 && username !== " ") {
     holdUser = username;
-    document.cookie = "user=" + username + ";";
+    // document.cookie = "user=" + username + ";";
     setCookie(username);
-    // cookies don't work
-    // let cookie = getCookie("user");
-    // console.log(cookie);
     displayGreeting(username);
     if (userSubmitted === false) {
       setReviewContent();
@@ -97,13 +95,33 @@ function getCookie(cname) {
 }
 
 /**
+ * Greet returning user Req R1
+ * @param {*} username : name of returning user.
+ */
+window.onload = () => {
+  let user = getCookie("user");
+  console.log(user.toString());
+  if (user !== "" && user !== " " && user !== undefined) {
+    returningUser = true;
+    displayGreeting(user);
+    setReviewContent();
+    handleIdleTimeout();
+  }
+};
+
+/**
  * Diplay greeting. Req R1
  * @param {*} username : name of user
  */
 function displayGreeting(username) {
+  let greeting = "";
   // TODO cookies don't work,
   //if return "Welcome back <username>! Please enter your comments about the movie."
-  let greeting = `Hello ${username}.  Welcome to movie review System!  Please enter your comments about the movie.`;
+  if (returningUser) {
+    greeting = `Welcome back ${username}! Please enter your comments about the movie.`;
+  } else {
+    greeting = `Hello ${username}.  Welcome to movie review System!  Please enter your comments about the movie.`;
+  }
   document.getElementById("welcome").innerHTML = greeting;
 }
 
@@ -130,7 +148,7 @@ function handleUserComments() {
   }
   let comments = document.getElementById("user-comments").value;
   let parsed = parseComments(comments);
-  console.log(parsed);
+  // console.log(parsed);
   if (parsed[0] === undefined) {
     alert("No comments to submit. Please try again.");
     setIdleTimeout(true);
@@ -138,7 +156,8 @@ function handleUserComments() {
   } else {
     parsed = censorship(parsed);
   }
-  console.log(parsed);
+  jsonValidator(parsed);
+  // console.log(parsed);
 }
 
 /**
@@ -284,4 +303,21 @@ function keyPressIdleTime() {
   if (idleTimeout === true) {
     setIdleTimeout(false);
   }
+}
+
+function jsonValidator(parsed) {
+  let first = parsed.substring(0, 1);
+  let last = parsed.charAt(parsed.length - 1);
+  if (last === " ") {
+    last = parsed.charAt(parsed.length - 2);
+  }
+  if (first === "{" && last === "}") {
+    console.log("Checking for Json input...");
+    console.log(first);
+    console.log(last);
+  }
+  // let add = JSON.parse(parsed);
+  // console.log(parsed);
+
+
 }
