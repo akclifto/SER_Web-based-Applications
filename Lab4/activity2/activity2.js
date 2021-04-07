@@ -101,7 +101,7 @@ function getCookie(cname) {
  */
 window.onload = () => {
   let user = getCookie("user");
-  console.log(user.toString());
+  // console.log(user.toString());
   if (user !== "" && user !== " " && user !== undefined) {
     returningUser = true;
     displayGreeting(user);
@@ -345,9 +345,9 @@ function processJsonInput(parsed) {
     let k = Object.keys(jsonObj)[0];
     let flag = checkJsonKeys(jsonObj);
     if (flag) {
-      alert("Word added to the dictionary and the dictionary is smarter");
+      alert("Word added to the dictionary and the dictionary is smarter.");
     } else {
-      alert("Could not find the proper key and the dictionary stays dumb");
+      alert("Could not find the proper key and the dictionary stays dumb.");
     }
   } catch (err) {
     console.log("Json error: ", err);

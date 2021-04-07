@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /**
- * Lab 4 Activity 2
+ * Lab 4 Activity 3
  * @author Adam Clifton
  * @email (akclifto@asu.edu)
  *
@@ -345,9 +345,9 @@ function processJsonInput(parsed) {
     let k = Object.keys(jsonObj)[0];
     let flag = checkJsonKeys(jsonObj);
     if (flag) {
-      alert("Word added to the dictionary and the dictionary is smarter");
+      alert("Word added to the dictionary and the dictionary is smarter.");
     } else {
-      alert("Could not find the proper key and the dictionary stays dumb");
+      alert("Could not find the proper key and the dictionary stays dumb.");
     }
   } catch (err) {
     console.log("Json error: ", err);
