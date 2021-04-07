@@ -62,6 +62,7 @@ function handleUsername() {
     userSubmitted = true;
   } else {
     console.log("No valid username input");
+    alert("Please enter a username to submit");
   }
 }
 
@@ -148,9 +149,11 @@ function handleUserComments() {
   }
   let comments = document.getElementById("user-comments").value;
   let parsed = parseComments(comments);
-  // console.log(parsed);
+  // console.log(parsed[0]);
   if (parsed[0] === undefined) {
-    alert("No comments to submit. Please try again.");
+    alert(
+      "Cannot submit comments.\nPlease add a comment or remove any empty lines before the start of your comment."
+    );
     setIdleTimeout(true);
     return;
   }
@@ -161,8 +164,8 @@ function handleUserComments() {
     processJsonInput(parsed);
   } else {
     parsed = censorship(parsed);
+    document.getElementById("user-comments").value = parsed;
   }
-  // console.log(parsed);
 }
 
 /**
@@ -203,7 +206,7 @@ function censorship(parsed) {
   for (let p in parsed) {
     for (let i in dict.entries) {
       for (let d in dict.entries[i].key) {
-        if (parsed[p].includes(dict.entries[i].key[d])) {
+        if (parsed[p].toLowerCase().includes(dict.entries[i].key[d])) {
           let goodIdx = replaceWord(i);
           if (checkGoods.length === 0) {
             checkGoods.push(goodIdx);
@@ -323,8 +326,8 @@ function jsonValidator(parsed) {
   }
   if (first === "{" && last === "}") {
     console.log("Checking for Json input...");
-    console.log("first: ", first);
-    console.log("last: ", last);
+    // console.log("first: ", first);
+    // console.log("last: ", last);
     return true;
   }
   return false;
@@ -344,17 +347,18 @@ function processJsonInput(parsed) {
     if (flag) {
       alert("Word added to the dictionary and the dictionary is smarter");
     } else {
-      alert("Could not find the proper jey and the dictionary stays dumb");
+      alert("Could not find the proper key and the dictionary stays dumb");
     }
   } catch (err) {
     console.log("Json error: ", err);
-    alert("Invalid JSON! Please enter a vlaid JSON!");
+    alert("Invalid JSON! Please enter a valid JSON!");
   }
 }
 
 /**
  * Req R5. Method to check input keys against dict keys.
  * @param {*} jsonObj : json object to check.
+ * @return {boolean} true if found key and added to dictionary. False otherwise.
  */
 function checkJsonKeys(jsonObj) {
   let jsonObjKey = Object.keys(jsonObj)[0];
@@ -363,7 +367,6 @@ function checkJsonKeys(jsonObj) {
       // console.log(dict.entries[i].key[j]);
       if (jsonObjKey === dict.entries[i].key[j]) {
         console.log("there is a match");
-        //TODO
         addToDictionary(i, jsonObj);
         return true;
       }
@@ -371,6 +374,11 @@ function checkJsonKeys(jsonObj) {
   }
 }
 
+/**
+ * Req R5.  Method to add json entry to dictionary.
+ * @param {*} dictIndex : index in dict.entries
+ * @param {*} jsonObj : jsonObj to add new entry.
+ */
 function addToDictionary(dictIndex, jsonObj) {
   // console.log(Object.values(jsonObj)[0]);
   // console.log(dict.entries[dictIndex]);
