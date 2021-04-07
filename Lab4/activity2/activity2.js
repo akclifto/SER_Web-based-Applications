@@ -154,10 +154,11 @@ function handleUserComments() {
     setIdleTimeout(true);
     return;
   }
-
+  //check json
   let jsonFlag = jsonValidator(parsed);
   if (jsonFlag) {
     console.log("Processing json input...");
+    processJsonInput(parsed);
   } else {
     parsed = censorship(parsed);
   }
@@ -233,7 +234,7 @@ function censorship(parsed) {
     }
   }
   censored = reconstructComment(parsed);
-  console.log("This comment has been censored to the following: ", censored);
+  console.log("This comment has been posted as the following:\n", censored);
   return censored;
 }
 
@@ -334,9 +335,21 @@ function jsonValidator(parsed) {
  * @param {*} parsed : json input to process
  */
 function processJsonInput(parsed) {
-  let jsonObj = console.log(JSON.parse(parsed));
-  // console.log(Object.keys(jsonObj));
-  // checkJsonKeys(jsonObj);
+  parsed = reconstructComment(parsed);
+  try {
+    let jsonObj = JSON.parse(parsed);
+    // console.log(Object.keys(jsonObj));
+    let k = Object.keys(jsonObj)[0];
+    let flag = checkJsonKeys(jsonObj);
+    if (flag) {
+      alert("Word added to the dictionary and the dictionary is smarter");
+    } else {
+      alert("Could not find the proper jey and the dictionary stays dumb");
+    }
+  } catch (err) {
+    console.log("Json error: ", err);
+    alert("Invalid JSON! Please enter a vlaid JSON!");
+  }
 }
 
 /**
@@ -344,13 +357,22 @@ function processJsonInput(parsed) {
  * @param {*} jsonObj : json object to check.
  */
 function checkJsonKeys(jsonObj) {
+  let jsonObjKey = Object.keys(jsonObj)[0];
   for (let i in dict.entries) {
     for (let j in dict.entries[i].key) {
-      console.log(dict.entries[i].key[j]);
-      if (Object.keys(jsonObj).includes(dict.entries[i].key[j])) {
+      // console.log(dict.entries[i].key[j]);
+      if (jsonObjKey === dict.entries[i].key[j]) {
         console.log("there is a match");
         //TODO
+        addToDictionary(i, jsonObj);
+        return true;
       }
     }
   }
+}
+
+function addToDictionary(dictIndex, jsonObj) {
+  // console.log(Object.values(jsonObj)[0]);
+  // console.log(dict.entries[dictIndex]);
+  dict.entries[dictIndex].answer.push(Object.values(jsonObj)[0]);
 }
