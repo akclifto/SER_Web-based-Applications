@@ -153,10 +153,14 @@ function handleUserComments() {
     alert("No comments to submit. Please try again.");
     setIdleTimeout(true);
     return;
+  }
+
+  let jsonFlag = jsonValidator(parsed);
+  if (jsonFlag) {
+    console.log("Processing json input...");
   } else {
     parsed = censorship(parsed);
   }
-  jsonValidator(parsed);
   // console.log(parsed);
 }
 
@@ -305,7 +309,12 @@ function keyPressIdleTime() {
   }
 }
 
+/**
+ * Req R5. Json Validator to check Json input.
+ * @param {*} parsed : user comments to validate.
+ */
 function jsonValidator(parsed) {
+  parsed = reconstructComment(parsed);
   let first = parsed.substring(0, 1);
   let last = parsed.charAt(parsed.length - 1);
   if (last === " ") {
@@ -313,11 +322,35 @@ function jsonValidator(parsed) {
   }
   if (first === "{" && last === "}") {
     console.log("Checking for Json input...");
-    console.log(first);
-    console.log(last);
+    console.log("first: ", first);
+    console.log("last: ", last);
+    return true;
   }
-  // let add = JSON.parse(parsed);
-  // console.log(parsed);
+  return false;
+}
 
+/**
+ * Req R5. Method to process Json Input after validation check.
+ * @param {*} parsed : json input to process
+ */
+function processJsonInput(parsed) {
+  let jsonObj = console.log(JSON.parse(parsed));
+  // console.log(Object.keys(jsonObj));
+  // checkJsonKeys(jsonObj);
+}
 
+/**
+ * Req R5. Method to check input keys against dict keys.
+ * @param {*} jsonObj : json object to check.
+ */
+function checkJsonKeys(jsonObj) {
+  for (let i in dict.entries) {
+    for (let j in dict.entries[i].key) {
+      console.log(dict.entries[i].key[j]);
+      if (Object.keys(jsonObj).includes(dict.entries[i].key[j])) {
+        console.log("there is a match");
+        //TODO
+      }
+    }
+  }
 }
