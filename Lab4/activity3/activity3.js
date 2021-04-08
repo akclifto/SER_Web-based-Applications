@@ -224,10 +224,9 @@ function handleUserComments() {
   } else if (comments.toLowerCase().includes("/search")) {
     let parsed = parseComments(comments);
     let result = searchDictionary(parsed);
-    console.log(result);
+    // console.log(result);
     document.getElementById("user-comments").value = result;
   } else if (comments.toLowerCase().includes("/history")) {
-    console.log("history has been selected");
     showHistory();
   } else if (comments.toLowerCase().includes("/count")) {
     console.log("count has been selected");
@@ -418,7 +417,11 @@ function processJsonInput(parsed) {
     // console.log(Object.keys(jsonObj));
     let k = Object.keys(jsonObj)[0];
     let flag = checkJsonKeys(jsonObj);
-    if (flag) {
+    if (flag === -1) {
+      alert(
+        "Word is already included in the dictionary. Dictionary stays the same."
+      );
+    } else if (flag === 1) {
       alert("Word added to the dictionary and the dictionary is smarter.");
     } else {
       alert("Could not find the proper key and the dictionary stays dumb.");
@@ -432,7 +435,7 @@ function processJsonInput(parsed) {
 /**
  * Activity 2 Req R5. Method to check input keys against dict keys.
  * @param {*} jsonObj : json object to check.
- * @return {boolean} true if found key and added to dictionary. False otherwise.
+ * @return {integer} 1 if found key and added to dictionary, -1 if key:value is a duplicate.
  */
 function checkJsonKeys(jsonObj) {
   let jsonObjKey = Object.keys(jsonObj)[0];
@@ -441,8 +444,15 @@ function checkJsonKeys(jsonObj) {
       // console.log(dict.entries[i].key[j]);
       if (jsonObjKey === dict.entries[i].key[j]) {
         console.log("there is a match");
+        let val = Object.values(jsonObj)[0];
+        for (let k in dict.entries[i].answer) {
+          if (val === dict.entries[i].answer[k]) {
+            console.log(dict.entries[i].answer[k]);
+            return -1;
+          }
+        }
         addToDictionary(i, jsonObj);
-        return true;
+        return 1;
       }
     }
   }
@@ -535,7 +545,7 @@ function showHistory() {
       "No Search History found.";
   } else {
     arr = JSON.parse(arr);
-    console.log(arr.history);
+    // console.log(arr.history);
     arr.history.forEach((item, index) => {
       document.getElementById("history-list").innerHTML +=
         index + 1 + ": " + item + "<br>";
