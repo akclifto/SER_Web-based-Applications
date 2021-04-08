@@ -151,6 +151,7 @@ function getCookie(cname) {
 /**
  * Greet returning user.
  * Activity 2 Req R1
+ * Activity 3 Req R1
  * @param {*} username : name of returning user.
  */
 window.onload = () => {
@@ -215,26 +216,36 @@ function handleUserComments() {
     setIdleTimeout(true);
     return;
   }
-  let comments = document.getElementById("user-comments").value;
-  let parsed = parseComments(comments);
-  // console.log(parsed[0]);
-  if (parsed[0] === undefined) {
-    alert(
-      "Cannot submit comments.\nPlease add a comment or remove any empty lines before the start of your comment."
-    );
-    setIdleTimeout(true);
-    return;
-  }
-  //check json
-  let jsonFlag = jsonValidator(parsed);
-  if (jsonFlag) {
-    console.log("Processing json input...");
-    processJsonInput(parsed);
+  let comments = document.getElementById("user-comments").value.trim();
+  if (comments.includes("/clear")) {
+    console.log("clear has been selected");
+  } else if (comments.includes("/search")) {
+    console.log("search has been selected");
+  } else if (comments.includes("/history")) {
+    console.log("history has been selected");
+  } else if (comments.includes("/count")) {
+    console.log("count has been selected");
   } else {
-    parsed = censorship(parsed);
-    document.getElementById("user-comments").value = parsed;
+    let parsed = parseComments(comments);
+    // console.log(parsed[0]);
+    if (parsed[0] === undefined) {
+      alert(
+        "Cannot submit comments.\nPlease add a comment or remove any empty lines before the start of your comment."
+      );
+      setIdleTimeout(true);
+      return;
+    }
+    //check json
+    let jsonFlag = jsonValidator(parsed);
+    if (jsonFlag) {
+      console.log("Processing json input...");
+      processJsonInput(parsed);
+    } else {
+      parsed = censorship(parsed);
+      document.getElementById("user-comments").value = parsed;
+    }
+    saveSessionState(parsed);
   }
-  saveSessionState(parsed);
 }
 
 /**
