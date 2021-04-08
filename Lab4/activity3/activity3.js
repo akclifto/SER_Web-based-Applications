@@ -16,28 +16,76 @@ let critic = {
 };
 
 let dict = {
-  "dictionary_name": "default",
-  "entries":
-      [{
-          "key": ["stupid", "dumb", "idiot", "unintelligent", "simple-minded", "braindead", "foolish", "unthoughtful"],
-          "answer": ["educated", "informed", "schooled"]
-      }, {
-          "key": ["unattractive", "hideous", "ugly"],
-          "answer": ["attractive", "beauteous", "beautiful", "lovely", "pretty", "ravishing"]
-      }, {
-          "key": ["ambiguous", "cryptic", "dark", "nebulous", "obscure", "unintelligible"],
-          "answer": ["obvious", "plain", "unambiguous", "understandable", "unequivocal"]
-      }, {
-          "key": ["incapable", "incompetent", "inept", "unable", "unfit", "unqualified", "weak", "artless"],
-          "answer": ["accomplished", "fit", "adept", "complete", "consummate"]
-      }, {
-          "key": ["emotionless", "heartless", "unkind", "mean", "selfish", "evil"],
-          "answer": ["benevolent", "benignant", "gentle", "kind", "clement"]
-      }, {
-          "key": ["idle"],
-          "answer": ["Can you reply something?", "You have been idle for more than 30 seconds", "Whats the matter with you? Submit something"]
-      }]
-}
+  dictionary_name: "default",
+  entries: [
+    {
+      key: [
+        "stupid",
+        "dumb",
+        "idiot",
+        "unintelligent",
+        "simple-minded",
+        "braindead",
+        "foolish",
+        "unthoughtful",
+      ],
+      answer: ["educated", "informed", "schooled"],
+    },
+    {
+      key: ["unattractive", "hideous", "ugly"],
+      answer: [
+        "attractive",
+        "beauteous",
+        "beautiful",
+        "lovely",
+        "pretty",
+        "ravishing",
+      ],
+    },
+    {
+      key: [
+        "ambiguous",
+        "cryptic",
+        "dark",
+        "nebulous",
+        "obscure",
+        "unintelligible",
+      ],
+      answer: [
+        "obvious",
+        "plain",
+        "unambiguous",
+        "understandable",
+        "unequivocal",
+      ],
+    },
+    {
+      key: [
+        "incapable",
+        "incompetent",
+        "inept",
+        "unable",
+        "unfit",
+        "unqualified",
+        "weak",
+        "artless",
+      ],
+      answer: ["accomplished", "fit", "adept", "complete", "consummate"],
+    },
+    {
+      key: ["emotionless", "heartless", "unkind", "mean", "selfish", "evil"],
+      answer: ["benevolent", "benignant", "gentle", "kind", "clement"],
+    },
+    {
+      key: ["idle"],
+      answer: [
+        "Can you reply something?",
+        "You have been idle for more than 30 seconds",
+        "Whats the matter with you? Submit something",
+      ],
+    },
+  ],
+};
 
 let holdUser = "";
 let returningUser = false;
@@ -46,12 +94,15 @@ let idleTimeout = true;
 let idleMessage = getIdleMessages();
 
 /**
- * Handle username input. Req R1
+ * Handle username input.
+ * Activity 2 Req R1
  */
 function handleUsername() {
   let username = document.getElementById("username").value.trim();
   if (username.length > 0 && username !== " ") {
     holdUser = username;
+    setStateUsername(holdUser);
+    // console.log(localStorage.getItem("username"));
     // document.cookie = "user=" + username + ";";
     setCookie(username);
     displayGreeting(username);
@@ -67,7 +118,8 @@ function handleUsername() {
 }
 
 /**
- * Cookies don't work.  Req R1
+ * Cookies don't work.
+ * Activity 2 Req R1
  * @param {*} username : username to save in session
  */
 function setCookie(username) {
@@ -77,7 +129,8 @@ function setCookie(username) {
 }
 
 /**
- * Cookies don't work.  Req R1
+ * Cookies don't work.
+ * Activity 2 Req R1
  * @param {*} cname : name of cookie to get
  */
 function getCookie(cname) {
@@ -96,12 +149,13 @@ function getCookie(cname) {
 }
 
 /**
- * Greet returning user Req R1
+ * Greet returning user.
+ * Activity 2 Req R1
  * @param {*} username : name of returning user.
  */
 window.onload = () => {
   let user = getCookie("user");
-  console.log(user.toString());
+  // console.log(user.toString());
   if (user !== "" && user !== " " && user !== undefined) {
     returningUser = true;
     displayGreeting(user);
@@ -111,7 +165,8 @@ window.onload = () => {
 };
 
 /**
- * Diplay greeting. Req R1
+ * Diplay greeting.
+ * Activity 2 Req R1
  * @param {*} username : name of user
  */
 function displayGreeting(username) {
@@ -127,7 +182,8 @@ function displayGreeting(username) {
 }
 
 /**
- * Set movie critic review content. Req R2
+ * Set movie critic review content.
+ * Activity 2 Req R2
  */
 function setReviewContent() {
   document.getElementById("review-movie").innerHTML = critic.movie;
@@ -138,7 +194,7 @@ function setReviewContent() {
 
 /**
  * Handles user comments functionality, checks comments, parses, censors bad words.
- * Req R2
+ * Activity 2 Req R2
  */
 function handleUserComments() {
   setIdleTimeout(false);
@@ -169,7 +225,7 @@ function handleUserComments() {
 }
 
 /**
- * Use regex expressions to parse comments. Req R2
+ * Activity 2 Req R2. se regex expressions to parse comments.
  * @param {*} userComments : The user comments to parse
  * @returns parsed comments;
  */
@@ -195,7 +251,7 @@ function parseComments(userComments) {
 }
 
 /**
- * Potato censhorship algorithm. Req R2 and R3
+ * Activity 2 Req R2 and R3.  Potato censhorship algorithm.
  * @param {*} parsed : comments to check against bad words dict and replace.
  */
 function censorship(parsed) {
@@ -242,7 +298,7 @@ function censorship(parsed) {
 }
 
 /**
- * Method to put parsed user comment back together as a string. Req R2
+ * Activity 2 Req R2.  Method to put parsed user comment back together as a string.
  * @param {*} parsed : object to reconstruct
  * @returns string of reconstructed comment.
  */
@@ -255,7 +311,7 @@ function reconstructComment(parsed) {
 }
 
 /**
- * Replace bad word with random word at correct entry index. Req R3
+ * Activity 2 Req R3. Replace bad word with random word at correct entry index.
  * @param {*} entryIndex : dict.entries index
  * @returns random good word replacement.
  */
@@ -268,7 +324,7 @@ function getGoodDict(entryIndex) {
 }
 
 /**
- * Req R4, idle timer. Handle the timeout function.
+ * Activity 2 Req R4, idle timer. Handle the timeout function.
  */
 function handleIdleTimeout() {
   // console.log(idleTimeout);
@@ -288,7 +344,7 @@ function handleIdleTimeout() {
 }
 
 /**
- * Get idle messages from dict. Req R4
+ * Activity 2 Req R4. Get idle messages from dict.
  * @returns array of idle messages from dict
  */
 function getIdleMessages() {
@@ -296,7 +352,7 @@ function getIdleMessages() {
 }
 
 /**
- * set the idleTimeout flag. Req R4
+ * Activity 2 Req R4. Set the idleTimeout flag.
  * @param {*} flag : boolean value for idleTimeout.
  */
 function setIdleTimeout(flag) {
@@ -305,7 +361,7 @@ function setIdleTimeout(flag) {
 }
 
 /**
- * Handle key press in comment textarea to turn off idle timeout. Req R4
+ * Activity 2 Req R4. Handle key press in comment textarea to turn off idle timeout.
  */
 function keyPressIdleTime() {
   if (idleTimeout === true) {
@@ -314,7 +370,7 @@ function keyPressIdleTime() {
 }
 
 /**
- * Req R5. Json Validator to check Json input.
+ * Activity 2 Req R5. Json Validator to check Json input.
  * @param {*} parsed : user comments to validate.
  */
 function jsonValidator(parsed) {
@@ -334,7 +390,7 @@ function jsonValidator(parsed) {
 }
 
 /**
- * Req R5. Method to process Json Input after validation check.
+ * Activity 2 Req R5. Method to process Json Input after validation check.
  * @param {*} parsed : json input to process
  */
 function processJsonInput(parsed) {
@@ -356,7 +412,7 @@ function processJsonInput(parsed) {
 }
 
 /**
- * Req R5. Method to check input keys against dict keys.
+ * Activity 2 Req R5. Method to check input keys against dict keys.
  * @param {*} jsonObj : json object to check.
  * @return {boolean} true if found key and added to dictionary. False otherwise.
  */
@@ -375,7 +431,7 @@ function checkJsonKeys(jsonObj) {
 }
 
 /**
- * Req R5.  Method to add json entry to dictionary.
+ * Activity 2 Req R5.  Method to add json entry to dictionary.
  * @param {*} dictIndex : index in dict.entries
  * @param {*} jsonObj : jsonObj to add new entry.
  */
@@ -383,4 +439,12 @@ function addToDictionary(dictIndex, jsonObj) {
   // console.log(Object.values(jsonObj)[0]);
   // console.log(dict.entries[dictIndex]);
   dict.entries[dictIndex].answer.push(Object.values(jsonObj)[0]);
+}
+
+/**
+ * Activity 3 Req R1.  save username in local storage.
+ * @param {*} username : username to store
+ */
+function setStateUsername(username) {
+  localStorage.setItem("username", username);
 }
