@@ -92,6 +92,7 @@ let returningUser = false;
 let userSubmitted = false;
 let idleTimeout = true;
 let idleMessage = getIdleMessages();
+let history = [];
 
 /**
  * Handle username input.
@@ -155,6 +156,7 @@ function getCookie(cname) {
  * @param {*} username : name of returning user.
  */
 window.onload = () => {
+  sessionStorage.setItem("history", "");
   let user = getCookie("user");
   let persistUser = localStorage.getItem("username");
   let userComments = localStorage.getItem("userComments");
@@ -226,6 +228,7 @@ function handleUserComments() {
     document.getElementById("user-comments").value = result;
   } else if (comments.toLowerCase().includes("/history")) {
     console.log("history has been selected");
+    showHistory();
   } else if (comments.toLowerCase().includes("/count")) {
     console.log("count has been selected");
   } else if (comments.toLowerCase().includes("/list")) {
@@ -479,21 +482,34 @@ function saveSessionState(parsed) {
 function resetState() {
   console.log("Applicaion has been cleared and reset.");
   localStorage.clear();
+  sessionStorage.clear();
+  history = [];
   document.getElementById("username").innerHTML = "";
   document.getElementById("welcome").innerHTML = "";
   document.getElementById("review-movie").innerHTML = "";
   document.getElementById("review-body").innerHTML = "";
   document.getElementById("user-comments").innerHTML = "";
+  document.getElementById("history").innerHTML = "";
+  document.getElementById("history-list").innerHTML = "";
 }
 
 /**
- * Activity 3 Req 4: Search the dictionary for key:answer pair
+ * Activity 3 Req R4 and R5: Search the dictionary for key:answer pair, save to session history.
  * @param {*} parsed : user comments to search for
  * @returns answer array from dictionary if found, "no results" response otherwise.
  */
 function searchDictionary(parsed) {
   let key = Object.values(parsed)[1];
-  console.log(key);
+  let result = "";
+  if (key === null || key === undefined) {
+    result =
+      "Please add a keyword to search in the dictionary.\n Ex: /search stupid";
+    return result;
+  }
+  // console.log(key);
+  history.push(key);
+  sessionStorage.history = JSON.stringify({ history });
+  console.log(sessionStorage.history);
   for (let i in dict.entries) {
     for (let j in dict.entries[i].key) {
       if (key === dict.entries[i].key[j]) {
@@ -502,6 +518,27 @@ function searchDictionary(parsed) {
       }
     }
   }
-  let resp = `${key} not found in dictionary.  No search results produced.`;
-  return resp;
+  result = `${key} not found in dictionary. No search results produced.`;
+  return result;
+}
+
+/**
+ * Activity 3 Req R5:  display list of user history.
+ */
+function showHistory() {
+  document.getElementById("history").innerHTML = "Search History: ";
+  document.getElementById("history-list").innerHTML = "";
+  let arr = sessionStorage.getItem("history");
+  // console.log(arr);
+  if (arr === null || arr.length === 0) {
+    document.getElementById("history-list").innerHTML =
+      "No Search History found.";
+  } else {
+    arr = JSON.parse(arr);
+    console.log(arr.history);
+    arr.history.forEach((item, index) => {
+      document.getElementById("history-list").innerHTML +=
+        index + 1 + ": " + item + "<br>";
+    });
+  }
 }
