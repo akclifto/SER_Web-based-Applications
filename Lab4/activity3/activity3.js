@@ -157,6 +157,7 @@ function getCookie(cname) {
  */
 window.onload = () => {
   sessionStorage.setItem("history", "");
+  sessionStorage.censoredCount = 0;
   let user = getCookie("user");
   let persistUser = localStorage.getItem("username");
   let userComments = localStorage.getItem("userComments");
@@ -213,6 +214,7 @@ function setReviewContent() {
  */
 function handleUserComments() {
   setIdleTimeout(false);
+  let parsed = "";
   if (holdUser === "") {
     alert("Please enter your username before commenting.");
     setIdleTimeout(true);
@@ -222,18 +224,18 @@ function handleUserComments() {
   if (comments.toLowerCase().includes("/clear")) {
     resetState();
   } else if (comments.toLowerCase().includes("/search")) {
-    let parsed = parseComments(comments);
+    parsed = parseComments(comments);
     let result = searchDictionary(parsed);
     // console.log(result);
     document.getElementById("user-comments").value = result;
   } else if (comments.toLowerCase().includes("/history")) {
     showHistory();
   } else if (comments.toLowerCase().includes("/count")) {
-    console.log("count has been selected");
+    showCount();
   } else if (comments.toLowerCase().includes("/list")) {
     console.log("list has been selected");
   } else {
-    let parsed = parseComments(comments);
+    parsed = parseComments(comments);
     // console.log(parsed[0]);
     if (parsed[0] === undefined) {
       alert(
@@ -251,7 +253,11 @@ function handleUserComments() {
       parsed = censorship(parsed);
       document.getElementById("user-comments").value = parsed;
     }
-    saveSessionState(parsed);
+    if (parsed !== "") {
+      saveSessionState(parsed);
+    } else {
+      saveSessionState(comments);
+    }
   }
 }
 
@@ -283,7 +289,8 @@ function parseComments(userComments) {
 
 /**
  * Activity 2 Req R2 and R3.  Potato censhorship algorithm.
- * Activity 3 Req 3.  Random, non-repeating, and full answer library usage of good word replacement.
+ * Activity 3 Req R3.  Random, non-repeating, and full answer library usage of good word replacement.
+ * Activity 3 Req R6.  Storage of censored word count.
  * @param {*} parsed : comments to check against bad words dict and replace.
  */
 function censorship(parsed) {
@@ -294,11 +301,19 @@ function censorship(parsed) {
   for (let p in parsed) {
     for (let i in dict.entries) {
       for (let d in dict.entries[i].key) {
-        if (goodWords.length === 0) {
-          // console.log("getting more words");
-          goodWords = getGoodWords(i);
-        }
         if (parsed[p].includes(dict.entries[i].key[d])) {
+          if (goodWords.length === 0) {
+            // console.log("getting more words");
+            goodWords = getGoodWords(i);
+          }
+          if (sessionStorage.censoredCount) {
+            sessionStorage.censoredCount =
+              Number(sessionStorage.censoredCount) + 1;
+            // console.log(sessionStorage.censoredCount);
+          } else {
+            sessionStorage.censoredCount = 1;
+            console.log(sessionStorage.censoredCount);
+          }
           let goodIdx = replaceWord(goodWords);
           goodWord = goodWords.splice(goodIdx, 1);
           console.log(
@@ -443,7 +458,7 @@ function checkJsonKeys(jsonObj) {
     for (let j in dict.entries[i].key) {
       // console.log(dict.entries[i].key[j]);
       if (jsonObjKey === dict.entries[i].key[j]) {
-        console.log("there is a match");
+        // console.log("there is a match");
         let val = Object.values(jsonObj)[0];
         for (let k in dict.entries[i].answer) {
           if (val === dict.entries[i].answer[k]) {
@@ -519,11 +534,11 @@ function searchDictionary(parsed) {
   // console.log(key);
   history.push(key);
   sessionStorage.history = JSON.stringify({ history });
-  console.log(sessionStorage.history);
+  // console.log(sessionStorage.history);
   for (let i in dict.entries) {
     for (let j in dict.entries[i].key) {
       if (key === dict.entries[i].key[j]) {
-        console.log(key, "found");
+        // console.log(key, "found");
         return dict.entries[i].answer;
       }
     }
@@ -551,4 +566,19 @@ function showHistory() {
         index + 1 + ": " + item + "<br>";
     });
   }
+}
+
+/**
+ * Activity 3 Req R6:  display count of user rude words.
+ * Session-based, re-load of window clears results.
+ */
+function showCount() {
+  let rudeCount = "";
+  if (sessionStorage.censoredCount === undefined) {
+    rudeCount = 0;
+  } else {
+    rudeCount = sessionStorage.censoredCount;
+  }
+  const display = `The total count of rude words is: ${rudeCount}`;
+  document.getElementById("user-comments").value = display;
 }
