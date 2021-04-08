@@ -155,12 +155,24 @@ function getCookie(cname) {
  */
 window.onload = () => {
   let user = getCookie("user");
-  // console.log(user.toString());
-  if (user !== "" && user !== " " && user !== undefined) {
+  let persistUser = localStorage.getItem("username");
+  let userComments = localStorage.getItem("userComments");
+
+  if (persistUser !== null && persistUser !== undefined) {
+    holdUser = persistUser;
     returningUser = true;
-    displayGreeting(user);
+    displayGreeting(persistUser);
     setReviewContent();
-    handleIdleTimeout();
+  } else {
+    if (user !== "" && user !== " " && user !== undefined) {
+      returningUser = true;
+      displayGreeting(user);
+      setReviewContent();
+      handleIdleTimeout();
+    }
+  }
+  if (userComments !== null && persistUser !== undefined) {
+    document.getElementById("user-comments").innerHTML = userComments;
   }
 };
 
@@ -222,6 +234,7 @@ function handleUserComments() {
     parsed = censorship(parsed);
     document.getElementById("user-comments").value = parsed;
   }
+  saveSessionState(parsed);
 }
 
 /**
@@ -442,9 +455,17 @@ function addToDictionary(dictIndex, jsonObj) {
 }
 
 /**
- * Activity 3 Req R1.  save username in local storage.
+ * Activity 3 Req R1.  Save username in local storage.
  * @param {*} username : username to store
  */
 function setStateUsername(username) {
   localStorage.setItem("username", username);
+}
+
+/**
+ * Activity 3 Req R1.  Save user comments in local storage.
+ * @param {*} username : username to store
+ */
+function saveSessionState(parsed) {
+  localStorage.setItem("userComments", parsed);
 }
