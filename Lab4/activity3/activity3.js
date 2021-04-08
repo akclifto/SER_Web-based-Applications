@@ -219,6 +219,7 @@ function handleUserComments() {
   let comments = document.getElementById("user-comments").value.trim();
   if (comments.includes("/clear")) {
     resetState();
+  
   } else if (comments.includes("/search")) {
     console.log("search has been selected");
 
@@ -227,6 +228,9 @@ function handleUserComments() {
 
   } else if (comments.includes("/count")) {
     console.log("count has been selected");
+
+  } else if (comments.includes("/list")) {
+    console.log("list has been selected");
 
   } else {
     let parsed = parseComments(comments);
@@ -283,38 +287,23 @@ function parseComments(userComments) {
  */
 function censorship(parsed) {
   let censored = [];
-  let checkGoods = [];
+  let goodWords = [];
   let goodWord = "";
-
+  console.log(parsed);
   for (let p in parsed) {
     for (let i in dict.entries) {
       for (let d in dict.entries[i].key) {
-        if (parsed[p].toLowerCase().includes(dict.entries[i].key[d])) {
-          let goodIdx = replaceWord(i);
-          if (checkGoods.length === 0) {
-            checkGoods.push(goodIdx);
-            goodWord = dict.entries[i].answer[goodIdx];
-          } else {
-            if (checkGoods.length === 1) {
-              while (goodIdx === checkGoods[checkGoods.length - 1]) {
-                goodIdx = replaceWord(i);
-              }
-              checkGoods.push(goodIdx);
-            } else {
-              while (
-                goodIdx === checkGoods[checkGoods.length - 1] ||
-                goodIdx === checkGoods[checkGoods.length - 2]
-              ) {
-                goodIdx = replaceWord(i);
-              }
-              checkGoods.push(goodIdx);
-            }
-            goodWord = dict.entries[i].answer[goodIdx];
-          }
+        if (goodWords.length === 0) {
+          // console.log("getting more words");
+          goodWords = getGoodWords(i);
+        }
+        if (parsed[p].includes(dict.entries[i].key[d])) {
+          let goodIdx = replaceWord(goodWords);
+          goodWord = goodWords.splice(goodIdx, 1);
           console.log(
             parsed[p] + " is a bad word and will be replaced with " + goodWord
           );
-          parsed[p] = goodWord;
+          parsed[p] = goodWord[0];
         }
       }
     }
@@ -337,17 +326,17 @@ function reconstructComment(parsed) {
   return str;
 }
 
+function getGoodWords(index) {
+  return dict.entries[index].answer.slice(0);
+}
+
 /**
  * Activity 2 Req R3. Replace bad word with random word at correct entry index.
  * @param {*} entryIndex : dict.entries index
  * @returns random good word replacement.
  */
-function replaceWord(entryIndex) {
-  return Math.floor(Math.random() * dict.entries[entryIndex].answer.length);
-}
-
-function getGoodDict(entryIndex) {
-  return dict.entries[entryIndex].answer;
+function replaceWord(goodWords) {
+  return Math.floor(Math.random() * goodWords.length);
 }
 
 /**
