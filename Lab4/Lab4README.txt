@@ -39,7 +39,14 @@ Activity 3:
 
 Test input for string commands:
     /clear : clears state of app (session and localStorage)
+
     /search <key>: returns answers array for given session in user-comments textarea
+        Ex: /search stupid
+            /SEARCH inept
+            /search blah
+
     /history : list of all searches done within session below user-comments textarea
+    
     /count : returns number of censored words within session in the user-comments textarea
+    
     /list : lists all the review user has submitted within session below user-comments textarea

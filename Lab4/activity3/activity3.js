@@ -217,21 +217,19 @@ function handleUserComments() {
     return;
   }
   let comments = document.getElementById("user-comments").value.trim();
-  if (comments.includes("/clear")) {
+  if (comments.toLowerCase().includes("/clear")) {
     resetState();
-  
-  } else if (comments.includes("/search")) {
-    console.log("search has been selected");
-
-  } else if (comments.includes("/history")) {
+  } else if (comments.toLowerCase().includes("/search")) {
+    let parsed = parseComments(comments);
+    let result = searchDictionary(parsed);
+    console.log(result);
+    document.getElementById("user-comments").value = result;
+  } else if (comments.toLowerCase().includes("/history")) {
     console.log("history has been selected");
-
-  } else if (comments.includes("/count")) {
+  } else if (comments.toLowerCase().includes("/count")) {
     console.log("count has been selected");
-
-  } else if (comments.includes("/list")) {
+  } else if (comments.toLowerCase().includes("/list")) {
     console.log("list has been selected");
-
   } else {
     let parsed = parseComments(comments);
     // console.log(parsed[0]);
@@ -283,6 +281,7 @@ function parseComments(userComments) {
 
 /**
  * Activity 2 Req R2 and R3.  Potato censhorship algorithm.
+ * Activity 3 Req 3.  Random, non-repeating, and full answer library usage of good word replacement.
  * @param {*} parsed : comments to check against bad words dict and replace.
  */
 function censorship(parsed) {
@@ -485,4 +484,24 @@ function resetState() {
   document.getElementById("review-movie").innerHTML = "";
   document.getElementById("review-body").innerHTML = "";
   document.getElementById("user-comments").innerHTML = "";
+}
+
+/**
+ * Activity 3 Req 4: Search the dictionary for key:answer pair
+ * @param {*} parsed : user comments to search for
+ * @returns answer array from dictionary if found, "no results" response otherwise.
+ */
+function searchDictionary(parsed) {
+  let key = Object.values(parsed)[1];
+  console.log(key);
+  for (let i in dict.entries) {
+    for (let j in dict.entries[i].key) {
+      if (key === dict.entries[i].key[j]) {
+        console.log(key, "found");
+        return dict.entries[i].answer;
+      }
+    }
+  }
+  let resp = `${key} not found in dictionary.  No search results produced.`;
+  return resp;
 }
