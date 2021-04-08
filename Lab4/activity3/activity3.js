@@ -218,13 +218,16 @@ function handleUserComments() {
   }
   let comments = document.getElementById("user-comments").value.trim();
   if (comments.includes("/clear")) {
-    console.log("clear has been selected");
+    resetState();
   } else if (comments.includes("/search")) {
     console.log("search has been selected");
+
   } else if (comments.includes("/history")) {
     console.log("history has been selected");
+
   } else if (comments.includes("/count")) {
     console.log("count has been selected");
+
   } else {
     let parsed = parseComments(comments);
     // console.log(parsed[0]);
@@ -479,4 +482,18 @@ function setStateUsername(username) {
  */
 function saveSessionState(parsed) {
   localStorage.setItem("userComments", parsed);
+}
+
+/**
+ * Activity 3 Req R2.  Save user comments in local storage.
+ * @param {*} username : username to store
+ */
+function resetState() {
+  console.log("Applicaion has been cleared and reset.");
+  localStorage.clear();
+  document.getElementById("username").innerHTML = "";
+  document.getElementById("welcome").innerHTML = "";
+  document.getElementById("review-movie").innerHTML = "";
+  document.getElementById("review-body").innerHTML = "";
+  document.getElementById("user-comments").innerHTML = "";
 }
