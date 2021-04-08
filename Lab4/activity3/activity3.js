@@ -297,22 +297,22 @@ function censorship(parsed) {
   let censored = [];
   let goodWords = [];
   let goodWord = "";
-  console.log(parsed);
+  // console.log(parsed);
   for (let p in parsed) {
     for (let i in dict.entries) {
       for (let d in dict.entries[i].key) {
+        if (goodWords.length === 0) {
+          // console.log("getting more words");
+          goodWords = getGoodWords(i);
+        }
         if (parsed[p].includes(dict.entries[i].key[d])) {
-          if (goodWords.length === 0) {
-            // console.log("getting more words");
-            goodWords = getGoodWords(i);
-          }
           if (sessionStorage.censoredCount) {
             sessionStorage.censoredCount =
               Number(sessionStorage.censoredCount) + 1;
             // console.log(sessionStorage.censoredCount);
           } else {
             sessionStorage.censoredCount = 1;
-            console.log(sessionStorage.censoredCount);
+            // console.log(sessionStorage.censoredCount);
           }
           let goodIdx = replaceWord(goodWords);
           goodWord = goodWords.splice(goodIdx, 1);
@@ -462,7 +462,7 @@ function checkJsonKeys(jsonObj) {
         let val = Object.values(jsonObj)[0];
         for (let k in dict.entries[i].answer) {
           if (val === dict.entries[i].answer[k]) {
-            console.log(dict.entries[i].answer[k]);
+            // console.log(dict.entries[i].answer[k]);
             return -1;
           }
         }

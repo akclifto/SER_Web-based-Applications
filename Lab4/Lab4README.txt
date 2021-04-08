@@ -31,11 +31,11 @@ Activity 3:
             2. inept inept inept inept inept inept inept
             3. ugly ugly ugly ugly ugly ugly ugly ugly ugly ugly
             4. dark dark dark dark dark dark dark  
-            5. stupid stupid dumb inept dark stupid inept inept dark dark
+            5. stupid inept dark stupid inept inept dark dark
             6. this comment is dumb and stupid you are inept heartless and weak.  Don't be a dark dumb idiot baby.
-    R4:
-    R5:
-    R6:
+    R4: Fully implemented
+    R5: Fully implemented
+    R6: Fully implemented
     R7:
 
 Test input for string commands:
