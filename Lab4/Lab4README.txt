@@ -5,7 +5,7 @@
  *
  */
 
- Activity 1: Fully implemented
+ Activity 1: Implemented
 
  Activity 2: Please view the console while running the SPA to see additional info about the events.
     
@@ -17,15 +17,15 @@
             Window.onload check for "remembered user"
             "Welcome back greeting"
     
-    R2: Fully implemented
-    R3: Fully implemented
-    R4: Fully implemented
-    R5: Fully implemented
+    R2: Implemented
+    R3: Implemented
+    R4: Implemented
+    R5: Implemented
 
 Activity 3:
     R1: Implemented with localStorage to persist state for username and commnets if browser closed.
-    R2: Fully implemented
-    R3: Fully implemented
+    R2: Implemented
+    R3: Implemented
         Testing cases used:
             1. stupid stupid stupid stupid stupid stupid stupid stupid
             2. inept inept inept inept inept inept inept
@@ -33,9 +33,9 @@ Activity 3:
             4. dark dark dark dark dark dark dark  
             5. stupid inept dark stupid inept inept dark dark
             6. this comment is dumb and stupid you are inept heartless and weak.  Don't be a dark dumb idiot baby.
-    R4: Fully implemented
-    R5: Fully implemented
-    R6: Fully implemented
+    R4: Implemented
+    R5: Implemented
+    R6: Implemented
     R7:
 
 Test input for string commands:
