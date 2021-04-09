@@ -23,7 +23,7 @@
     R5: Implemented
 
 Activity 3:
-    R1: Implemented with localStorage to persist state for username and commnets if browser closed.
+    R1: Implemented with localStorage to persist state for username and comments if browser closed.
     R2: Implemented
     R3: Implemented
         Testing cases used:
@@ -36,7 +36,7 @@ Activity 3:
     R4: Implemented
     R5: Implemented
     R6: Implemented
-    R7:
+    R7: Implemented
 
 Test input for string commands:
     /clear : clears state of app (session and localStorage)
@@ -51,3 +51,6 @@ Test input for string commands:
     /count : returns number of censored words within session in the user-comments textarea
     
     /list : lists all the review user has submitted within session below user-comments textarea
+            Ex listing:
+                Actual: this is dumb
+                Censored: this is educated

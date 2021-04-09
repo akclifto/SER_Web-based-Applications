@@ -93,6 +93,7 @@ let userSubmitted = false;
 let idleTimeout = true;
 let idleMessage = getIdleMessages();
 let history = [];
+let userRevs = [];
 
 /**
  * Handle username input.
@@ -215,6 +216,7 @@ function setReviewContent() {
 function handleUserComments() {
   setIdleTimeout(false);
   let parsed = "";
+  console.log(holdUser);
   if (holdUser === "") {
     alert("Please enter your username before commenting.");
     setIdleTimeout(true);
@@ -226,15 +228,18 @@ function handleUserComments() {
   } else if (comments.toLowerCase().includes("/search")) {
     parsed = parseComments(comments);
     let result = searchDictionary(parsed);
-    // console.log(result);
     document.getElementById("user-comments").value = result;
   } else if (comments.toLowerCase().includes("/history")) {
     showHistory();
   } else if (comments.toLowerCase().includes("/count")) {
     showCount();
   } else if (comments.toLowerCase().includes("/list")) {
-    console.log("list has been selected");
+    showList();
   } else {
+    let review = {
+      clean: comments,
+      censored: undefined,
+    };
     parsed = parseComments(comments);
     // console.log(parsed[0]);
     if (parsed[0] === undefined) {
@@ -251,6 +256,9 @@ function handleUserComments() {
       processJsonInput(parsed);
     } else {
       parsed = censorship(parsed);
+      review.censored = parsed;
+      userRevs.push(review);
+      sessionStorage.userReviews = JSON.stringify({ userRevs });
       document.getElementById("user-comments").value = parsed;
     }
     if (parsed !== "") {
@@ -301,7 +309,7 @@ function censorship(parsed) {
   for (let p in parsed) {
     for (let i in dict.entries) {
       for (let d in dict.entries[i].key) {
-        if (parsed[p].includes(dict.entries[i].key[d])) {
+        if (parsed[p].toLowerCase().includes(dict.entries[i].key[d])) {
           if (goodWords.length === 0) {
             // console.log("getting more words");
             goodWords = getGoodWords(i);
@@ -581,4 +589,32 @@ function showCount() {
   }
   const display = `The total count of rude words is: ${rudeCount}`;
   document.getElementById("user-comments").value = display;
+}
+
+/**
+ * Activity 3 Req R7: display list of all reviews that the user had submitted.
+ * Session-based. re-load of window clears results.
+ * Contains both actual review and censored reviews.
+ */
+function showList() {
+  let user = localStorage.getItem("username");
+  if (user === null) {
+    user = holdUser;
+  }
+  document.getElementById("history").innerHTML = user + "'s Reviews:";
+  document.getElementById("history-list").innerHTML = "";
+  let reviews = sessionStorage.getItem("userReviews");
+  // console.log(reviews);
+  if (reviews === null || reviews === undefined) {
+    document.getElementById("history-list").innerHTML = "No reviews found.";
+  } else {
+    reviews = JSON.parse(reviews);
+    // console.log(reviews);
+    reviews.userRevs.forEach((item, index) => {
+      // console.log(item, index);
+      document.getElementById("history-list").innerHTML +=
+        "<li> Actual: " + item.clean + "<br>" + 
+        "Censored: " + item.censored + "<br><br>";
+    });
+  }
 }
