@@ -273,3 +273,13 @@ CSS rendering cycle can be computationally expensive for RWD.  @media ... exampl
 Adaptive rendering creates a bunch of fixed templates at different sizes and applies whichever may best fit the screen.
 
 [Back to Top](#Vocab-from-Videos)
+
+## Module 5
+
+REQUIRED READING: <https://www.freecodecamp.org/news/is-mvc-dead-for-the-frontend-35b4d1fe39ec/?gi=b99635d323e>
+
+REQUIRED READING: <https://martinfowler.com/eaaDev/PresentationModel.html>
+
+AJAX : Asynchronous javascript and XML
+
+[Back to Top](#Vocab-from-Videos)
