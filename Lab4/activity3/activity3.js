@@ -303,11 +303,11 @@ function parseComments(userComments) {
  */
 function censorship(parsed) {
   let censored = [];
-  let goodWords = [];
   let goodWord = "";
   // console.log(parsed);
   for (let p in parsed) {
     for (let i in dict.entries) {
+      let goodWords = getGoodWords(i);
       for (let d in dict.entries[i].key) {
         if (parsed[p].toLowerCase().includes(dict.entries[i].key[d])) {
           if (goodWords.length === 0) {
@@ -330,6 +330,7 @@ function censorship(parsed) {
           parsed[p] = goodWord[0];
         }
       }
+      goodWords = [];
     }
   }
   censored = reconstructComment(parsed);
