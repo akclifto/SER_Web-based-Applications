@@ -23,12 +23,12 @@ router.post("/euro", async function (req, res, next) {
   let usd = req.body.usd;
   console.log(req.body);
   let conv = 0.84;
-  const euro = conv * usd;
+  const euro = parseFloat(conv * usd).toFixed(2);
   let operand = `Operand: ${usd} was converted from USD to ${euro} EUROS, IP: ${ip}, User-Details: ${userAgent}`;
   history.push(operand);
 
   let response = {
-    conv: `\u20AC${euro} in EUROS`,
+    converted: `\u20AC ${euro} in EUROS`,
     userAgent: userAgent,
     ip: ip,
     history: history,
@@ -63,7 +63,7 @@ router.post("/pound", async function (req, res, next) {
   history.push(operand);
 
   let response = {
-    pound: `${pound} in POUNDS`,
+    converted: `${pound} in POUNDS`,
     userAgent: userAgent,
     ip: ip,
     history: history,
