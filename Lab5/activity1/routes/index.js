@@ -50,7 +50,7 @@ router.post("/pound", async function (req, res, next) {
   let userAgent = req.header["user-agent"];
   let ip = req["_remoteAddress"];
   let usd = req.body.usd;
-  let conv = 0.84;
+  let conv = 0.73;
   const pound = conv * usd;
   let operand = `Operand: ${usd} was convert from USD to ${pound}, IP: ${ip}, User-Details: ${userAgent}`;
   history.push(operand);
