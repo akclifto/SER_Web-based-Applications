@@ -17,71 +17,16 @@ router.get("/", function (req, res, next) {
  * POST euro api conversion.
  */
 router.post("/euro", async function (req, res, next) {
-  let flag;
-  let userAgent = req.headers["user-agent"];
-  let ip = req["_remoteAddress"];
-  let usd = req.body.usd;
-  console.log(req.body);
-  let conv = 0.84;
-  const euro = parseFloat(conv * usd).toFixed(2);
-  let operand = `Operand: ${usd} was converted from USD to ${euro} EUROS, IP: ${ip}, User-Details: ${userAgent}`;
-  history.push(operand);
-
-  let response = {
-    converted: `\u20AC ${euro} in EUROS`,
-    userAgent: userAgent,
-    ip: ip,
-    history: history,
-  };
-  try {
-    flag = await fileService.writeToFile(response);
-  } catch (err) {
-    logger.errorLog("euro", err);
-  }
-  if (flag) {
-    res.set({
-      "Content-type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type, Accept",
-      Accept: "application/json", //TODO
-    });
-    res.send(response);
-  }
+  let conversionType = "euro";
+  handleConversion(req, res, conversionType);
 });
 
 /**
  * POST pound api conversion.
  */
 router.post("/pound", async function (req, res, next) {
-  let flag;
-  let userAgent = req.header["user-agent"];
-  let ip = req["_remoteAddress"];
-  let usd = req.body.usd;
-  let conv = 0.73;
-  const pound = conv * usd;
-  let operand = `Operand: ${usd} was converted from USD to ${pound} GBP, IP: ${ip}, User-Details: ${userAgent}`;
-  history.push(operand);
-
-  let response = {
-    converted: `${pound} in POUNDS`,
-    userAgent: userAgent,
-    ip: ip,
-    history: history,
-  };
-  try {
-    flag = await fileService.writeToFile(history);
-  } catch (err) {
-    logger.errorLog("euro", err);
-  }
-  if (flag) {
-    res.set({
-      "Content-type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type, Accept",
-      Accept: "application/json", //TODO
-    });
-    res.send(response);
-  }
+  let conversionType = "pound";
+  handleConversion(req, res, conversionType);
 });
 
 /**
@@ -104,5 +49,52 @@ router.get("/reset", function (req, res, next) {
 router.get("/history", function (req, res, next) {
   //TODO
 });
+
+/**
+ * Method to handle Conversions for Euros and Pounds.  Sends response object
+ * to client.
+ * @param {*} req :req object
+ * @param {*} res : response object
+ * @param {*} conversionType : conversion type (euros || pounds)
+ */
+async function handleConversion(req, res, conversionType) {
+  let flag;
+  let userAgent = req.headers["user-agent"];
+  let ip = req["_remoteAddress"];
+  let usd = req.body.usd;
+  let conv = "";
+  let converted = "";
+  if (conversionType === "euro") {
+    conv = 0.9;
+    converted = `${conv * usd} in EUROS`;
+    let operand = `Operand: ${usd} was converted from USD to ${converted}, IP: ${ip}, User-Details: ${userAgent}`;
+    history.push(operand);
+  } else {
+    conv = 0.78;
+    converted = `${conv * usd} in POUNDS`;
+    let operand = `Operand: ${usd} was converted from USD to ${converted}, IP: ${ip}, User-Details: ${userAgent}`;
+    history.push(operand);
+  }
+  let response = {
+    converted: converted,
+    userAgent: userAgent,
+    ip: ip,
+    history: history,
+  };
+  try {
+    flag = await fileService.writeToFile(history);
+  } catch (err) {
+    logger.errorLog("handleConversion", err);
+  }
+  if (flag) {
+    res.set({
+      "Content-type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Content-Type, Accept",
+      Accept: "application/json",
+    });
+    res.send(response);
+  }
+}
 
 module.exports = router;
