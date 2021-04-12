@@ -5,6 +5,9 @@
  * @email akclifto@asu.edu
  */
 
+let input = document.getElementById("currency-usd");
+input.addEventListener("keyup", checkInput);
+
 function checkInput() {
   let input = document.getElementById("currency-usd").value;
   let conv = "";
