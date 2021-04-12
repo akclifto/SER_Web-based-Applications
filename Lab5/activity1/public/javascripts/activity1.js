@@ -34,7 +34,9 @@ function checkInput() {
  * Method to convert USD to EURO.
  */
 function convertEuro() {
+  checkInput();
   let usd = document.getElementById("currency-usd").value;
+  usd = parseFloat(usd).toFixed(2);
   const data = { usd };
   req.open("POST", URL.concat("/euro"), true);
   req.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
@@ -44,12 +46,13 @@ function convertEuro() {
         // console.log(req.responseText);
         let resp = JSON.parse(req.responseText);
         history = resp.history;
-        document.getElementById("currency-conversion").innerHTML = resp.euro;
+        document.getElementById("currency-conversion").innerHTML = resp.conv;
         if (history.length > 0) {
           document.getElementById("reset").removeAttribute("disabled");
+          document.getElementById("history-list").innerHTML = "";
           history.forEach((item, index) => {
             document.getElementById("history-list").innerHTML +=
-              "<li>" + index + 1 + ": " + item + "<br>";
+              "<li>" + (index + 1) + ": " + item + "<br>";
           });
         }
       }

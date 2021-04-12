@@ -21,13 +21,14 @@ router.post("/euro", async function (req, res, next) {
   let userAgent = req.headers["user-agent"];
   let ip = req["_remoteAddress"];
   let usd = req.body.usd;
+  console.log(req.body);
   let conv = 0.84;
   const euro = conv * usd;
   let operand = `Operand: ${usd} was converted from USD to ${euro} EUROS, IP: ${ip}, User-Details: ${userAgent}`;
   history.push(operand);
 
   let response = {
-    euro: `${euro} in EURO`,
+    conv: `\u20AC${euro} in EUROS`,
     userAgent: userAgent,
     ip: ip,
     history: history,
@@ -62,7 +63,7 @@ router.post("/pound", async function (req, res, next) {
   history.push(operand);
 
   let response = {
-    pound: `${pound} in POUND`,
+    pound: `${pound} in POUNDS`,
     userAgent: userAgent,
     ip: ip,
     history: history,
