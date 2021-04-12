@@ -4,7 +4,7 @@ const fs = require("fs");
 const logger = require("../services/log");
 
 const FILE_DIR = path.resolve();
-const HISTORY = "../resource/history.json";
+const HISTORY = "/resource/history.json";
 
 /**
  * Method to write data to file.

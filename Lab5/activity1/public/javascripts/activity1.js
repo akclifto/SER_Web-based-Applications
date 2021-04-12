@@ -4,15 +4,21 @@
  * @author Adam Clifton
  * @email akclifto@asu.edu
  */
+const URL = "http://localhost:8008";
+const req = new XMLHttpRequest();
+let history = [];
 
 let input = document.getElementById("currency-usd");
 input.addEventListener("keyup", checkInput);
 
+/**
+ * Method to validate user input.  Ensures it is numeric entry to access conversions.
+ */
 function checkInput() {
-  let input = document.getElementById("currency-usd").value;
+  let usd = document.getElementById("currency-usd").value;
   let conv = "";
   try {
-    conv = parseFloat(input).toFixed(2);
+    conv = parseFloat(usd).toFixed(2);
   } catch (err) {
     console.log(err.message);
   }
@@ -25,10 +31,31 @@ function checkInput() {
   }
 }
 /**
- * Method to convert USD to EURO
+ * Method to convert USD to EURO.
  */
 function convertEuro() {
-  console.log("convert euro clicked");
+  let usd = document.getElementById("currency-usd").value;
+  const data = { usd };
+  req.open("POST", URL.concat("/euro"), true);
+  req.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+  req.onreadystatechange = () => {
+    if (req.readyState == 4) {
+      if (req.status == 200) {
+        // console.log(req.responseText);
+        let resp = JSON.parse(req.responseText);
+        history = resp.history;
+        document.getElementById("currency-conversion").innerHTML = resp.euro;
+        if (history.length > 0) {
+          document.getElementById("reset").removeAttribute("disabled");
+          history.forEach((item, index) => {
+            document.getElementById("history-list").innerHTML +=
+              "<li>" + index + 1 + ": " + item + "<br>";
+          });
+        }
+      }
+    }
+  };
+  req.send(JSON.stringify(data));
 }
 
 /**

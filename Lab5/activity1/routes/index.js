@@ -14,22 +14,22 @@ router.get("/", function (req, res, next) {
 router.post("/euro", async function (req, res, next) {
   //TODO
   let flag;
-  let userAgent = req.header["user-agent"];
+  let userAgent = req.headers["user-agent"];
   let ip = req["_remoteAddress"];
   let usd = req.body.usd;
   let conv = 0.84;
   const euro = conv * usd;
-  let operand = `Operand: ${usd} was convert from USD to ${euro}, IP: ${ip}, User-Details: ${userAgent}`;
+  let operand = `Operand: ${usd} was converted from USD to ${euro} EUROS, IP: ${ip}, User-Details: ${userAgent}`;
   history.push(operand);
 
   let response = {
     euro: `${euro} in EURO`,
     userAgent: userAgent,
     ip: ip,
-    activity: history,
+    history: history,
   };
   try {
-    flag = await fileService.writeToFile(history);
+    flag = await fileService.writeToFile(response);
   } catch (err) {
     logger.errorLog("euro", err);
   }
@@ -52,14 +52,14 @@ router.post("/pound", async function (req, res, next) {
   let usd = req.body.usd;
   let conv = 0.73;
   const pound = conv * usd;
-  let operand = `Operand: ${usd} was convert from USD to ${pound}, IP: ${ip}, User-Details: ${userAgent}`;
+  let operand = `Operand: ${usd} was converted from USD to ${pound} GBP, IP: ${ip}, User-Details: ${userAgent}`;
   history.push(operand);
 
   let response = {
     pound: `${pound} in POUND`,
     userAgent: userAgent,
     ip: ip,
-    activity: history,
+    history: history,
   };
   try {
     flag = await fileService.writeToFile(history);
