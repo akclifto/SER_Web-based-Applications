@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const e = require("express");
 const express = require("express");
 const router = express.Router();
@@ -12,6 +13,15 @@ let history = [];
  * */
 router.get("/", function (req, res, next) {
   res.render("index");
+});
+
+/**
+ * GET API documentation page.
+ */
+router.get("/api", function (req, res, next) {
+  //TODO
+  console.log("in API");
+  res.render("api");
 });
 
 /**
@@ -88,7 +98,7 @@ router.get("/reset", async function (req, res, next) {
 /**
  * GET history api action.  Shows activity history.
  */
-router.get("/history", async function (req, res, next) {
+router.get("/history", async function (req, res) {
   try {
     history = await fileService.getHistory();
   } catch (err) {
@@ -105,10 +115,6 @@ router.get("/history", async function (req, res, next) {
     Accept: "application/json",
   });
   res.send(response);
-});
-
-router.get("/api", function (req, res, next) {
-  //TODO
 });
 
 /**
