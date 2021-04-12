@@ -7,6 +7,7 @@
 
 function convertEuro() {
   console.log("convert euro clicked");
+
 }
 
 function convertGBP() {

@@ -12,7 +12,7 @@ const HISTORY = "../resource/history.json";
  * @param {*} file : file to write
  * @param {*} data : data to write to file
  */
-function writeToFile(res, file, data) {
+function writeToFile(data) {
   return new Promise((resolve, reject) => {
     try {
       fs.writeFileSync(
