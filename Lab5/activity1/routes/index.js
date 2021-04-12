@@ -16,7 +16,7 @@ router.get("/", function (req, res, next) {
 /**
  * POST euro api conversion.
  */
-router.post("/euro", async function (req, res, next) {
+router.post("/euro", function (req, res, next) {
   let conversionType = "euro";
   handleConversion(req, res, conversionType);
 });
@@ -24,7 +24,7 @@ router.post("/euro", async function (req, res, next) {
 /**
  * POST pound api conversion.
  */
-router.post("/pound", async function (req, res, next) {
+router.post("/pound", function (req, res, next) {
   let conversionType = "pound";
   handleConversion(req, res, conversionType);
 });
@@ -39,8 +39,24 @@ router.get("/pop", function (req, res, next) {
 /**
  * GET reset api action. Resets history.
  */
-router.get("/reset", function (req, res, next) {
-  //TODO
+router.get("/reset", async function (req, res, next) {
+  let flag;
+  history = [];
+  try {
+    flag = await fileService.writeToFile(history);
+  } catch (err) {
+    logger.errorLog("reset", err);
+  }
+  if (flag) {
+    let response = { history };
+    res.set({
+      "Content-type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Content-Type, Accept",
+      Accept: "application/json",
+    });
+    res.send(response);
+  }
 });
 
 /**

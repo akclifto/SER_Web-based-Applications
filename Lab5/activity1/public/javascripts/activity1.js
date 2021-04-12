@@ -59,7 +59,19 @@ function pop() {
  */
 function reset() {
   console.log("reset clicked");
-  
+  req.open("GET", URL.concat("/reset"), true);
+  req.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+  req.onreadystatechange = () => {
+    if (req.readyState == 4) {
+      if (req.status == 200) {
+        // console.log(req.responseText);
+        let resp = JSON.parse(req.responseText);
+        history = resp.history;
+        document.getElementById("history-list").innerHTML = history;
+      }
+    }
+  };
+  req.send();
 }
 
 /**

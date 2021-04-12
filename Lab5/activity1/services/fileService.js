@@ -8,8 +8,6 @@ const HISTORY = "/resource/history.json";
 
 /**
  * Method to write data to file.
- * @param {*} res : server response
- * @param {*} file : file to write
  * @param {*} data : data to write to file
  */
 function writeToFile(data) {
@@ -34,6 +32,33 @@ function writeToFile(data) {
   });
 }
 
+/**
+ * Method to get history. Reads history file from resource folder.
+ * @returns parsed json questions in Promise, rejects otherwise.
+ */
+function getHistory() {
+  return new Promise(function (resolve, reject) {
+    try {
+      fs.readFile(FILE_DIR.concat(HISTORY), "UTF8", function (err, data) {
+        if (err) {
+          logger.errorLog("readFile", err);
+          reject(false);
+        }
+        let history = JSON.parse(data);
+        if (history.length === 0 || history === "") {
+          history = [];
+          resolve(history);
+        } else {
+          resolve(history);
+        }
+      });
+    } catch (err) {
+      logger.errorLog("getArticle error: ", err);
+    }
+  });
+}
+
 module.exports = {
   writeToFile,
+  getHistory,
 };
