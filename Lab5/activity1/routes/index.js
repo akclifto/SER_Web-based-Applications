@@ -6,13 +6,17 @@ const logger = require("../services/log");
 
 let history = [];
 
-/* GET home page. */
+/**
+ * GET home page.
+ * */
 router.get("/", function (req, res, next) {
   res.render("index");
 });
 
+/**
+ * POST euro api conversion.
+ */
 router.post("/euro", async function (req, res, next) {
-  //TODO
   let flag;
   let userAgent = req.headers["user-agent"];
   let ip = req["_remoteAddress"];
@@ -44,8 +48,10 @@ router.post("/euro", async function (req, res, next) {
   }
 });
 
+/**
+ * POST pound api conversion.
+ */
 router.post("/pound", async function (req, res, next) {
-  //TODO
   let flag;
   let userAgent = req.header["user-agent"];
   let ip = req["_remoteAddress"];
@@ -77,14 +83,23 @@ router.post("/pound", async function (req, res, next) {
   }
 });
 
+/**
+ * GET pop api action.  Pops last item from history.
+ */
 router.get("/pop", function (req, res, next) {
   //TODO
 });
 
+/**
+ * GET reset api action. Resets history.
+ */
 router.get("/reset", function (req, res, next) {
   //TODO
 });
 
+/**
+ * GET history api action.  Shows activity history.
+ */
 router.get("/history", function (req, res, next) {
   //TODO
 });
