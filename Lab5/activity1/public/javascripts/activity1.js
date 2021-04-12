@@ -59,6 +59,7 @@ function pop() {
  */
 function reset() {
   console.log("reset clicked");
+  
 }
 
 /**

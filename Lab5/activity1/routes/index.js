@@ -66,12 +66,12 @@ async function handleConversion(req, res, conversionType) {
   let converted = "";
   if (conversionType === "euro") {
     conv = 0.9;
-    converted = `${conv * usd} in EUROS`;
+    converted = `\u20AC ${conv * usd} in EUROS`;
     let operand = `Operand: ${usd} was converted from USD to ${converted}, IP: ${ip}, User-Details: ${userAgent}`;
     history.push(operand);
   } else {
     conv = 0.78;
-    converted = `${conv * usd} in POUNDS`;
+    converted = `&#163 ${conv * usd} in POUNDS`;
     let operand = `Operand: ${usd} was converted from USD to ${converted}, IP: ${ip}, User-Details: ${userAgent}`;
     history.push(operand);
   }
