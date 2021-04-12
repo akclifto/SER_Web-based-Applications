@@ -51,6 +51,7 @@ function convertGBP() {
  * Method to pop last action from history.
  */
 function pop() {
+  //TODO
   console.log("pop clicked");
 }
 
@@ -58,7 +59,6 @@ function pop() {
  * Method to reset history activity.
  */
 function reset() {
-  console.log("reset clicked");
   req.open("GET", URL.concat("/reset"), true);
   req.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
   req.onreadystatechange = () => {
@@ -67,8 +67,11 @@ function reset() {
         // console.log(req.responseText);
         let resp = JSON.parse(req.responseText);
         history = resp.history;
+        document.getElementById("reset").setAttribute("disabled", "disabled");
         document.getElementById("history-list").innerHTML = history;
       }
+    } else {
+      console.log("Could not reset history.");
     }
   };
   req.send();
@@ -79,6 +82,25 @@ function reset() {
  */
 function showHistory() {
   console.log("show history clicked");
+  req.open("GET", URL.concat("/history"), true);
+  req.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+  req.onreadystatechange = () => {
+    if (req.readyState == 4) {
+      if (req.status == 200) {
+        // console.log(req.responseText);
+        let resp = JSON.parse(req.responseText);
+        history = resp.history;
+        document.getElementById("reset").removeAttribute("disabled");
+        history.forEach((item, index) => {
+          document.getElementById("history-list").innerHTML +=
+            "<li>" + (index + 1) + ": " + item + "<br>";
+        });
+      }
+    } else {
+      console.log("Could not show history.");
+    }
+  };
+  req.send();
 }
 
 /**
@@ -102,7 +124,8 @@ function requestConversion(conversionType) {
         // console.log(req.responseText);
         let resp = JSON.parse(req.responseText);
         history = resp.history;
-        document.getElementById("currency-conversion").innerHTML = resp.converted;
+        document.getElementById("currency-conversion").innerHTML =
+          resp.converted;
         if (history.length > 0) {
           document.getElementById("reset").removeAttribute("disabled");
           document.getElementById("history-list").innerHTML = "";

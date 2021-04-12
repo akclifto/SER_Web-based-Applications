@@ -1,3 +1,4 @@
+const e = require("express");
 const express = require("express");
 const router = express.Router();
 
@@ -62,8 +63,23 @@ router.get("/reset", async function (req, res, next) {
 /**
  * GET history api action.  Shows activity history.
  */
-router.get("/history", function (req, res, next) {
-  //TODO
+router.get("/history", async function (req, res, next) {
+  try {
+    history = await fileService.getHistory();
+  } catch (err) {
+    logger.errorLog("history", err);
+  }
+  if (history.length === 0 || history === "") {
+    history = ["No History Found"];
+  }
+  let response = { history };
+  res.set({
+    "Content-type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type, Accept",
+    Accept: "application/json",
+  });
+  res.send(response);
 });
 
 /**
