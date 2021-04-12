@@ -11,22 +11,20 @@
     <div classname="currency">
       Currency Value is:
       <div id="currency-value"></div>
+      <br/>
       ENTER IN USD:
-      <input
-        type="text"
-        id="currency-usd"
-        placeholder="USD Amount (Ex: 25.00)"
-      />
+      <input type="text" id="currency-usd" placeholder="USD Amount (Ex: 25.00)"><label for="currency-usd"></label></input>
     </div>
     <br /><br />
     <div id="buttons">
-      <button id="euro" disabled><label for="euro">Euro</label></button>
-      <button id="pound" disabled></button>
-      <button id="pop" ></button>
-      <button id="reset"></button>
-      <button id="history" onClick="showHistory()"></button>
+      <button id="euro" disabled onClick="convertEuro()"><label for="euro">Euro</label></button>
+      <button id="pound" disabled onClick="convertGBP()"><label for="pound">Pound</label></button>
+      <button id="pop" onClick=pop()><label for="pop">Pop</label></button>
+      <button id="reset" onClick="resetHistory()"><label for="reset">Reset</label></button>
+      <button id="history" onClick="showHistory()"><label for="history">History</label></button>
     </div>
-    <div id="history"></div>
+    <br/><br/>
+    <div id="history-list"></div>
 
     <script src="javascripts/activity1.js"></script>
   </body>
