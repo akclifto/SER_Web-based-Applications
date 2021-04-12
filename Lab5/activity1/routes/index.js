@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-const e = require("express");
 const express = require("express");
 const router = express.Router();
 
@@ -21,7 +20,7 @@ router.get("/", function (req, res, next) {
 router.get("/api", function (req, res, next) {
   //TODO
   console.log("in API");
-  res.render("api");
+  res.sendFile(fileService.API);
 });
 
 /**

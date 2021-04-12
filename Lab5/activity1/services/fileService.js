@@ -5,6 +5,7 @@ const logger = require("../services/log");
 
 const FILE_DIR = path.resolve();
 const HISTORY = "/resource/history.json";
+const API = FILE_DIR.concat("/public/api.html");
 
 /**
  * Method to write data to file.
@@ -61,4 +62,5 @@ function getHistory() {
 module.exports = {
   writeToFile,
   getHistory,
+  API,
 };

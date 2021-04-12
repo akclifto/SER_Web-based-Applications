@@ -70,7 +70,7 @@ function pop() {
           history.forEach((item, index) => {
             document.getElementById("history-list").innerHTML +=
               "<li>" + (index + 1) + ": " + item + "<br>";
-          });
+          });74
         }
       }
     }
@@ -127,11 +127,6 @@ function showHistory() {
   req.send();
 }
 
-function showAPI() {
-  req.open("GET", URL.concat("/api"), true);
-  req.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-  req.send();
-}
 /**
  * Method to handle conversion request to server.  Since Euro and GBP conversion
  * requests are identical other than specifying conversion type, split to own function.
