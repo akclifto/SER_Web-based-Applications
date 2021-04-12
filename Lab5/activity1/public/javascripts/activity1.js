@@ -42,7 +42,6 @@ function convertEuro() {
  * Method to convert USD to GBP
  */
 function convertGBP() {
-  console.log("convert GBP clicked");
   let conversionType = "pound";
   requestConversion(conversionType);
 }
@@ -51,8 +50,32 @@ function convertGBP() {
  * Method to pop last action from history.
  */
 function pop() {
-  //TODO
-  console.log("pop clicked");
+  req.open("GET", URL.concat("/pop"), true);
+  req.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+  req.onreadystatechange = () => {
+    if (req.readyState == 4) {
+      if (req.status == 200) {
+        // console.log(req.responseText);
+        let resp = JSON.parse(req.responseText);
+        history = resp.history;
+        if (history.length === 0 || history === "") {
+          document.getElementById("history-list").innerHTML =
+            "<li> No History Found.";
+        } else {
+          console.log(
+            `The following was removed from history:\n ${resp.popped}`
+          );
+          document.getElementById("history-list").innerHTML = "";
+          document.getElementById("reset").removeAttribute("disabled");
+          history.forEach((item, index) => {
+            document.getElementById("history-list").innerHTML +=
+              "<li>" + (index + 1) + ": " + item + "<br>";
+          });
+        }
+      }
+    }
+  };
+  req.send();
 }
 
 /**
@@ -70,8 +93,6 @@ function reset() {
         document.getElementById("reset").setAttribute("disabled", "disabled");
         document.getElementById("history-list").innerHTML = history;
       }
-    } else {
-      console.log("Could not reset history.");
     }
   };
   req.send();
@@ -81,7 +102,6 @@ function reset() {
  * Method to display user activity.
  */
 function showHistory() {
-  console.log("show history clicked");
   req.open("GET", URL.concat("/history"), true);
   req.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
   req.onreadystatechange = () => {
@@ -90,14 +110,18 @@ function showHistory() {
         // console.log(req.responseText);
         let resp = JSON.parse(req.responseText);
         history = resp.history;
-        document.getElementById("reset").removeAttribute("disabled");
-        history.forEach((item, index) => {
-          document.getElementById("history-list").innerHTML +=
-            "<li>" + (index + 1) + ": " + item + "<br>";
-        });
+        if (history.length === 0 || history === "") {
+          document.getElementById("history-list").innerHTML =
+            "<li> No History Found.";
+        } else {
+          document.getElementById("history-list").innerHTML = "";
+          document.getElementById("reset").removeAttribute("disabled");
+          history.forEach((item, index) => {
+            document.getElementById("history-list").innerHTML +=
+              "<li>" + (index + 1) + ": " + item + "<br>";
+          });
+        }
       }
-    } else {
-      console.log("Could not show history.");
     }
   };
   req.send();

@@ -33,8 +33,33 @@ router.post("/pound", function (req, res, next) {
 /**
  * GET pop api action.  Pops last item from history.
  */
-router.get("/pop", function (req, res, next) {
-  //TODO
+router.get("/pop", async function (req, res, next) {
+  try {
+    history = await fileService.getHistory();
+  } catch (err) {
+    logger.errorLog("pop read", err);
+  }
+  if (history.length === 0 || history === "") {
+    history = [];
+  }
+  let popped;
+  let flag;
+  try {
+    popped = history.pop();
+    flag = await fileService.writeToFile(history);
+  } catch (err) {
+    logger.errorLog("pop write", err);
+  }
+  if (flag) {
+    let response = { history, popped };
+    res.set({
+      "Content-type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Content-Type, Accept",
+      Accept: "application/json",
+    });
+    res.send(response);
+  }
 });
 
 /**
@@ -70,7 +95,7 @@ router.get("/history", async function (req, res, next) {
     logger.errorLog("history", err);
   }
   if (history.length === 0 || history === "") {
-    history = ["No History Found"];
+    history = [];
   }
   let response = { history };
   res.set({
@@ -80,6 +105,10 @@ router.get("/history", async function (req, res, next) {
     Accept: "application/json",
   });
   res.send(response);
+});
+
+router.get("/api", function (req, res, next) {
+  //TODO
 });
 
 /**
@@ -98,12 +127,14 @@ async function handleConversion(req, res, conversionType) {
   let converted = "";
   if (conversionType === "euro") {
     conv = 0.9;
-    converted = `\u20AC ${conv * usd} in EUROS`;
+    converted = parseFloat(conv * usd).toFixed(2);
+    converted = `\u20AC ${converted} in EUROS`;
     let operand = `Operand: ${usd} was converted from USD to ${converted}, IP: ${ip}, User-Details: ${userAgent}`;
     history.push(operand);
   } else {
     conv = 0.78;
-    converted = `&#163 ${conv * usd} in POUNDS`;
+    converted = parseFloat(conv * usd).toFixed(2);
+    converted = `&#163 ${converted} in POUNDS`;
     let operand = `Operand: ${usd} was converted from USD to ${converted}, IP: ${ip}, User-Details: ${userAgent}`;
     history.push(operand);
   }
