@@ -20,7 +20,7 @@ R3: Implemented
 R4: Implemented
 
 ------------------------------------------------------
-ACTIVITY 2: Github API
+ACTIVITY 2: GitHub API
 ------------------------------------------------------
 
 R1: 
