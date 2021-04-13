@@ -11,16 +11,32 @@ function getDetails() {
     let error = "Please enter a valid username";
     document.getElementById("issues").innerHTML = "<b>" + error + "</b>";
   } else {
-    fetch(URL.concat(`${username}/repos`))
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log(data);
-        setData(data);
-        return true;
+    try {
+      fetch(URL.concat(`${username}/repos`), {
+        method: "GET",
+        headers: { "Content-type": "application/x-www-form-urlencoded" },
       })
-      .catch((error) => {
-        console.log("getDetail error: ", error);
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log(data);
+          setData(data);
+          return true;
+        })
+        .catch((error) => {
+          console.log(error.status);
+          console.log("getDetail error: ", error);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+}
+
+function handleResponse(response, username) {
+  if (response.status === 404) {
+    document.getElementById(
+      "issues"
+    ).innerHTML = `\nCould not find ${username} on GitHub`;
   }
 }
 
@@ -60,9 +76,11 @@ function getBranches() {
 function setData(data) {
   let issues = {};
   let totalOpenIssues = 0;
+  let repoSize = 0;
   for (let item in data) {
     issues[data[item].name] = data[item].open_issues_count;
     totalOpenIssues += data[item].open_issues_count;
+    repoSize += 1;
     if (item < 2) {
       let lang_url = data[item].languages_url;
       let html_url = data[item].html_url;
@@ -109,4 +127,33 @@ function setData(data) {
       addRow.innerHTML = row;
     }
   }
+  displayIssues(issues, totalOpenIssues, repoSize);
+}
+
+/**
+ * Function to display the issues text above table.
+ * @param {*} issues : issues object
+ * @param {*} totalOpenIssues : total number of issues.
+ */
+function displayIssues(issues, totalOpenIssues, repoSize) {
+  let average = totalOpenIssues / repoSize;
+  let max = Object.keys(issues)[0];
+  let maxCount = Object.values(issues)[0];
+
+  let index = 0;
+  for (let i in issues) {
+    // console.log(i);
+    if (Object.values(issues)[index] > maxCount) {
+      maxCount = Object.values(issues)[index];
+      max = i;
+    }
+    index += 1;
+    // console.log("For loop key: ", Object.keys(issues)[index]);
+    // console.log("For loop value: ", Object.values(issues)[index]);
+  }
+  average = average.toFixed(4);
+  //   console.log("avg: ", average);
+  //   console.log("max: ", max);
+  let text = `The average issues count is ${average} and the repository with the maximum issues count is ${max}`;
+  document.getElementById("issues").innerHTML = text;
 }
