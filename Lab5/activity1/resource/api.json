@@ -1,0 +1,47 @@
+{
+    "api_name": "API Documentation",
+    "subTitle": "akclifto Lab 5 REST API with Node Express",
+    "calls": [
+        {
+            "type": "GET",
+            "extension": "/",
+            "description": "Loads the home page."
+        },
+        {
+            "type": "GET",
+            "extension": "/api",
+            "description": "Directs to the api documentation page."
+        },
+        {
+            "type": "GET",
+            "extension": "/api_s",
+            "description": "Retrieves the api documentation information from a json file in resource folder."
+        },
+        {
+            "type": "POST",
+            "extension": "/euro",
+            "description": "Handles the USD to Euro conversion and returns JSON response to client."
+        },
+        {
+            "type": "POST",
+            "extension": "/pound",
+            "description": "Handles the USD to Pound conversion and returns JSON response to client."
+        },
+        {
+            "type": "GET",
+            "extension": "/pop",
+            "description": "Removes the last item from activity history for the currency conversion calculator."
+        },
+        {
+            "type": "GET",
+            "extension": "/reset",
+            "description": "Resets the activity history for the currency conversion calculator."
+        },
+        {
+            "type": "GET",
+            "extension": "/history",
+            "description": "Retrieves the activity history persisted on the server and returns to client in JSON response."
+        }
+    ]
+
+}

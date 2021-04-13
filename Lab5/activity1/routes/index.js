@@ -18,9 +18,11 @@ router.get("/", function (req, res, next) {
  * GET API documentation page.
  */
 router.get("/api", function (req, res, next) {
-  //TODO
-  console.log("in API");
   res.sendFile(fileService.API);
+});
+
+router.get("/api_s", function (req, res, next) {
+  // TODO
 });
 
 /**
