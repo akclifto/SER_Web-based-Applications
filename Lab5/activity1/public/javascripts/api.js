@@ -2,10 +2,16 @@
 const URL = "http://localhost:8008";
 const req = new XMLHttpRequest();
 
+/**
+ * Onload, get API Documentation.
+ */
 window.onload = () => {
   showAPI();
 };
 
+/**
+ * Method to pull api documentation from server and display to page.
+ */
 function showAPI() {
   let api = "";
   req.open("GET", URL.concat("/api_s"), true);
