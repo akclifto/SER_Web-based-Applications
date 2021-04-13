@@ -2,7 +2,8 @@
 const URL = "https://api.github.com/users/";
 
 /**
- * Method to get username detail from GitHub API
+ * Method to get username detail from GitHub API.
+ * Req R1
  */
 function getDetails() {
   resetTable();
@@ -23,7 +24,6 @@ function getDetails() {
           return true;
         })
         .catch((error) => {
-          console.log(error.status);
           console.log("getDetail error: ", error);
         });
     } catch (err) {
@@ -32,17 +32,10 @@ function getDetails() {
   }
 }
 
-function handleResponse(response, username) {
-  if (response.status === 404) {
-    document.getElementById(
-      "issues"
-    ).innerHTML = `\nCould not find ${username} on GitHub`;
-  }
-}
-
 /**
  * Function to refresh the table. It will re-fetch the api and
  * populate the table from GitHub API.
+ * Req R4
  */
 function refresh() {
   getDetails();
@@ -50,6 +43,7 @@ function refresh() {
 
 /**
  * Function to reset the table/clear previous queries.
+ * Req R4
  */
 function resetTable() {
   let rowCount = document.getElementById("table").getElementsByTagName("tr")
@@ -61,7 +55,8 @@ function resetTable() {
     }
     document.getElementById("issues").innerHTML = "";
     document.getElementById("selection").innerHTML = "";
-    console.log("Table reset");
+    document.getElementById("branch-details").innerHTML = "";
+    // console.log("Table reset");
   }
 }
 
@@ -82,56 +77,68 @@ function setData(data) {
     totalOpenIssues += data[item].open_issues_count;
     repoSize += 1;
     if (item < 2) {
-      let lang_url = data[item].languages_url;
-      let html_url = data[item].html_url;
-      let api_url = data[item].downloads_url;
-      let addRow = document.getElementById("table").insertRow();
-      let row =
-        "<td>" +
-        data[item].name +
-        "</td>" +
-        "<td> Created at:\n" +
-        data[item].created_at +
-        "<br/><br/>" +
-        "\n Updated at:\n " +
-        data[item].updated_at +
-        "</td>" +
-        "<td>" +
-        data[item].size +
-        "</td>" +
-        "<td>" +
-        data[item].forks_count +
-        "</td>" +
-        "<td>" +
-        data[item].open_issues_count +
-        "</td>" +
-        '<td><a href="' +
-        html_url +
-        '">' +
-        data[item].html_url +
-        "</a></td>" +
-        "<td>" +
-        data[item].language +
-        "<br/><br/>" +
-        'Language URL:\n <a href="' +
-        lang_url +
-        '">' +
-        data[item].languages_url +
-        "</a></td>" +
-        '<td><a href="' +
-        api_url +
-        '">' +
-        data[item].downloads_url +
-        "</a></td>" +
-        '<td> <button id="branches" onClick=getBranches()><label for="branches">Branches</label></button></td>';
-      addRow.innerHTML = row;
+      populateTable(data, item);
     }
   }
   displayIssues(issues, totalOpenIssues, repoSize);
+  displaySelection(data, repoSize);
+}
+
+/**
+ * Method to populate the table with GitHub user data.
+ * Req R1
+ * @param {*} data : json data object from Github API
+ * @param {*} item : index item
+ */
+function populateTable(data, item) {
+  let lang_url = data[item].languages_url;
+  let html_url = data[item].html_url;
+  let api_url = data[item].downloads_url;
+  let addRow = document.getElementById("table").insertRow();
+  let row =
+    "<td>" +
+    data[item].name +
+    "</td>" +
+    "<td> Created at:\n" +
+    data[item].created_at +
+    "<br/><br/>" +
+    "\n Updated at:\n " +
+    data[item].updated_at +
+    "</td>" +
+    "<td>" +
+    data[item].size +
+    "</td>" +
+    "<td>" +
+    data[item].forks_count +
+    "</td>" +
+    "<td>" +
+    data[item].open_issues_count +
+    "</td>" +
+    '<td><a href="' +
+    html_url +
+    '">' +
+    data[item].html_url +
+    "</a></td>" +
+    "<td>" +
+    data[item].language +
+    "<br/><br/>" +
+    'Language URL:\n <a href="' +
+    lang_url +
+    '">' +
+    data[item].languages_url +
+    "</a></td>" +
+    '<td><a href="' +
+    api_url +
+    '">' +
+    data[item].downloads_url +
+    "</a></td>" +
+    '<td> <button id="branches" onClick=getBranches()><label for="branches">Branches</label></button></td>';
+  addRow.innerHTML = row;
 }
 
 /**
  * Function to display the issues text above table.
+ * Req R2
  * @param {*} issues : issues object
  * @param {*} totalOpenIssues : total number of issues.
  */
@@ -142,18 +149,54 @@ function displayIssues(issues, totalOpenIssues, repoSize) {
 
   let index = 0;
   for (let i in issues) {
-    // console.log(i);
     if (Object.values(issues)[index] > maxCount) {
       maxCount = Object.values(issues)[index];
       max = i;
     }
     index += 1;
-    // console.log("For loop key: ", Object.keys(issues)[index]);
-    // console.log("For loop value: ", Object.values(issues)[index]);
   }
   average = average.toFixed(4);
-  //   console.log("avg: ", average);
-  //   console.log("max: ", max);
   let text = `The average issues count is ${average} and the repository with the maximum issues count is ${max}`;
-  document.getElementById("issues").innerHTML = text;
+  document.getElementById("issues").innerHTML = "<b>" + text + "</b>";
+}
+
+/**
+ * Req R1, C and D
+ * @param {*} data : data object from GitHub API.
+ */
+function displaySelection(data, repoSize) {
+  let selection = document.getElementById("selection");
+  let br = document.createElement("option");
+  br.text = "";
+  br.value = "";
+  selection.options.add(br);
+  let totalBranchDisplay = 7;
+  if (repoSize < totalBranchDisplay) {
+    totalBranchDisplay = repoSize;
+  }
+  if (totalBranchDisplay > 2) {
+    for (let i = 2; i < totalBranchDisplay; i++) {
+      // https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
+      let br = document.createElement("option");
+      br.text = data[i].name;
+      br.value = data[i].name;
+      selection.options.add(br);
+    }
+  } else {
+    document.getElementById("selection").innerHTML = "No Branches to Display";
+  }
+
+  selection.addEventListener("change", () => {
+    let rowCount = document.getElementById("table").getElementsByTagName("tr")
+      .length;
+    // let branch = selection.options[selection.selectedIndex].value;
+    // console.log(branch);
+    // console.log(selection.selectedIndex);
+    if (rowCount > 3) {
+      document.getElementById("table").deleteRow(rowCount - 1);
+      populateTable(data, selection.selectedIndex + 1);
+    } else {
+      populateTable(data, selection.selectedIndex + 1);
+    }
+  });
 }

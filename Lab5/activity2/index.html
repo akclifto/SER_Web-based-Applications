@@ -12,9 +12,10 @@
     <div classname="git">
         Enter a valid GitHub user ID: 
         <input type="text" id="username">
-        <button id="getDetails" onClick="getDetails()"><label for="username">Get Details</label></button>
-        <br/>
-        <div id="issues"></div>
+        <button id="get-details" onClick="getDetails()"><label for="get-details">Get Details</label></button>
+        <br/><br/>
+        <div id="issues">The average number of issues is AAA and the 
+          repository with the maximum number of issues is BBB</div>
         <br/>
         <table id="table">
             <tbody>
@@ -41,6 +42,7 @@
         <select id="selection"></select>
         <br/><br/>
         <button id="refresh" onClick="refresh()"><label for="refresh">Refresh</label></button>
+        <ul id="branch-details"></ul>
     </div>
 
     <script src="activity2.js"></script>
