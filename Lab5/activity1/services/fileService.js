@@ -5,6 +5,7 @@ const logger = require("../services/log");
 
 const FILE_DIR = path.resolve();
 const HISTORY = "/resource/history.json";
+const API_FILE = "/resource/api.json";
 const API = FILE_DIR.concat("/public/api.html");
 
 /**
@@ -35,7 +36,7 @@ function writeToFile(data) {
 
 /**
  * Method to get history. Reads history file from resource folder.
- * @returns parsed json questions in Promise, rejects otherwise.
+ * @returns parsed json history in Promise, rejects otherwise.
  */
 function getHistory() {
   return new Promise(function (resolve, reject) {
@@ -54,7 +55,34 @@ function getHistory() {
         }
       });
     } catch (err) {
-      logger.errorLog("getArticle error: ", err);
+      logger.errorLog("getHistory", err);
+    }
+  });
+}
+
+/**
+ * Method to get API from file. Reads file from resource folder.
+ * @returns Promise parsed api contents, false otherwise;
+ */
+function getAPI() {
+  return new Promise(function (resolve, reject) {
+    try {
+      fs.readFile(FILE_DIR.concat(API_FILE), "UTF8", function (err, data) {
+        if (err) {
+          logger.errorLog("readFile", err);
+          reject(false);
+        }
+        let api = JSON.parse(data);
+        if (api.length === 0 || api === "") {
+          // this should never be entered, but just in case.
+          resolve(false);
+        } else {
+          resolve(api);
+        }
+      });
+    } catch (err) {
+      logger.errorLog("getAPI", err);
+      reject(false);
     }
   });
 }
@@ -62,5 +90,6 @@ function getHistory() {
 module.exports = {
   writeToFile,
   getHistory,
+  getAPI,
   API,
 };

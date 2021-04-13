@@ -5,42 +5,66 @@
         {
             "type": "GET",
             "extension": "/",
-            "description": "Loads the home page."
+            "description": "Loads the home page.",
+            "headers": "Content-Type, application/json; charset=UTF-8",
+            "request": "null",
+            "response": "Render Index page"            
         },
         {
             "type": "GET",
             "extension": "/api",
-            "description": "Directs to the api documentation page."
+            "description": "Directs to the api documentation page.",
+            "headers": "Content-Type, application/json; charset=UTF-8",
+            "request": "null",
+            "response": "Render API page"     
         },
         {
             "type": "GET",
             "extension": "/api_s",
-            "description": "Retrieves the api documentation information from a json file in resource folder."
+            "description": "Retrieves the api documentation information from a json file in resource folder.",
+            "headers": "Content-Type, application/json; charset=UTF-8",
+            "request": "null",
+            "response": "{ \"api\": object }" 
         },
         {
             "type": "POST",
             "extension": "/euro",
-            "description": "Handles the USD to Euro conversion and returns JSON response to client."
+            "description": "Handles the USD to Euro conversion and returns JSON response to client.",
+            "headers": "Content-Type, application/json; charset=UTF-8",
+            "request": "{ \"usd\": float value }",
+            "response": "{ \"converted\": conversion value, \"userAgent\": req.headers[\"user-agent\"], \"ip\": req[\"_remoteAddress\"], \"history\": activity history }" 
         },
         {
             "type": "POST",
             "extension": "/pound",
-            "description": "Handles the USD to Pound conversion and returns JSON response to client."
+            "description": "Handles the USD to Pound conversion and returns JSON response to client.",
+            "headers": "Content-Type, application/json; charset=UTF-8",
+            "request": "{ \"usd\": float value }",
+            "response": "{ \"converted\": conversion value, \"userAgent\": req.headers[\"user-agent\"], \"ip\": req[\"_remoteAddress\"], \"history\": activity history }" 
         },
         {
             "type": "GET",
             "extension": "/pop",
-            "description": "Removes the last item from activity history for the currency conversion calculator."
+            "description": "Removes the last item from activity history for the currency conversion calculator.",
+            "headers": "Content-Type, application/json; charset=UTF-8",
+            "request": "null",
+            "response": "{ \"history\": activity history, \"popped\": operand removed from stack. }" 
         },
         {
             "type": "GET",
             "extension": "/reset",
-            "description": "Resets the activity history for the currency conversion calculator."
+            "description": "Resets the activity history for the currency conversion calculator.",
+            "headers": "Content-Type, application/json; charset=UTF-8",
+            "request": "null",
+            "response": "{ \"history\": activity history }" 
         },
         {
             "type": "GET",
             "extension": "/history",
-            "description": "Retrieves the activity history persisted on the server and returns to client in JSON response."
+            "description": "Retrieves the activity history persisted on the server and returns to client in JSON response.",
+            "headers": "Content-Type, application/json; charset=UTF-8",
+            "request": "null",
+            "response": "{ \"history\": activity history }" 
         }
     ]
 

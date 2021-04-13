@@ -70,7 +70,7 @@ function pop() {
           history.forEach((item, index) => {
             document.getElementById("history-list").innerHTML +=
               "<li>" + (index + 1) + ": " + item + "<br>";
-          });74
+          });
         }
       }
     }

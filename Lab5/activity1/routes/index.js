@@ -21,8 +21,21 @@ router.get("/api", function (req, res, next) {
   res.sendFile(fileService.API);
 });
 
-router.get("/api_s", function (req, res, next) {
-  // TODO
+router.get("/api_s", async (req, res, next) => {
+  let api;
+  try {
+    api = await fileService.getAPI();
+  } catch (err) {
+    logger.errorLog("api_s", err);
+  }
+  let response = { api };
+  res.set({
+    "Content-type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type, Accept",
+    Accept: "application/json",
+  });
+  res.send(response);
 });
 
 /**
