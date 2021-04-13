@@ -38,14 +38,15 @@ function refresh() {
 function resetTable() {
   let rowCount = document.getElementById("table").getElementsByTagName("tr")
     .length;
-  let table = document.getElementById("table");
-  //skip the first row since its the headers
-  for (let i = 1; i < rowCount; i++) {
-    table.rows[i].innerHTML = "";
+  //skip the first row since it's the headers
+  if (rowCount > 1) {
+    for (let i = 0; i < rowCount - 1; i++) {
+      document.getElementById("table").deleteRow(1);
+    }
+    document.getElementById("issues").innerHTML = "";
+    document.getElementById("selection").innerHTML = "";
+    console.log("Table reset");
   }
-  document.getElementById("issues").innerHTML = "";
-  document.getElementById("selection").innerHTML = "";
-  //   console.log("Table reset");
 }
 
 function getBranches() {
