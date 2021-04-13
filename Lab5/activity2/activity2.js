@@ -132,7 +132,7 @@ function populateTable(data, item) {
     '">' +
     data[item].downloads_url +
     "</a></td>" +
-    '<td> <button id="branches" onClick=getBranches()><label for="branches">Branches</label></button></td>';
+    '<td><button id="branches" onClick="getBranches()"><label for="branches">Branches</label></button></td>';
   addRow.innerHTML = row;
 }
 
@@ -156,7 +156,14 @@ function displayIssues(issues, totalOpenIssues, repoSize) {
     index += 1;
   }
   average = average.toFixed(4);
-  let text = `The average issues count is ${average} and the repository with the maximum issues count is ${max}`;
+  if (average === isNaN()) {
+    average = "AAA";
+  }
+  if (max === undefined) {
+    max = "BBB";
+  }
+  let text = `The average number of issues is ${average} and the 
+  repository with the maximum number of issues is ${max}.`;
   document.getElementById("issues").innerHTML = "<b>" + text + "</b>";
 }
 
