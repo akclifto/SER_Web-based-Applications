@@ -5,13 +5,14 @@
  */
 
 ------------------------------------------------------
-ACTIVITY 1
+ACTIVITY 1: Currency Conversion Calculator
 ------------------------------------------------------
 To start server, run: 
 
 `npm start`
 
 For API documentation please go to localhost:8008/api for information.
+There is also a link to it from the home page.
 
 R1: Implemented
 R2: Implemented
@@ -19,5 +20,10 @@ R3: Implemented
 R4: Implemented
 
 ------------------------------------------------------
-ACTIVITY 2
+ACTIVITY 2: Github API
 ------------------------------------------------------
+
+R1: 
+R2: 
+R3: 
+R4: 

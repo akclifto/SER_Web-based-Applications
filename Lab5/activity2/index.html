@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta description="Lab 5 akclifto (akclifto@asu.edu)" />
+    <link rel="stylesheet" href="styles.css">
+    <title>Github API</title>
+  </head>
+
+  <body>
+    <div classname="git">
+        Enter a valid Github user ID: 
+        <input type="text" id="username">
+        <button id="getDetails" onClick="getDetails()"><label for="username">Get Details</label></button>
+        <br/>
+        <div id="issues"></div>
+        <br/>
+        <table id="table">
+            <tbody>
+                <tr>
+                    <td><b>Repository Name:&nbsp;</b></td>
+                    <td><b>TimeStamps: Created & Updated:&nbsp;</b></td>
+                    <td><b>Size:&nbsp;</b></td>
+                    <td><b>Number of Forks:</b></td>
+                    <td><b>Number of Open Issues:</b></td>
+                    <td><b>HTML URL:</b></td>
+                    <td><b>List of Languages User and URL:</b></td>
+                    <td><b>Downloads:</b></td>
+                    <td><b>Branches:</b></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <div>
+        Please select a third repository:
+        <select id="selection"></select>
+        <br/><br/>
+        <button id="refresh" onClick="refresh()"><label for="refresh">Refresh</label></button>
+    </div>
+
+    <script src="activity2.js"></script>
+  </body>
+</html>
