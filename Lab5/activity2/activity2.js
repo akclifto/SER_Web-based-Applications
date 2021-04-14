@@ -1,5 +1,8 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 const URL = "https://api.github.com/users/";
+const BRANCHES_URL = "https://api.github.com/repos/";
+let fetchData = {};
 
 /**
  * Method to get username detail from GitHub API.
@@ -46,6 +49,7 @@ function refresh() {
  * Req R4
  */
 function resetTable() {
+  // fetchData = {};
   let rowCount = document.getElementById("table").getElementsByTagName("tr")
     .length;
   //skip the first row since it's the headers
@@ -60,8 +64,58 @@ function resetTable() {
   }
 }
 
-function getBranches() {
-  console.log("getBranches clicked");
+/**
+ * Method to get Branch information for a given repository with API Fetch.
+ * Req R3
+ */
+function getBranches(id) {
+  // console.log(fetchData);
+  const repoIndex = Object.keys(fetchData).find(
+    (value) => fetchData[value].name === id
+  );
+  // console.log(repoIndex);
+  const repo = fetchData[repoIndex];
+  // console.log(repo);
+  try {
+    let username = document.getElementById("username").value;
+    fetch(BRANCHES_URL.concat(`${username}/${id}/branches`), {
+      method: "GET",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        // setData(data);
+        setBranches(data);
+        return true;
+      })
+      .catch((error) => {
+        console.log("getDetail error: ", error);
+      });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+/**
+ * Method to set Branch information below table.
+ * @param {*} data : json data object from Github API for branches
+ */
+function setBranches(data) {
+  document.getElementById("branch-details").innerHTML = "";
+  let count = 0;
+  for (let item in data) {
+    count += 1;
+    if(count > 30) {
+      break;
+    } else {
+      document.getElementById("branch-details").innerHTML +=
+      "<li><b>Branch Name: </b>" + data[item].name + "<br/>" + 
+      "<b>SHA: </b>" + data[item].commit.sha + "<br/>" + 
+      "<b>URL: </b>" + data[item].commit.url + "<br/>" + 
+      "<b>Protected: </b>" + data[item].protected + "<br/><br/>";
+    }
+  }
 }
 
 /**
@@ -69,6 +123,7 @@ function getBranches() {
  * @param {*} data : json data object from Github API
  */
 function setData(data) {
+  fetchData = data;
   let issues = {};
   let totalOpenIssues = 0;
   let repoSize = 0;
@@ -132,7 +187,9 @@ function populateTable(data, item) {
     '">' +
     data[item].downloads_url +
     "</a></td>" +
-    '<td><button id="branches" onClick="getBranches()"><label for="branches">Branches</label></button></td>';
+    "<td><button id=" +
+    data[item].name +
+    ' onClick="getBranches(this.id)"><label for="branches">Branches</label></button></td>';
   addRow.innerHTML = row;
 }
 
@@ -193,6 +250,7 @@ function displaySelection(data, repoSize) {
     document.getElementById("selection").innerHTML = "No Branches to Display";
   }
 
+  //event listener for selection dropdown
   selection.addEventListener("change", () => {
     let rowCount = document.getElementById("table").getElementsByTagName("tr")
       .length;
@@ -201,8 +259,8 @@ function displaySelection(data, repoSize) {
     // console.log(selection.selectedIndex);
     if (rowCount > 3) {
       document.getElementById("table").deleteRow(rowCount - 1);
-      populateTable(data, selection.selectedIndex + 1);
-    } else {
+    }
+    if (selection.selectedIndex > 0) {
       populateTable(data, selection.selectedIndex + 1);
     }
   });

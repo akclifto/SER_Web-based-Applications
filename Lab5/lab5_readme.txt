@@ -23,7 +23,7 @@ R4: Implemented
 ACTIVITY 2: GitHub API
 ------------------------------------------------------
 
-R1: 
-R2: 
+R1: Implemented
+R2: Implemented
 R3: 
-R4: 
+R4: Implemented
