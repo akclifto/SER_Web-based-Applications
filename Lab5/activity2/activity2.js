@@ -139,7 +139,7 @@ function setData(data) {
  */
 function populateTable(data, item) {
   let lang_url = data[item].languages_url;
-  let languages = getLanguages(lang_url);
+  let languages = getLanguages(data[item].name);
   
   console.log(languages);
 
@@ -161,11 +161,16 @@ function populateTable(data, item) {
   addRow.innerHTML = row;
 }
 
-function getLanguages(lang_url) {
+/**
+ * Method to get Languages via Github API fetch.
+ * @param {string} name : name of the repository
+ * @return array of languages used in repository
+ */
+function getLanguages(name) {
   let languages = [];
   try {
     let username = sessionStorage.getItem("username");
-    fetch(BRANCHES_URL.concat(`${username}/languages`), {
+    fetch(BRANCHES_URL.concat(`${username}/${name}/languages`), {
       method: "GET",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
     })
@@ -173,10 +178,12 @@ function getLanguages(lang_url) {
       .then((data) => {
         console.log(data);
         if(data !== null) {
-          let index = 0;
+          // let index = 0;
           for(let item in data) {
            languages.push(Object.keys(data)[item]); 
           }
+        } else {
+          languages = "No Languages Found.";
         }
         return languages;
       })
