@@ -139,9 +139,10 @@ function setData(data) {
  */
 function populateTable(data, item) {
   let lang_url = data[item].languages_url;
-  let languages = getLanguages(data[item].name);
-  
-  console.log(languages);
+  let language = data[item].language;
+  if(language === null) {
+    language = "No Languages Found."
+  }
 
   let html_url = data[item].html_url;
   let api_url = data[item].downloads_url;
@@ -154,45 +155,11 @@ function populateTable(data, item) {
     "<td>" + data[item].forks_count + "</td>" +
     "<td>" + data[item].open_issues_count + "</td>" +
     '<td><a href="' + html_url + '">' +  data[item].html_url + "</a></td>" +
-    "<td>" + languages + "<br/><br/>" + 
+    "<td>" + language + "<br/><br/>" + 
         'Language URL:\n <a href="' + lang_url + '">' + data[item].languages_url + "</a></td>" +
     '<td><a href="' + api_url + '">' + data[item].downloads_url + "</a></td>" +
     "<td><button id=" + data[item].name + ' onClick="getBranches(this.id)"><label for="branches">Branches</label></button></td>';
   addRow.innerHTML = row;
-}
-
-/**
- * Method to get Languages via Github API fetch.
- * @param {string} name : name of the repository
- * @return array of languages used in repository
- */
-function getLanguages(name) {
-  let languages = [];
-  try {
-    let username = sessionStorage.getItem("username");
-    fetch(BRANCHES_URL.concat(`${username}/${name}/languages`), {
-      method: "GET",
-      headers: { "Content-type": "application/x-www-form-urlencoded" },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if(data !== null) {
-          // let index = 0;
-          for(let item in data) {
-           languages.push(Object.keys(data)[item]); 
-          }
-        } else {
-          languages = "No Languages Found.";
-        }
-        return languages;
-      })
-      .catch((error) => {
-        console.log("getDetail error: ", error);
-      });
-  } catch (err) {
-    console.log(err);
-  }
 }
 
 /**
