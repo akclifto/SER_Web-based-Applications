@@ -15,6 +15,7 @@ function getDetails() {
     let error = "Please enter a valid username";
     document.getElementById("issues").innerHTML = "<b>" + error + "</b>";
   } else {
+    sessionStorage.setItem("username", username);
     try {
       fetch(URL.concat(`${username}/repos`), {
         method: "GET",
@@ -49,7 +50,7 @@ function refresh() {
  * Req R4
  */
 function resetTable() {
-  // fetchData = {};
+  sessionStorage.clear();
   let rowCount = document.getElementById("table").getElementsByTagName("tr")
     .length;
   //skip the first row since it's the headers
@@ -60,7 +61,6 @@ function resetTable() {
     document.getElementById("issues").innerHTML = "";
     document.getElementById("selection").innerHTML = "";
     document.getElementById("branch-details").innerHTML = "";
-    // console.log("Table reset");
   }
 }
 
@@ -69,23 +69,15 @@ function resetTable() {
  * Req R3
  */
 function getBranches(id) {
-  // console.log(fetchData);
-  const repoIndex = Object.keys(fetchData).find(
-    (value) => fetchData[value].name === id
-  );
-  // console.log(repoIndex);
-  const repo = fetchData[repoIndex];
-  // console.log(repo);
   try {
-    let username = document.getElementById("username").value;
+    let username = sessionStorage.getItem("username");
     fetch(BRANCHES_URL.concat(`${username}/${id}/branches`), {
       method: "GET",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        // setData(data);
+        // console.log(data);
         setBranches(data);
         return true;
       })
@@ -147,50 +139,53 @@ function setData(data) {
  */
 function populateTable(data, item) {
   let lang_url = data[item].languages_url;
+  let languages = getLanguages(lang_url);
+  
+  console.log(languages);
+
   let html_url = data[item].html_url;
   let api_url = data[item].downloads_url;
   let addRow = document.getElementById("table").insertRow();
   let row =
-    "<td>" +
-    data[item].name +
-    "</td>" +
-    "<td> Created at:\n" +
-    data[item].created_at +
-    "<br/><br/>" +
-    "\n Updated at:\n " +
-    data[item].updated_at +
-    "</td>" +
-    "<td>" +
-    data[item].size +
-    "</td>" +
-    "<td>" +
-    data[item].forks_count +
-    "</td>" +
-    "<td>" +
-    data[item].open_issues_count +
-    "</td>" +
-    '<td><a href="' +
-    html_url +
-    '">' +
-    data[item].html_url +
-    "</a></td>" +
-    "<td>" +
-    data[item].language +
-    "<br/><br/>" +
-    'Language URL:\n <a href="' +
-    lang_url +
-    '">' +
-    data[item].languages_url +
-    "</a></td>" +
-    '<td><a href="' +
-    api_url +
-    '">' +
-    data[item].downloads_url +
-    "</a></td>" +
-    "<td><button id=" +
-    data[item].name +
-    ' onClick="getBranches(this.id)"><label for="branches">Branches</label></button></td>';
+    "<td>" + data[item].name + "</td>" +
+    "<td> Created at:\n" + data[item].created_at + "<br/><br/>" +
+        "\n Updated at:\n " + data[item].updated_at + "</td>" +
+    "<td>" + data[item].size + "</td>" +
+    "<td>" + data[item].forks_count + "</td>" +
+    "<td>" + data[item].open_issues_count + "</td>" +
+    '<td><a href="' + html_url + '">' +  data[item].html_url + "</a></td>" +
+    "<td>" + languages + "<br/><br/>" + 
+        'Language URL:\n <a href="' + lang_url + '">' + data[item].languages_url + "</a></td>" +
+    '<td><a href="' + api_url + '">' + data[item].downloads_url + "</a></td>" +
+    "<td><button id=" + data[item].name + ' onClick="getBranches(this.id)"><label for="branches">Branches</label></button></td>';
   addRow.innerHTML = row;
+}
+
+function getLanguages(lang_url) {
+  let languages = [];
+  try {
+    let username = sessionStorage.getItem("username");
+    fetch(BRANCHES_URL.concat(`${username}/languages`), {
+      method: "GET",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if(data !== null) {
+          let index = 0;
+          for(let item in data) {
+           languages.push(Object.keys(data)[item]); 
+          }
+        }
+        return languages;
+      })
+      .catch((error) => {
+        console.log("getDetail error: ", error);
+      });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 /**
@@ -254,9 +249,6 @@ function displaySelection(data, repoSize) {
   selection.addEventListener("change", () => {
     let rowCount = document.getElementById("table").getElementsByTagName("tr")
       .length;
-    // let branch = selection.options[selection.selectedIndex].value;
-    // console.log(branch);
-    // console.log(selection.selectedIndex);
     if (rowCount > 3) {
       document.getElementById("table").deleteRow(rowCount - 1);
     }
