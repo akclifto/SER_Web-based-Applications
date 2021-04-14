@@ -182,14 +182,13 @@ function displayIssues(issues, totalOpenIssues, repoSize) {
     index += 1;
   }
   average = average.toFixed(4);
-  if (average === isNaN()) {
-    average = "AAA";
+  let text = "";
+  if (average === "NaN") {
+    text = "Status: 404, User Not Found.";
+  } else {
+    text = `The average number of issues is ${average} and the 
+    repository with the maximum number of issues is ${max}.`;
   }
-  if (max === undefined) {
-    max = "BBB";
-  }
-  let text = `The average number of issues is ${average} and the 
-  repository with the maximum number of issues is ${max}.`;
   document.getElementById("issues").innerHTML = "<b>" + text + "</b>";
 }
 
